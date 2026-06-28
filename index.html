@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System. Replicating the scientific paper using interactive flight simulations, controllers, and sensitivity studies.">
+    <meta name="keywords" content="quadrotor dynamics, PID tuning, genetic algorithm, obstacle avoidance, elite opposition bat algorithm, livestock monitoring">
+    <title>KEMS - UAV Autonomous Navigation Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Top Navigation Header (Replicating Wix layout) -->
+    <header id="site-header">
+        <div class="header-container">
+            <a href="#home" class="logo-link" onclick="navigateToPage('home')">
+                <div class="logo-icon">
+                    <svg viewBox="20.303 25.565 159.393 148.871" width="30" height="30">
+                        <g>
+                            <path d="M179.398 97.035c-2.089-12.835-17.014-19.402-28.953-14.029l-12.537 5.671c-11.94 5.373-25.371 5.373-37.311 0L88.06 83.006C76.12 77.633 61.196 84.2 59.107 97.035c-.299.895-.299 2.089-.299 3.283 0 .895 0 2.089.299 3.283 2.089 12.835 17.014 19.402 28.953 14.029l12.537-5.671c11.94-5.373 25.371-5.373 37.311 0l12.537 5.671c11.94 5.373 26.864-1.194 28.953-14.029.298-.895.298-2.089.298-3.283 0-.895 0-2.089-.298-3.283z" fill="#FD6262"/>
+                            <path d="M49.556 62.112l12.537-5.671c11.94-5.373 25.371-5.373 37.311 0l12.537 5.671c11.94 5.373 26.864-1.194 28.953-14.029.298-.895.298-2.089.298-3.283 0-.895 0-2.089-.298-3.283-2.089-12.835-17.014-19.402-28.953-14.029l-12.537 5.671c-11.94 5.373-25.371 5.373-37.311 0l-12.537-5.671c-11.94-5.373-26.864.895-28.953 14.029-.299.895-.299 2.089-.299 3.283 0 .896 0 2.089.299 3.283 2.089 12.835 17.013 19.402 28.953 14.029z" fill="#FD6262"/>
+                            <path d="M111.94 137.928l-12.537 5.671c-11.94 5.373-25.371 5.373-37.311 0l-12.537-5.671c-11.94-5.373-26.864 1.194-28.953 14.029-.299.895-.299 2.089-.299 3.283 0 .896 0 2.089.299 3.283 2.089 12.835 17.014 19.402 28.953 14.029l12.537-5.671c11.94-5.373 25.371-5.373 37.311 0l12.537 5.671c11.94 5.373 26.864-1.194 28.953-14.029.298-.896.298-2.089.298-3.283 0-.895 0-2.089-.298-3.283-2.089-12.836-17.014-19.402-28.953-14.029z" fill="#FD6262"/>
+                        </g>
+                    </svg>
+                </div>
+                <span class="logo-text">KEMS <span class="logo-sub">UAV</span></span>
+            </a>
+
+            <!-- Mobile menu toggle -->
+            <button class="nav-toggle" id="menu-toggle" aria-label="Toggle Menu">&#9776;</button>
+
+            <!-- Navigation Links -->
+            <nav id="nav-bar">
+                <ul class="nav-links">
+                    <li class="nav-item"><a href="#home" onclick="navigateToPage('home')" class="nav-link active">Home</a></li>
+                    
+                    <li class="nav-item has-dropdown">
+                        <a href="#the-model" onclick="navigateToPage('the-model')" class="nav-link">The Model <span class="arrow">&#9662;</span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#detailed-analysis" onclick="navigateToPage('detailed-analysis')">Understanding the Paper</a></li>
+                            <li><a href="#equations-explained" onclick="navigateToPage('equations-explained')">Equations Explained</a></li>
+                            <li><a href="#parameter-definition" onclick="navigateToPage('parameter-definition')">Figure Replication</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item has-dropdown">
+                        <a href="#copy-of-the-model" onclick="navigateToPage('copy-of-the-model')" class="nav-link">Our Contribution <span class="arrow">&#9662;</span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#model-shortcommings" onclick="navigateToPage('model-shortcommings')">Modifications</a></li>
+                            <li><a href="#parameter-sensitivity-analysis" onclick="navigateToPage('parameter-sensitivity-analysis')">Parameter Sensitivity</a></li>
+                            <li><a href="#future-improvements" onclick="navigateToPage('future-improvements')">Future Improvements</a></li>
+                            <li><a href="#applied-prgramming-aspect" onclick="navigateToPage('applied-prgramming-aspect')">Applied Programming</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a href="#team-3" onclick="navigateToPage('team-3')" class="nav-link">The Team</a></li>
+                    <li class="nav-item"><a href="#about-7" onclick="navigateToPage('about-7')" class="nav-link">References</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="main-wrapper">
+
+        <!-- 1. HOME PAGE -->
+        <section id="home" class="page-section active-page">
+            <!-- Large Static Slider Banner matching Bard Drone Center -->
+            <div class="lp-staticslider">
+                <img class="lp-staticslider-image" alt="KEMS UAV Project" src="https://dronecenter.bard.edu/files/2019/09/cover-photo-website-dirk-dallas.jpg">
+                <div class="staticslider-caption">
+                    <h2 class="staticslider-caption-title">KEMS UAV Autonomous Navigation Project</h2>
+                    <span class="staticslider-sep"></span>
+                    <div class="staticslider-caption-text">Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System</div>
+                </div>
+            </div>
+
+            <div class="bard-content-wrapper">
+                
+                <!-- Quick Link Blocks matching Bard blocks -->
+                <div class="lp-blocks">
+                    <div class="lp-block" onclick="navigateToPage('the-model')">
+                        <span class="lp-block-subtitle">THE AUTOPILOT MODEL</span>
+                        <h4 class="lp-block-title">The Mathematical Model &rarr;</h4>
+                    </div>
+                    <div class="lp-block" onclick="navigateToPage('model-shortcommings')">
+                        <span class="lp-block-subtitle">FLIGHT CONTROLLER SIMULATOR</span>
+                        <h4 class="lp-block-title">Interactive Modifications &rarr;</h4>
+                    </div>
+                </div>
+
+                <!-- Video Presentation & Modern Era Section -->
+                <div class="bard-main-grid">
+                    <!-- Left: Video Panel -->
+                    <div class="bard-panel video-panel">
+                        <div class="bard-panel-header">THE VISION: FUTURE OF DRONES</div>
+                        <div class="video-iframe-wrapper">
+                            <iframe src="https://www.youtube.com/embed/4ErEBkj_dq4?autoplay=1&mute=1" title="The Future of Flying Robots" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <!-- Right: Info Panel -->
+                    <div class="bard-panel info-panel">
+                        <div class="bard-panel-header">THE CHALLENGE</div>
+                        <h3 class="panel-heading">Drones in the Modern Era</h3>
+                        <p class="panel-body-text">
+                            Unmanned Aerial Vehicles (UAVs) have transitioned from simple remote-controlled toys to highly sophisticated civilian assets. Today, they are transforming industries like livestock management—where they monitor grazing herds, survey terrain, and track animals across expansive fields.
+                        </p>
+                        <p class="panel-body-text" style="margin-top: 12px;">
+                            However, true utility demands absolute autonomy. A drone cannot rely on constant manual telemetry or fragile GPS links in dense forests or remote fields. It must fly, perceive, decide, and stabilize its trajectory entirely on its own.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Relevance announcement block (Quote panel like Bard blockquote text) -->
+                <div class="bard-announcement-panel">
+                    <div class="bard-panel-header">THE RELEVANCE</div>
+                    <h3 class="panel-heading">Why this Paper is Replicated</h3>
+                    <p class="panel-body-text">
+                        The paper we chose, <em>Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System</em>, is highly relevant because it directly bridges abstract mathematical theory with physical flight safety systems.
+                    </p>
+                    <p class="panel-body-text" style="margin-top: 12px;">
+                        By mapping rigid-body Euler equations of motion, the authors model a 6-degree-of-freedom under-actuated system. They then implement a Genetic Algorithm to optimize altitude and attitude PID loops under two criteria: the highly-damped ITAE (Integral of Time-weighted Absolute Error) and the fast-response ISE (Integral of Square Error).
+                    </p>
+                    <p class="panel-body-text" style="margin-top: 12px;">
+                        Finally, a LiDAR-based Bat Algorithm calculates steering vectors dynamically when obstacles are detected. This replication demonstrates how complex ordinary differential equations are transformed into a living, reactive autopilot.
+                    </p>
+                </div>
+
+                <!-- Stats readouts -->
+                <div class="bard-stats-panel">
+                    <div class="bard-panel-header">TRANSIENT PERFORMANCE INDICATORS</div>
+                    <div class="comic-stats-grid" style="margin-top: 20px;">
+                        <div class="comic-stat">
+                            <span class="c-stat-num">6.51s</span>
+                            <span class="c-stat-lbl">ITAE Altitude Settling</span>
+                        </div>
+                        <div class="comic-stat">
+                            <span class="c-stat-num">0.43s</span>
+                            <span class="c-stat-lbl">Attitude Settling</span>
+                        </div>
+                        <div class="comic-stat">
+                            <span class="c-stat-num">1.0m</span>
+                            <span class="c-stat-lbl">Safety Distance Boundary</span>
+                        </div>
+                        <div class="comic-stat">
+                            <span class="c-stat-num">90%</span>
+                            <span class="c-stat-lbl">PID Control Usage</span>
+                        </div>
+                    </div>
+                    <div class="comic-actions-btn" style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
+                        <button class="btn btn-primary" onclick="navigateToPage('model-shortcommings')">Launch Simulator</button>
+                        <button class="btn btn-secondary" onclick="navigateToPage('the-model')">Explore The Model</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        </section>
+
+
+        <!-- 2. THE MODEL OVERVIEW -->
+        <section id="the-model" class="page-section">
+            <div class="section-header">
+                <h2>The Mathematical Model</h2>
+                <p>An overview of the quadrotor dynamics model, Ordinary Differential Equations, and Matlab step responses.</p>
+            </div>
+            
+            <div class="category-grid">
+                <div class="category-card" onclick="navigateToPage('detailed-analysis')">
+                    <div class="cat-icon">&#128221;</div>
+                    <h3 class="cat-title">Understanding the Paper</h3>
+                    <p class="cat-desc">An executive summary of the quadrotor autonomous navigation model, controllers, and results.</p>
+                    <span class="cat-link">Read Summary &rarr;</span>
+                </div>
+                
+                <div class="category-card" onclick="navigateToPage('equations-explained')">
+                    <div class="cat-icon">&#129486;&#8205;&#128187;</div>
+                    <h3 class="cat-title">Equations Explained</h3>
+                    <p class="cat-desc">A deep dive into the rigid body Ordinary Differential Equations (ODEs) for translation and rotation.</p>
+                    <span class="cat-link">View Equations &rarr;</span>
+                </div>
+
+                <div class="category-card" onclick="navigateToPage('parameter-definition')">
+                    <div class="cat-icon">&#128200;</div>
+                    <h3 class="cat-title">Figure Replication</h3>
+                    <p class="cat-desc">Examine the MATLAB replicated figures of step responses, trajectories, and avoidance traces.</p>
+                    <span class="cat-link">View Figures &rarr;</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 2a. DETAILED ANALYSIS SUBPAGE -->
+        <section id="detailed-analysis" class="page-section">
+            <div class="back-nav">
+                <button class="btn btn-secondary btn-sm" onclick="navigateToPage('the-model')">&larr; Back to Model Overview</button>
+            </div>
+            <div class="section-header">
+                <h2>Understanding the Paper</h2>
+                <p>An overview of the quadrotor autonomous navigation model and optimization results.</p>
+            </div>
+
+            <!-- Summary & Scope -->
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">Understanding the Paper</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    The research paper, <em>Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System</em>, presents the development of a mathematical model and simulation of a quadrotor capable of autonomous navigation while avoiding obstacles. The study is motivated by the growing use of quadrotors in livestock management, where they are used for monitoring, tracking, counting, and observing animals. Since autonomous operation requires the drone to move safely through its environment, the paper focuses on combining flight control with obstacle avoidance.
+                </p>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    The paper models the quadrotor as a six-degree-of-freedom dynamic system using the Euler equations of motion. The mathematical model describes both the translational motion (movement along the x, y, and z axes) and the rotational motion (roll, pitch, and yaw). The quadrotor is treated as an under-actuated system with four control inputs generated by the four rotors and six output variables representing its position and orientation.
+                </p>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    To control the quadrotor, the paper develops two Proportional-Integral-Derivative (PID) controllers: one for altitude control and another for attitude control. The PID controller gains are optimized using a Genetic Algorithm (GA), with two objective functions—Integral Square Error (ISE) and Integral Time Absolute Error (ITAE). The performance of both tuning methods is compared using transient response measures such as overshoot, settling time, rise time, and steady-state error.
+                </p>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    The complete navigation model includes four main components: the desired trajectory generator, the quadrotor dynamic model, the PID-based flight controllers, and an obstacle avoidance system. A LiDAR sensor is used to detect nearby obstacles. At the same time, an Elite Opposition-Based Bat Algorithm (EOBA) determines a new collision-free path whenever an obstacle is detected within a specified distance threshold. The quadrotor then follows the generated path through the flight controllers.
+                </p>
+                <p class="card-text">
+                    Simulation results show that the ITAE-tuned PID controller provides better overall control performance than the ISE-based controller, producing lower overshoot and smaller steady-state error. The obstacle avoidance system also enables the quadrotor to navigate successfully to its target while avoiding collisions. The study concludes that a distance threshold of 1 m is sufficient to avoid obstacles with a width of up to 1 m, making the proposed navigation system suitable for autonomous outdoor applications such as livestock monitoring.
+                </p>
+            </div>
+
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">Rigid Body Formulation</h3>
+                <p class="card-text">
+                    The paper details the autonomous navigation of a quadrotor Unmanned Aerial Vehicle (UAV). A quadcopter is a rotary-wing system driven by 4 independent actuators arranged in a '+' configuration. The thrust force generated by each rotor (f<sub>i</sub>) and their reactive drag torques (&tau;<sub>i</sub>) are proportional to the square of the rotor angular speed (&omega;<sub>i</sub>):
+                </p>
+                <div class="math-block">
+                    <div class="math-title">Actuator Speed Mapping</div>
+                    <div class="equation">f<sub>i</sub> = b &middot; &omega;<sub>i</sub><sup>2</sup> , &nbsp;&nbsp;&nbsp;&nbsp; &tau;<sub>i</sub> = d &middot; &omega;<sub>i</sub><sup>2</sup></div>
+                    <div class="variable-list">
+                        <div class="variable-item"><strong>b</strong> : Thrust factor coefficient (6.317 &times; 10<sup>-4</sup> N &middot; s<sup>2</sup> / rad<sup>2</sup>)</div>
+                        <div class="variable-item"><strong>d</strong> : Drag factor coefficient (1.610 &times; 10<sup>-4</sup> N &middot; m &middot; s<sup>2</sup> / rad<sup>2</sup>)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">Three-Step Autonomy Pipeline</h3>
+                <p class="card-text" style="margin-bottom: 20px;">
+                    Autonomous navigation relies on a closed-loop system dividing tasks into three main categories:
+                </p>
+                <div class="card-grid">
+                    <div class="sub-card">
+                        <div class="sub-icon">&#128065;</div>
+                        <h4 class="sub-title">1. Perception</h4>
+                        <p class="card-text">Combines GPS and IMU sensors for internal state estimation, and a 2D LiDAR sensor for obstacle mapping within a 7m range.</p>
+                    </div>
+                    <div class="sub-card">
+                        <div class="sub-icon">&#128205;</div>
+                        <h4 class="sub-title">2. Planning</h4>
+                        <p class="card-text">Calculates goal-seeking vectors and executes an Elite Opposition-Based Bat Algorithm when obstacles enter the safety clearance threshold.</p>
+                    </div>
+                    <div class="sub-card">
+                        <div class="sub-icon">&#9881;</div>
+                        <h4 class="sub-title">3. Control</h4>
+                        <p class="card-text">Toggles PID feedback loops to calculate the necessary rotor speeds (&omega;<sub>1</sub>, &omega;<sub>2</sub>, &omega;<sub>3</sub>, &omega;<sub>4</sub>) to follow planned vectors.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h3 class="card-title">System Physical Parameters</h3>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter Description</th>
+                                <th>Symbol</th>
+                                <th>Value</th>
+                                <th>Units</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Thrust factor</td><td>b</td><td>6.317 &times; 10<sup>-4</sup></td><td>N &middot; s<sup>2</sup> / rad<sup>2</sup></td></tr>
+                            <tr><td>Drag factor</td><td>d</td><td>1.610 &times; 10<sup>-4</sup></td><td>N &middot; m &middot; s<sup>2</sup> / rad<sup>2</sup></td></tr>
+                            <tr><td>Gravity acceleration</td><td>g</td><td>9.81</td><td>m / s<sup>2</sup></td></tr>
+                            <tr><td>Moment of inertia (x-axis)</td><td>I<sub>x</sub></td><td>1.453 &times; 10<sup>-2</sup></td><td>kg &middot; m<sup>2</sup></td></tr>
+                            <tr><td>Moment of inertia (y-axis)</td><td>I<sub>y</sub></td><td>1.453 &times; 10<sup>-2</sup></td><td>kg &middot; m<sup>2</sup></td></tr>
+                            <tr><td>Moment of inertia (z-axis)</td><td>I<sub>z</sub></td><td>2.884 &times; 10<sup>-2</sup></td><td>kg &middot; m<sup>2</sup></td></tr>
+                            <tr><td>Motors' moment of inertia</td><td>J<sub>r</sub></td><td>2.820 &times; 10<sup>-7</sup></td><td>kg &middot; m<sup>2</sup></td></tr>
+                            <tr><td>Arm length (center of mass to rotor)</td><td>l</td><td>0.225</td><td>m</td></tr>
+                            <tr><td>Quadrotor total mass</td><td>m</td><td>1.888</td><td>kg</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 2b. EQUATIONS EXPLAINED SUBPAGE -->
+        <section id="equations-explained" class="page-section">
+            <div class="back-nav">
+                <button class="btn btn-secondary btn-sm" onclick="navigateToPage('the-model')">&larr; Back to Model Overview</button>
+            </div>
+            <div class="section-header">
+                <h2>Ordinary Differential Equations of Motion</h2>
+                <p>Translational kinematics and rotational dynamics derived through the Newton-Euler formalism.</p>
+            </div>
+
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">Translational Kinematics (x, y, z accelerations)</h3>
+                <p class="card-text">
+                    The translational acceleration of the quadrotor in the earth-fixed frame is driven by the total thrust (U<sub>1</sub>) rotated through roll (&phi;), pitch (&theta;) and yaw (&psi;) commands:
+                </p>
+                <div class="math-block">
+                    <div class="math-title">Translational Kinematics ODEs</div>
+                    <div class="equation">
+                        x&uml; = (U<sub>1</sub> / m) &middot; (cos&phi; sin&theta; cos&psi; + sin&phi; sin&psi;) <br><br>
+                        y&uml; = (U<sub>1</sub> / m) &middot; (cos&phi; sin&theta; sin&psi; - sin&phi; cos&psi;) <br><br>
+                        z&uml; = (U<sub>1</sub> / m) &middot; (cos&phi; cos&theta;) - g
+                    </div>
+                    <div class="variable-list">
+                        <div class="variable-item"><strong>U<sub>1</sub></strong>: Total vertical thrust generated by all 4 motors.</div>
+                        <div class="variable-item"><strong>m</strong>: Mass of the quadrotor (1.888 kg).</div>
+                        <div class="variable-item"><strong>g</strong>: Gravity acceleration (9.81 m/s<sup>2</sup>).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h3 class="card-title">Rotational Dynamics (Roll, Pitch, Yaw moments)</h3>
+                <p class="card-text">
+                    The rotational acceleration equations describe angular acceleration under applied torques (U<sub>2</sub>, U<sub>3</sub>, U<sub>4</sub>) and gyroscopic motor coupling factors:
+                </p>
+                <div class="math-block">
+                    <div class="math-title">Rotational Kinematics ODEs</div>
+                    <div class="equation">
+                        &phi;&uml; = (U<sub>2</sub> &middot; l / I<sub>x</sub>) - [ (I<sub>z</sub> - I<sub>y</sub>) / I<sub>x</sub> ] &middot; &theta;&bull; &psi;&bull; - (J<sub>r</sub> &omega;<sub>r</sub> / I<sub>x</sub>) &middot; &theta;&bull; <br><br>
+                        &theta;&uml; = (U<sub>3</sub> &middot; l / I<sub>y</sub>) - [ (I<sub>x</sub> - I<sub>z</sub>) / I<sub>y</sub> ] &middot; &phi;&bull; &psi;&bull; + (J<sub>r</sub> &omega;<sub>r</sub> / I<sub>y</sub>) &middot; &phi;&bull; <br><br>
+                        &psi;&uml; = (U<sub>4</sub> / I<sub>z</sub>) - [ (I<sub>y</sub> - I<sub>x</sub>) / I<sub>z</sub> ] &middot; &phi;&bull; &theta;&bull;
+                    </div>
+                    <div class="variable-list">
+                        <div class="variable-item"><strong>U<sub>2</sub>, U<sub>3</sub>, U<sub>4</sub></strong>: Torques corresponding to rolling, pitching, and yawing motion.</div>
+                        <div class="variable-item"><strong>&omega;<sub>r</sub></strong>: Residual motor angular velocity: &omega;<sub>1</sub> - &omega;<sub>2</sub> + &omega;<sub>3</sub> - &omega;<sub>4</sub>.</div>
+                        <div class="variable-item"><strong>J<sub>r</sub></strong>: Rotor moment of inertia (2.82 &times; 10<sup>-7</sup> kg &middot; m<sup>2</sup>).</div>
+                        <div class="variable-item"><strong>I<sub>x</sub>, I<sub>y</sub>, I<sub>z</sub></strong>: Moments of inertia along the coordinate axes.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 2c. FIGURE REPLICATION SUBPAGE -->
+        <section id="parameter-definition" class="page-section">
+            <div class="back-nav">
+                <button class="btn btn-secondary btn-sm" onclick="navigateToPage('the-model')">&larr; Back to Model Overview</button>
+            </div>
+            <div class="section-header">
+                <h2>MATLAB Simulation Figure Replication</h2>
+                <p>Replicated charts of the flight experiments, transient responses, and trajectories.</p>
+            </div>
+
+            <!-- Carousel Slider for Replicated Graphs -->
+            <div class="carousel-container">
+                <div class="carousel-track" id="figure-carousel">
+                    
+                    <!-- Slide 1: Altitude Response -->
+                    <div class="carousel-slide active-slide">
+                        <div class="slide-header">
+                            <h3>Figure 1.1: Altitude Step Response (ITAE vs. ISE)</h3>
+                            <p>Desired height = 5.0m. ITAE tuned PID settles in 6.51s with 2.6% overshoot. ISE has 14.3% overshoot.</p>
+                        </div>
+                        <div class="slide-body">
+                            <svg viewBox="0 0 600 300" class="vector-chart">
+                                <!-- Gridlines -->
+                                <line x1="50" y1="250" x2="550" y2="250" stroke="#1e293b"/>
+                                <line x1="50" y1="50" x2="550" y2="50" stroke="#1e293b" stroke-dasharray="4 4"/>
+                                <line x1="50" y1="150" x2="550" y2="150" stroke="#1e293b" stroke-dasharray="4 4"/>
+                                <!-- Axes -->
+                                <line x1="50" y1="50" x2="50" y2="260" stroke="#6b7280" stroke-width="2"/>
+                                <line x1="40" y1="250" x2="560" y2="250" stroke="#6b7280" stroke-width="2"/>
+                                <!-- Setpoint -->
+                                <path d="M 50 150 L 550 150" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+                                <text x="440" y="142" fill="#f59e0b" font-size="10">5m Setpoint</text>
+                                <!-- ITAE curve (Smooth rise, minor overshoot, settle) -->
+                                <path d="M 50 250 Q 150 120 220 145 T 320 150 L 550 150" fill="none" stroke="#00ff66" stroke-width="2.5"/>
+                                <!-- ISE curve (Fast rise, major overshoot, oscillation) -->
+                                <path d="M 50 250 C 90 100 120 80 180 170 S 240 135 300 152 T 400 150 L 550 150" fill="none" stroke="#ff3366" stroke-width="2.5"/>
+                                <!-- Labels -->
+                                <text x="20" y="155" fill="#9ca3af" font-size="10" transform="rotate(-90 20 155)">Altitude (m)</text>
+                                <text x="280" y="280" fill="#9ca3af" font-size="10">Time (seconds)</text>
+                                <!-- Legend -->
+                                <rect x="420" y="60" width="100" height="50" fill="rgba(13, 21, 39, 0.8)" stroke="#1e293b"/>
+                                <line x1="430" y1="75" x2="450" y2="75" stroke="#00ff66" stroke-width="2"/>
+                                <text x="460" y="78" fill="#fff" font-size="10">ITAE PID</text>
+                                <line x1="430" y1="95" x2="450" y2="95" stroke="#ff3366" stroke-width="2"/>
+                                <text x="460" y="98" fill="#fff" font-size="10">ISE PID</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: X-Y Trajectory -->
+                    <div class="carousel-slide">
+                        <div class="slide-header">
+                            <h3>Figure 1.2: Trajectory to (10, 10) at 5m Altitude</h3>
+                            <p>2D horizontal trajectory showing the quadrotor's travel path in an obstacle-free simulation.</p>
+                        </div>
+                        <div class="slide-body">
+                            <svg viewBox="0 0 600 300" class="vector-chart">
+                                <line x1="50" y1="250" x2="550" y2="250" stroke="#1e293b"/>
+                                <line x1="50" y1="50" x2="550" y2="50" stroke="#1e293b"/>
+                                <line x1="50" y1="50" x2="50" y2="250" stroke="#1e293b"/>
+                                <line x1="550" y1="50" x2="550" y2="250" stroke="#1e293b"/>
+                                <!-- Axes -->
+                                <line x1="50" y1="250" x2="560" y2="250" stroke="#6b7280" stroke-width="2"/>
+                                <line x1="50" y1="50" x2="50" y2="260" stroke="#6b7280" stroke-width="2"/>
+                                <!-- Start and Goal dots -->
+                                <circle cx="100" cy="200" r="6" fill="#00f0ff"/>
+                                <text x="80" y="220" fill="#00f0ff" font-size="10">Start (0,0)</text>
+                                <circle cx="500" cy="100" r="6" fill="#00ff66"/>
+                                <text x="490" y="85" fill="#00ff66" font-size="10">Goal (10,10)</text>
+                                <!-- Trajectory Curve -->
+                                <path d="M 100 200 C 200 180 350 120 500 100" fill="none" stroke="#00f0ff" stroke-width="2.5" stroke-dasharray="2 2"/>
+                                <path d="M 100 200 C 200 180 350 120 500 100" fill="none" stroke="#00f0ff" stroke-width="2.5" opacity="0.3"/>
+                                <!-- Label -->
+                                <text x="280" y="280" fill="#9ca3af" font-size="10">X Position (m)</text>
+                                <text x="20" y="150" fill="#9ca3af" font-size="10" transform="rotate(-90 20 150)">Y Position (m)</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: Obstacle Avoidance Trace -->
+                    <div class="carousel-slide">
+                        <div class="slide-header">
+                            <h3>Figure 1.3: Obstacle Avoidance Trace (0.5m vs 1.0m)</h3>
+                            <p>At 0.5m limit, the drone collides with the obstacle at (5,5). At 1.0m safety limit, the drone bypasses it.</p>
+                        </div>
+                        <div class="slide-body">
+                            <svg viewBox="0 0 600 300" class="vector-chart">
+                                <!-- Grid -->
+                                <line x1="50" y1="250" x2="550" y2="250" stroke="#1e293b"/>
+                                <!-- Obstacle -->
+                                <circle cx="300" cy="150" r="25" fill="rgba(255, 51, 102, 0.2)" stroke="#ff3366" stroke-width="1.5"/>
+                                <circle cx="300" cy="150" r="4" fill="#ff3366"/>
+                                <text x="310" y="145" fill="#ff3366" font-size="10">Obstacle (5,5)</text>
+                                <!-- 1.0m avoidance trace (Green - Smooth curve bypass) -->
+                                <path d="M 80 220 Q 220 220 250 110 T 380 90 L 520 90" fill="none" stroke="#00ff66" stroke-width="2.5"/>
+                                <text x="180" y="120" fill="#00ff66" font-size="10">1.0m Safety Limit</text>
+                                <!-- 0.5m avoidance trace (Red - Collides and stops) -->
+                                <path d="M 80 220 L 275 152" fill="none" stroke="#ff3366" stroke-width="2.5" stroke-dasharray="4 4"/>
+                                <circle cx="275" cy="152" r="6" fill="#ff3366" stroke="#fff" stroke-width="1"/>
+                                <text x="200" y="170" fill="#ff3366" font-size="10">0.5m Crash Point</text>
+                                <!-- Labels -->
+                                <text x="280" y="280" fill="#9ca3af" font-size="10">X coordinate</text>
+                                <text x="20" y="150" fill="#9ca3af" font-size="10" transform="rotate(-90 20 150)">Y coordinate</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Carousel Controls -->
+                <button class="carousel-control prev" onclick="moveSlide(-1)">&#10094;</button>
+                <button class="carousel-control next" onclick="moveSlide(1)">&#10095;</button>
+                <div class="carousel-indicators">
+                    <span class="indicator active" onclick="setSlide(0)"></span>
+                    <span class="indicator" onclick="setSlide(1)"></span>
+                    <span class="indicator" onclick="setSlide(2)"></span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3. OUR CONTRIBUTION -->
+        <section id="copy-of-the-model" class="page-section">
+            <div class="section-header">
+                <h2>Our Contribution & Simulation Studies</h2>
+                <p>Testing controller sensitivity, implementing parameter perturbations, and future scaling proposals.</p>
+            </div>
+            
+            <div class="category-grid">
+                <div class="category-card" onclick="navigateToPage('model-shortcommings')">
+                    <div class="cat-icon">&#128641;</div>
+                    <h3 class="cat-title">Modifications & Simulator</h3>
+                    <p class="cat-desc">Launch the interactive flight simulation. Test controllers under wind forces and sensory delays.</p>
+                    <span class="cat-link">Run Simulation &rarr;</span>
+                </div>
+                
+                <div class="category-card" onclick="navigateToPage('parameter-sensitivity-analysis')">
+                    <div class="cat-icon">&#128202;</div>
+                    <h3 class="cat-title">Parameter Sensitivity</h3>
+                    <p class="cat-desc">Examine sensitivity tables, rise/settling time metrics, and optimized PID gain variables.</p>
+                    <span class="cat-link">View Sensitivity &rarr;</span>
+                </div>
+
+                <div class="category-card" onclick="navigateToPage('future-improvements')">
+                    <div class="cat-icon">&#128302;</div>
+                    <h3 class="cat-title">Future Improvements</h3>
+                    <p class="cat-desc">Further study scaling, including swarm collaboration frameworks and PDE mapping extensions.</p>
+                    <span class="cat-link">Read Extensions &rarr;</span>
+                </div>
+
+                <div class="category-card" onclick="navigateToPage('applied-prgramming-aspect')">
+                    <div class="cat-icon">&#128188;</div>
+                    <h3 class="cat-title">Applied Programming</h3>
+                    <p class="cat-desc">View our codebase milestones, development timeline, and student contributor profiles.</p>
+                    <span class="cat-link">View Stack &rarr;</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3a. MODIFICATIONS (INTERACTIVE SIMULATOR) SUBPAGE -->
+        <section id="model-shortcommings" class="page-section">
+            <div class="back-nav">
+                <button class="btn btn-secondary btn-sm" onclick="navigateToPage('copy-of-the-model')">&larr; Back to Overview</button>
+            </div>
+            <div class="section-header">
+                <h2>Interactive Flight Simulation</h2>
+                <p>Run simulated flight tests of the quadrotor. Test pathing, controllers, wind force, and sensory latency.</p>
+            </div>
+
+            <div class="simulator-layout">
+                <!-- Simulation Canvas -->
+                <div class="canvas-wrapper">
+                    <div class="canvas-header">
+                        <div class="canvas-title">
+                            <div class="status-dot"></div>
+                            Flight Control System Telemetry
+                        </div>
+                        <div class="canvas-telemetry" id="telemetry-readout">
+                            X: 0.00m | Y: 0.00m | Speed: 0.00m/s
+                        </div>
+                    </div>
+                    <canvas id="simulation-canvas"></canvas>
+                </div>
+
+                <!-- Simulation Controls Panel -->
+                <div class="control-panel">
+                    <div class="panel-title">FCS Configuration</div>
+                    
+                    <div class="control-group">
+                        <div class="control-label"><span>Obstacle Grid Scene</span></div>
+                        <div class="mode-selectors">
+                            <div class="mode-btn active-mode" id="scene-single" onclick="setSimScene('single')">1 Obstacle</div>
+                            <div class="mode-btn" id="scene-three" onclick="setSimScene('three')">3 Obstacles</div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label"><span>Autopilot Tuning Loop</span></div>
+                        <div class="mode-selectors">
+                            <div class="mode-btn active-mode" id="ctrl-itae" onclick="setSimController('itae')">ITAE (Tuned)</div>
+                            <div class="mode-btn" id="ctrl-ise" onclick="setSimController('ise')">ISE</div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label"><span>Obstacle Warning Threshold</span></div>
+                        <div class="mode-selectors">
+                            <div class="mode-btn active-mode" id="thresh-10" onclick="setSimThreshold(1.0)">1.0m (Safe)</div>
+                            <div class="mode-btn" id="thresh-05" onclick="setSimThreshold(0.5)">0.5m (Crash)</div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Lateral Wind Force</span>
+                            <span class="control-value" id="val-wind">0.00</span>
+                        </div>
+                        <input type="range" min="-0.15" max="0.15" step="0.01" value="0" class="slider-input" id="slide-wind">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Sensory Feedback Lag</span>
+                            <span class="control-value" id="val-lag">0.05s</span>
+                        </div>
+                        <input type="range" min="0" max="0.30" step="0.01" value="0.05" class="slider-input" id="slide-lag">
+                    </div>
+
+                    <div class="simulator-actions">
+                        <button class="btn btn-primary" id="btn-play-pause">Pause Flight</button>
+                        <button class="btn btn-secondary" id="btn-reset-sim">Reset Flight</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="margin-top: 30px;">
+                <h3 class="card-title">Simulator Physics Details</h3>
+                <ul style="padding-left: 20px; color: var(--color-text-secondary); font-size: 0.9rem; line-height: 1.8;">
+                    <li><strong>ITAE vs. ISE</strong>: Selecting ITAE configures a highly-damped PID loop. Selecting ISE sets higher gains with low damping, causing overshoot and trajectory tracking oscillations (as shown in Figure 13).</li>
+                    <li><strong>1.0m vs. 0.5m Threshold</strong>: A 0.5m distance threshold is smaller than the physical radius clearance of the drone and obstacle, causing collision. A 1.0m threshold allows the Bat Algorithm steering vectors to bank the drone away.</li>
+                    <li><strong>Sensory Lag</strong>: Artifically delays state estimation vectors in the feedback loop. High lag values trigger unstable oscillations, demonstrating the impact of transport delay on differential equation stability.</li>
+                </ul>
+            </div>
+        </section>
+
+
+        <!-- 3b. PARAMETER SENSITIVITY SUBPAGE -->
+        <section id="parameter-sensitivity-analysis" class="page-section">
+            <div class="back-nav">
+                <button class="btn btn-secondary btn-sm" onclick="navigateToPage('copy-of-the-model')">&larr; Back to Overview</button>
+            </div>
+            <div class="section-header">
+                <h2>Parameter Sensitivity Analysis</h2>
+                <p>A comparison of performance indices and transient variables between ITAE and ISE optimization routines.</p>
+            </div>
+
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">Controller Tuning Optimization</h3>
+                <p class="card-text" style="margin-bottom: 20px;">
+                    The genetic algorithm optimized the PID gains (K<sub>p</sub>, K<sub>i</sub>, K<sub>d</sub>) by minimizing two distinct error indices. The Integral of Time-weighted Absolute Error (ITAE) heavily penalizes errors that persist over time, while the Integral of Square Error (ISE) penalizes large initial transient errors.
+                </p>
+                <div class="math-block">
+                    <div class="math-title">Optimization Cost Indices</div>
+                    <div class="equation">
+                        ISE = &int;<sub>0</sub><sup>t<sub>sim</sub></sup> e<sup>2</sup>(t) dt &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ITAE = &int;<sub>0</sub><sup>t<sub>sim</sub></sup> t &middot; |e(t)| dt
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">Table 1: Optimized PID Gains</h3>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Controller Parameter</th>
+                                <th colspan="2">ITAE Method</th>
+                                <th colspan="2">ISE Method</th>
+                            </tr>
+                            <tr>
+                                <th>Altitude</th>
+                                <th>Attitude</th>
+                                <th>Altitude</th>
+                                <th>Attitude</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>K<sub>p</sub> (Proportional)</td><td>5.0000</td><td>9.9995</td><td>12.8750</td><td>9.9995</td></tr>
+                            <tr><td>K<sub>i</sub> (Integral)</td><td>2.5728</td><td>0.000064</td><td>6.6843</td><td>0.0254</td></tr>
+                            <tr><td>K<sub>d</sub> (Derivative)</td><td>3.6485</td><td>1.0915</td><td>4.5464</td><td>0.7545</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h3 class="card-title">Table 2: Transient Response Parameters</h3>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Transient Parameters</th>
+                                <th colspan="2">ITAE Method</th>
+                                <th colspan="2">ISE Method</th>
+                            </tr>
+                            <tr>
+                                <th>Altitude</th>
+                                <th>Attitude</th>
+                                <th>Altitude</th>
+                                <th>Attitude</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Overshoot (%)</td><td>2.6533%</td><td>2.5028%</td><td>14.2967%</td><td>12.9697%</td></tr>
+                            <tr><td>Settling Time (s)</td><td>6.5088 s</td><td>0.4271 s</td><td>3.7947 s</td><td>0.4515 s</td></tr>
+                            <tr><td>Rise Time (s)</td><td>2.0118 s</td><td>0.1850 s</td><td>0.7343 s</td><td>0.1440 s</td></tr>
+                            <tr><td>Steady-State Tracking Error</td><td>0.0011 m</td><td>2.343 &times; 10<sup>-7</sup> rad</td><td>0.0021 m</td><td>5.657 &times; 10<sup>-5</sup> rad</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="card-text" style="margin-top: 15px;">
+                    <strong>Deduction</strong>: The ITAE-based controller generates a better realistic transient response for both altitude and attitude control. It maintains a low overshoot (2.65% vs. 14.30% in altitude) which prevents aggressive motor surges and physical structural strain, making it the preferred tuning configuration.
+                </p>
+            </div>
+        </section>
+
+
+        <!-- 3c. FUTURE IMPROVEMENTS SUBPAGE -->
+        <section id="future-improvements" class="page-section">
+            <div class="back-nav">
+                <button class="btn btn-secondary btn-sm" onclick="navigateToPage('copy-of-the-model')">&larr; Back to Overview</button>
+            </div>
+            <div class="section-header">
+                <h2>Future Improvements & Research Areas</h2>
+                <p>Scaling models to support multi-agent swarms, optical-flow integration, and alternative tuning routines.</p>
+            </div>
+
+            <div class="card-grid">
+                <div class="glass-card">
+                    <div class="card-icon">&#129309;</div>
+                    <h3 class="card-title">Swarm Autonomy</h3>
+                    <p class="card-text">
+                        Scaling the mathematical model from a single quadcopter to collaborative multi-agent swarms. This requires adding mutual collision avoidance constraints and sharing localized LiDAR maps to coordinate navigation vectors.
+                    </p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-icon">&#128065;</div>
+                    <h3 class="card-title">GPS-Denied Vision</h3>
+                    <p class="card-text">
+                        Integrating computer vision and optical flow systems. Using neural networks and optical flow sensors to estimate state vectors when GPS coordinates are unavailable or blocked by tree coverage in livestock environments.
+                    </p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-icon">&#9881;</div>
+                    <h3 class="card-title">Alternative Tuning</h3>
+                    <p class="card-text">
+                        Comparing the Genetic Algorithm optimization parameters against alternative metaheuristic tuning mechanisms, such as Particle Swarm Optimization (PSO), Cuckoo Search, and Smell Agent Optimization (SAO).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3d. APPLIED PROGRAMMING SUBPAGE -->
+        <section id="applied-prgramming-aspect" class="page-section">
+            <div class="back-nav">
+                <button class="btn btn-secondary btn-sm" onclick="navigateToPage('copy-of-the-model')">&larr; Back to Overview</button>
+            </div>
+            <div class="section-header">
+                <h2>Applied Programming Portfolio</h2>
+                <p>Replicating the Wix resume/education layout, detailing our technical milestones and codebase.</p>
+            </div>
+
+            <div class="portfolio-layout">
+                <div class="glass-card timeline-card">
+                    <h3 class="card-title">Development Milestones</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <span class="time-tag">Phase 1</span>
+                            <h4 class="timeline-title">ODE Kinematic Solver</h4>
+                            <p class="card-text">Developed a 2D/3D numerical integration pipeline in JavaScript using Euler's method to resolve the translational coordinates ($x, y, z$) and rotation angles ($\phi, \theta, \psi$) in real-time.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-tag">Phase 2</span>
+                            <h4 class="timeline-title">LiDAR & Obstacle Collision Checks</h4>
+                            <p class="card-text">Built radial check structures on the HTML5 Canvas to simulate rangefinder returns and map safety boundaries for safety thresholds.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-tag">Phase 3</span>
+                            <h4 class="timeline-title">Autopilot Feedback & steering</h4>
+                            <p class="card-text">Programmed the ITAE vs. ISE PID loop commands. Integrated sensory delay queues and lateral wind force dynamics to test control loops under disturbance.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card contact-card">
+                    <h3 class="card-title">Contact & Portfolio Details</h3>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <strong>Project Directory</strong>
+                            <span>Desktop/Drone Project</span>
+                        </div>
+                        <div class="contact-item">
+                            <strong>Source Repository</strong>
+                            <span>github.com/sirsunantsalot/uav-dynamics</span>
+                        </div>
+                        <div class="contact-item">
+                            <strong>Primary Email</strong>
+                            <span>simon.antara@ashesi.edu.gh</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 25px;" onclick="window.location.hash = 'team-3'">Meet the Team</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 4. THE TEAM PAGE -->
+        <section id="team-3" class="page-section">
+            <div class="section-header">
+                <h2>Project Contributors</h2>
+                <p>Student group members, contributions, and project roles.</p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="avatar-placeholder">T1</div>
+                    <h4 class="team-name">[Teammate 1 Name]</h4>
+                    <p class="team-role">[Student ID: XXXXXXXX]</p>
+                    <p class="card-text" style="font-size: 0.85rem;">[Description to be added later]</p>
+                </div>
+                <div class="team-card">
+                    <div class="avatar-placeholder">T2</div>
+                    <h4 class="team-name">[Teammate 2 Name]</h4>
+                    <p class="team-role">[Student ID: XXXXXXXX]</p>
+                    <p class="card-text" style="font-size: 0.85rem;">[Description to be added later]</p>
+                </div>
+                <div class="team-card">
+                    <div class="avatar-placeholder">T3</div>
+                    <h4 class="team-name">[Teammate 3 Name]</h4>
+                    <p class="team-role">[Student ID: XXXXXXXX]</p>
+                    <p class="card-text" style="font-size: 0.85rem;">[Description to be added later]</p>
+                </div>
+                <div class="team-card">
+                    <div class="avatar-placeholder">T4</div>
+                    <h4 class="team-name">[Teammate 4 Name]</h4>
+                    <p class="team-role">[Student ID: XXXXXXXX]</p>
+                    <p class="card-text" style="font-size: 0.85rem;">[Description to be added later]</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 5. REFERENCES PAGE -->
+        <section id="about-7" class="page-section">
+            <div class="section-header">
+                <h2>Academic References</h2>
+                <p>Literature review and mathematical references cited in this study.</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="references-list">
+                    <div class="ref-item">
+                        <span class="ref-number">[1]</span>
+                        <span class="ref-text">
+                            Alanezi, M.A.; Haruna, Z.; Sha’aban, Y.A.; Bouchekara, H.R.E.H.; Nahas, M.; Shahriar, M.S. Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System. <em>Drones</em> 2022, 6, 288. <a href="https://doi.org/10.3390/drones6100288" target="_blank">https://doi.org/10.3390/drones6100288</a>
+                        </span>
+                    </div>
+                    <div class="ref-item">
+                        <span class="ref-number">[2]</span>
+                        <span class="ref-text">
+                            Alanezi, M.A.; Shahriar, M.S.; Hasan, M.B.; Ahmed, S.; Sha’aban, Y.A.; Bouchekara, H.R.E.H. Livestock Management with Unmanned Aerial Vehicles: A Review. <em>IEEE Access</em> 2022, 10, 45001–45028.
+                        </span>
+                    </div>
+                    <div class="ref-item">
+                        <span class="ref-number">[3]</span>
+                        <span class="ref-text">
+                            Idrissi, M.; Annaz, F.; Salami, M. Mathematical & Physical Modelling of a Quadrotor UAV. In <em>Proceedings of the 2021 7th International Conference on Control, Automation and Robotics (ICCAR)</em>, Singapore, 23–26 April 2021; pp. 206–212.
+                        </span>
+                    </div>
+                    <div class="ref-item">
+                        <span class="ref-number">[4]</span>
+                        <span class="ref-text">
+                            Haruna, Z.; Mu’azu, M.B.; Abubilal, K.A.; Tijani, S.A. Development of a Modified Bat Algorithm Using Elite Opposition—Based Learning. In <em>Proceedings of the 2017 IEEE 3rd International Conference on Electro-Technology for National Development (NIGERCON)</em>, Futo, Nigeria, 7–10 November 2017; pp. 144–151.
+                        </span>
+                    </div>
+                    <div class="ref-item">
+                        <span class="ref-number">[5]</span>
+                        <span class="ref-text">
+                            Holland, J.H. Genetic Algorithms. <em>Scientific American</em> 1992, 267, 66–73.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="site-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Differential Equations Course Project. Replicated Study based on MDPI Drones 2022.</p>
+            <p>Made with love by Serwaa, Elsa, Maureen & Keziah.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>

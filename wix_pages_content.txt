@@ -1,0 +1,539 @@
+﻿## Wix Website Content Scrape
+
+
+## Page: Home
+URL: https://sirsunantsalot.wixsite.com/my-site-5
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+Introduction
+
+Climate change, driven by human activities like greenhouse gas emissions and deforestation, disrupts global weather patterns and ecosystems. Studying these effects helps develop strategies to mitigate risks and build resilience.Through scientific research, innovation, and sustainable policies, we can reduce emissions and protect our planet for future generations.
+
+A study led by Monash University found that extreme temperatures, both hot and cold, are responsible for over 5 million deaths worldwide each year.
+
+### Currently.....
+
+Have you ever wondered what the world will look like with no icebergs and constant heat waves? 
+
+### Food for thought
+
+If all of Earth's glaciers and icebergs melted, sea levels could rise by over 200 feet, potentially swallowing many
+
+of our coastal cities!
+
+### Fun Facts
+
+### Our Mission
+
+To practically apply the knowledge we have gained of differential equations to improve an existing model 
+
+Most current climate research using ordinary differential equations (ODEs) focuses almost entirely on modeling physical systems&mdash;like predicting temperature surges from emissions, rising sea levels from ice melt, or biodiversity loss from deforestation.
+
+These models are powerful diagnostic tools, but they largely ignore a crucial use case: testing how real-world policy interventions might alter those trajectories. We can simulate the damage of unchecked emissions&mdash;but rarely do these models explore how tools like carbon taxes or stricter land-use laws could actually mitigate that damage.
+
+This gap is surprising, especially since ODEs are inherently flexible&mdash;parameters like emission rates, deforestation speed, or coastal degradation can be modified to reflect specific policy scenarios. Yet few studies leverage this to simulate and compare the outcomes of different strategies.
+
+By focusing solely on physical predictions, these models miss their potential to inform decisions&mdash;like setting effective carbon pricing or balancing environmental rules with economic needs. It&rsquo;s time we shift ODEs from just forecasting climate risks to helping design smart, actionable climate solutions.
+
+### Shocking Statistics
+
+2030
+
+Climate change would be irreversible
+
+2050
+
+Climate change could lead to the displacement of about 200 million people 
+
+421ppm
+
+Average concentration of carbon dioxide in the atmosphere in 2024
+
+20%
+
+of emissions are mainly caused by human activities such as deforestation
+
+ bottom of page
+
+
+================================================================================
+
+
+
+## Page: The Model
+URL: https://sirsunantsalot.wixsite.com/my-site-5/the-model
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+### Climate Change Model
+
+### About the paper
+
+ BACK
+
+### Understanding the paper
+
+Explanation of the paper in detail
+
+### Parameters and Equations explained
+
+Detailed explantion of all equations used in the model
+
+### Figure Replication 
+
+Matlab replication of graphs in the paper with their associated parameters
+
+ bottom of page
+
+
+================================================================================
+
+
+
+## Page: Equations Explained
+URL: https://sirsunantsalot.wixsite.com/my-site-5/equation-explained
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+I heard you have a few things to explain to me ?
+
+A tornado of stuff😊
+
+### Equations Explained 
+
+### Equations Explained
+
+ Play Video Facebook Twitter Pinterest Tumblr Copy Link Check out parameters bottom of page
+
+
+================================================================================
+
+
+
+## Page: Detailed Analysis
+URL: https://sirsunantsalot.wixsite.com/my-site-5/detailed-analysis
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+### DETAILED ANALYSIS
+
+The mathematical model in the paper, &ldquo;A Mathematical Model to Investigate the Frequent Impact of Global Warming on Coastal Lives&rdquo; details the effects of greenhouse gas emissions and climate change on human populations in coastal areas.
+
+Human activities release greenhouse gases into the atmosphere, which consequently increase global temperatures. High concentrations of the greenhouse gases and climate change have a negative effect on human population and forest ecosystem.
+
+The paper models the four factors involved: humans, greenhouse gases, atmospheric temperature, and forest ecosystem as four different compartments. Each interaction between any two compartments is affected by a certain rate.
+
+Designed for policymakers and researchers, it serves as both an early-warning system for climate tipping points and a testbed for mitigation strategies. Click below to view the equations. 
+
+ The model Parameter Definition bottom of page
+
+
+================================================================================
+
+
+
+## Page: Figure Replication
+URL: https://sirsunantsalot.wixsite.com/my-site-5/parameter-definition
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+### FIGURE REPLICATION
+
+We replicated the figures produced in the paper with Matlab
+
+### Figure 1.1 (Paper)
+
+### Replicated Figure 1.1 (Matlab)
+
+### Figure 1.2 (Paper)
+
+### Replicated Figure 1.1 (Matlab)
+
+### Replicated Figure 1.1 (Matlab)
+
+### Replicated Figure 1.2 (Matlab)
+
+### Figure 1.3 (Paper)
+
+### Replicated Figure 1.3 (Matlab)
+
+### Figure 1.4 (Paper)
+
+### Replicated Figure 1.4 (Matlab)
+
+### Figure 1.5 (Paper)
+
+### Replicated Figure 1.5 (Matlab)
+
+### Figure 1.6 (Paper)
+
+### Replicated Figure 1.6 (Matlab)
+
+### Figure 1.7 (Paper)
+
+### Replicated Figure 1.7(Matlab)
+
+ Equations Explained bottom of page
+
+
+================================================================================
+
+
+
+## Page: Our Contribution
+URL: https://sirsunantsalot.wixsite.com/my-site-5/copy-of-the-model
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+### Climate Change Model
+
+### About the paper
+
+ BACK
+
+### Modifications
+
+Explanation of the paper in detail
+
+### Parameter Sensitivity
+
+Detailed explantion of all equations used in the model
+
+### Future Improvements
+
+Matlab replication of graphs in the paper with their associated parameters
+
+### Applied Programming
+
+Detailed error analysis of the differential model
+
+ bottom of page
+
+
+================================================================================
+
+
+
+## Page: Modifications
+URL: https://sirsunantsalot.wixsite.com/my-site-5/model-shortcommings
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+### MODIFICATIONS
+
+The climate change model provides a clear interaction between humans, forest ecosystems, Greenhouse gases and atmospheric temperature. However, more could have been done to improve the model.
+
+Readjusting &delta;2 parameter : In the paper, the writers provided a rate of 0.0029 for GHG emissions by animals while humans were given a rate of 0.0011. From research and data analysis, animal contributions to GHG emissions is just 14% while humans take the vast majority. 
+
+Introducing climate change policy factor, k: While the paper provides a good estimate of the causes of climate change, a term for the effects of climate change policies is not included. Climate change policies reduce GHG emissions, so the term k is subtracted from the GHG stock. This helps provide a more realistic measure of the GHG emission.
+
+### Introducing w4NH and ϵ6NH: 
+
+ This terms represent the negative effects of natural disasters on human population and forest ecosystem respectively. bottom of page
+
+
+================================================================================
+
+
+
+## Page: Parameter Sensitivity Analysis
+URL: https://sirsunantsalot.wixsite.com/my-site-5/parameter-sensitivity-analysis
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+### Parameter Sensitivity
+
+​The original model depicts a dire trajectory where greenhouse gases (GHGs) surge exponentially due to high human emissions (&delta;₁ = 0.011) and inadequate forest absorption (&delta;₃ = 0.050), driving temperature increases that trigger catastrophic feedback loops. By year 100, GHGs exceed 0.8 normalised units, temperatures spike by 125% from baseline, and these dual pressures collapse both human populations (declining 40% from peak) and forests (plummeting to 10% coverage).In contrast, the modified scenario demonstrates how strategic interventions&mdash;reducing animal-based emissions (&delta;₂ lowered from 0.029 to 0.004), boosting forest CO₂ uptake (&delta;₃ increased to 0.060), and curbing deforestation (&epsilon;₂ halved to 0.048)&mdash;alter this trajectory.
+
+GHGs now plateau at 0.5 units, temperature rise slows by 33%, and both human and forest systems stabilize near 50% of their original capacities. These quantitative differences validate that preemptive policy changes can disrupt climate feedback loops before they reach tipping points. The comparison highlights how policy-driven adjustments alter system dynamics: where the original model predicts irreversible damage, the modified version achieves equilibrium. Lower emissions and stronger forest absorption slow GHG accumulation, while reduced deforestation and temperature sensitivity allow ecosystems to rebound.
+
+Human populations stabilize as health impacts from pollution and warming diminish. This aligns with the paper&rsquo;s conclusion that reforestation and emission cuts are critical for sustainability. The graphs provide quantitative proof that climate policies can rewrite a dire trajectory into a manageable one.
+
+ bottom of page
+
+
+================================================================================
+
+
+
+## Page: Future Improvements
+URL: https://sirsunantsalot.wixsite.com/my-site-5/future-improvements
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+### FURTHER RESEARCH
+
+Spatial-Temporal Modeling with Partial Differential Equations (PDEs)
+
+The current model treats coastal regions as uniform, ignoring local variations in elevation, land use, and ocean proximity. PDEs could capture how disasters like flooding propagate inland or how urban heat islands intensify warming. This would allow for targeted interventions in high-risk zones, such as prioritizing mangrove restoration in low-lying areas.
+
+Modeling Environmental Policies and Their Impact
+
+Policies like carbon taxes or renewable subsidies are often oversimplified in climate models. Explicitly integrating policy mechanisms could reveal how specific regulations slow GHG accumulation or reduce temperature rise. For instance, simulating a carbon tax could show how revenue reinvestment in coastal defenses mitigates disaster frequency.
+
+Extending the Model to Non-Coastal Terrains
+
+While the focus is on coastal vulnerability, expanding the framework to deserts, forests, or polar regions would broaden its applicability. For example, permafrost thaw in the Arctic releases methane, and droughts in arid regions disrupt agriculture&mdash;phenomena requiring distinct parameterizations but similar dynamical structures.
+
+Incorporating a Green Tax Mechanism
+
+A green tax could be modeled as a feedback loop where higher emissions incur greater penalties, forcing industries to adopt cleaner practices. This would directly reduce the GHG growth rate in the equations, with revenue optionally funding reforestation or seawall projects. Real-world carbon pricing data could calibrate its effectiveness.
+
+ bottom of page
+
+
+================================================================================
+
+
+
+## Page: Applied Programming Aspect
+URL: https://sirsunantsalot.wixsite.com/my-site-5/applied-prgramming-aspect
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+ Download CV
+
+### Education
+
+2015-2017
+
+University Name
+
+This is your Education description. Concisely describe your degree and any other highlights of your studies. Make sure to include relevant skills, accomplishments, and milestones gained. Don&rsquo;t forget to adjust the timeframe in the subtitle.
+
+2011-2014
+
+University Name
+
+This is your Education description. Concisely describe your degree and any other highlights of your studies. Make sure to include relevant skills, accomplishments, and milestones gained. Don&rsquo;t forget to adjust the timeframe in the subtitle.
+
+2007-2010
+
+University Name
+
+This is your Education description. Concisely describe your degree and any other highlights of your studies. Make sure to include relevant skills, accomplishments, and milestones gained. Don&rsquo;t forget to adjust the timeframe in the subtitle.
+
+Call 
+
+123-456-7890 
+
+Email 
+
+info@mysite.com
+
+Follow
+
+ bottom of page
+
+
+================================================================================
+
+
+
+## Page: The Team
+URL: https://sirsunantsalot.wixsite.com/my-site-5/team-3
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+### The Team
+
+Prince Baah Mensah 
+
+Paper Selection, Applied Programming, Parameter sensitivity, Modification
+
+Maame Nkrabea Cobbina
+
+Equations Explained, Promo Video, Further Research, Introduction of Topic, Modifications
+
+Simon Antara Nyovuura Jnr
+
+Website design, sensitivity analysis with Matlab, Equation explained, further research,modifications
+
+Philip Quartey
+
+Website design, Parameter senstivity, Equations explained video , Introduction 
+
+ bottom of page
+
+
+================================================================================
+
+
+
+## Page: References
+URL: https://sirsunantsalot.wixsite.com/my-site-5/about-7
+
+ top of page This website was built on Wix. Create yours today.Get Started
+
+Diff'd Up
+
+ Home The Model
+
+Equations ExplainedDetailed AnalysisFigure ReplicationOur Contribution
+
+ModificationsParameter sensitivity analysisFuture improvementsApplied programming aspectThe Team
+
+ References
+
+More
+
+### References
+
+IEOM Society. (n.d.). The impact of environmental issues on economic growth: An application of the environment-Economic model. Retrieved from https://www.ieomsociety.org/imeom/140.pdf
+
+NOAA Climate.gov. (2020, February 6). Climate change: Global sea level. Retrieved from https://www.climate.gov/news-features/understanding-climate/climate-change-global-sea-level
+
+Britannica. (2023, September 25). Florida. Encyclopedia Britannica. Retrieved from https://www.britannica.com/place/Florida
+
+National Hurricane Center. (n.d.). NOAA data. Retrieved from https://www.nhc.noaa.gov/data/
+
+National Centers for Environmental Information. (2020). State summary of Florida: Climate data from 1980&ndash;2025. Retrieved from https://www.ncei.noaa.gov/access/billions/state-summary/FL#:~:text=From%201980%2D2025%20
+
+Holiday Weather. (n.d.). Florida weather averages. Retrieved from https://www.holiday-weather.com/florida/averages/
+
+Florida Climate Center. (n.d.). Statewide averages temperature data. Florida State University. Retrieved from https://climatecenter.fsu.edu/products-services/data/statewide-averages/temperature
+
+Our World in Data. (2020, September). Natural disasters statistics. Retrieved from https://ourworldindata.org/natural-disasters
+
+Alencar, A., & Leal, M. (2019). Climate change and natural disasters. ResearchGate. Retrieved from https://www.researchgate.net/publication/337604600_Climate_Change_and_Natural_Disasters_Autores_Climate_Change_and_Natural_Disasters
+
+Southeast Florida Regional Climate Compact. (2019). Regional greenhouse gas inventory methodology report. Retrieved from https://southeastfloridaclimatecompact.org/wpcontent/uploads/2019/01/Regional-Greenhouse-Gas-Inventory-Methodology-Report-1.pdf
+
+ bottom of page
+
+
+================================================================================
+
