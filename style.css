@@ -1902,5 +1902,114 @@ body.light-mode .fact-card:hover {
     }
 }
 
+/* ==========================================================================
+   Figure Replication Comparison Grid Layout
+   ========================================================================== */
+.fig-replication-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.fig-comparison-card {
+    background: var(--color-bg-deep);
+    border: 1px solid rgba(100, 255, 218, 0.12);
+    border-radius: 12px;
+    padding: 30px;
+    transition: border-color var(--transition-normal);
+}
+.fig-comparison-card:hover {
+    border-color: rgba(100, 255, 218, 0.3);
+}
+
+body.light-mode .fig-comparison-card {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+}
+body.light-mode .fig-comparison-card:hover {
+    border-color: rgba(15, 118, 110, 0.3) !important;
+}
+
+.fig-title {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-white);
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+}
+
+.fig-desc {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.fig-media-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.fig-media-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(10, 25, 47, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 20px;
+    transition: border-color var(--transition-normal);
+}
+.fig-media-box:hover {
+    border-color: rgba(100, 255, 218, 0.15);
+}
+
+body.light-mode .fig-media-box {
+    background: #f9fafb !important;
+    border-color: #e5e7eb !important;
+}
+body.light-mode .fig-media-box:hover {
+    border-color: rgba(15, 118, 110, 0.15) !important;
+}
+
+.fig-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-mint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+}
+
+.fig-img {
+    max-width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform var(--transition-normal);
+}
+.fig-img:hover {
+    transform: scale(1.02);
+}
+
+body.light-mode .fig-img {
+    border-color: #e5e7eb !important;
+}
+
+@media (max-width: 768px) {
+    .fig-media-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+
 
 

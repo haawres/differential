@@ -380,117 +380,78 @@
             </div>
             <div class="section-header">
                 <h2>MATLAB Simulation Figure Replication</h2>
-                <p>Replicated charts of the flight experiments, transient responses, and trajectories.</p>
+                <p>Visual comparison between the original figures published in the MDPI Drones paper and our Matlab replicated models.</p>
             </div>
 
-            <!-- Carousel Slider for Replicated Graphs -->
-            <div class="carousel-container">
-                <div class="carousel-track" id="figure-carousel">
-                    
-                    <!-- Slide 1: Altitude Response -->
-                    <div class="carousel-slide active-slide">
-                        <div class="slide-header">
-                            <h3>Figure 1.1: Altitude Step Response (ITAE vs. ISE)</h3>
-                            <p>Desired height = 5.0m. ITAE tuned PID settles in 6.51s with 2.6% overshoot. ISE has 14.3% overshoot.</p>
+            <!-- Grid comparing Original vs Replicated Figures -->
+            <div class="fig-replication-grid">
+                
+                <!-- Card 1 -->
+                <div class="fig-comparison-card">
+                    <h3 class="fig-title">Figure 1.1: Altitude Step Response (ITAE vs. ISE Tuning)</h3>
+                    <p class="fig-desc">Comparing the transient performance of PID controller gains optimized with the Genetic Algorithm. The ITAE tuning method achieves smooth rise with 6.51s settling time and minimal overshoot, while the ISE method exhibits faster rise but high overshoot and oscillations.</p>
+                    <div class="fig-media-row">
+                        <div class="fig-media-box">
+                            <span class="fig-label">Original Graph (Paper)</span>
+                            <img src="original_1.png" alt="Original Figure 1.1" class="fig-img">
                         </div>
-                        <div class="slide-body">
-                            <svg viewBox="0 0 600 300" class="vector-chart">
-                                <!-- Gridlines -->
-                                <line x1="50" y1="250" x2="550" y2="250" stroke="#1e293b"/>
-                                <line x1="50" y1="50" x2="550" y2="50" stroke="#1e293b" stroke-dasharray="4 4"/>
-                                <line x1="50" y1="150" x2="550" y2="150" stroke="#1e293b" stroke-dasharray="4 4"/>
-                                <!-- Axes -->
-                                <line x1="50" y1="50" x2="50" y2="260" stroke="#6b7280" stroke-width="2"/>
-                                <line x1="40" y1="250" x2="560" y2="250" stroke="#6b7280" stroke-width="2"/>
-                                <!-- Setpoint -->
-                                <path d="M 50 150 L 550 150" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
-                                <text x="440" y="142" fill="#f59e0b" font-size="10">5m Setpoint</text>
-                                <!-- ITAE curve (Smooth rise, minor overshoot, settle) -->
-                                <path d="M 50 250 Q 150 120 220 145 T 320 150 L 550 150" fill="none" stroke="#00ff66" stroke-width="2.5"/>
-                                <!-- ISE curve (Fast rise, major overshoot, oscillation) -->
-                                <path d="M 50 250 C 90 100 120 80 180 170 S 240 135 300 152 T 400 150 L 550 150" fill="none" stroke="#ff3366" stroke-width="2.5"/>
-                                <!-- Labels -->
-                                <text x="20" y="155" fill="#9ca3af" font-size="10" transform="rotate(-90 20 155)">Altitude (m)</text>
-                                <text x="280" y="280" fill="#9ca3af" font-size="10">Time (seconds)</text>
-                                <!-- Legend -->
-                                <rect x="420" y="60" width="100" height="50" fill="rgba(13, 21, 39, 0.8)" stroke="#1e293b"/>
-                                <line x1="430" y1="75" x2="450" y2="75" stroke="#00ff66" stroke-width="2"/>
-                                <text x="460" y="78" fill="#fff" font-size="10">ITAE PID</text>
-                                <line x1="430" y1="95" x2="450" y2="95" stroke="#ff3366" stroke-width="2"/>
-                                <text x="460" y="98" fill="#fff" font-size="10">ISE PID</text>
-                            </svg>
+                        <div class="fig-media-box">
+                            <span class="fig-label">Replicated Graph (Matlab)</span>
+                            <img src="replica_1.png" alt="Replicated Figure 1.1" class="fig-img">
                         </div>
                     </div>
-
-                    <!-- Slide 2: X-Y Trajectory -->
-                    <div class="carousel-slide">
-                        <div class="slide-header">
-                            <h3>Figure 1.2: Trajectory to (10, 10) at 5m Altitude</h3>
-                            <p>2D horizontal trajectory showing the quadrotor's travel path in an obstacle-free simulation.</p>
-                        </div>
-                        <div class="slide-body">
-                            <svg viewBox="0 0 600 300" class="vector-chart">
-                                <line x1="50" y1="250" x2="550" y2="250" stroke="#1e293b"/>
-                                <line x1="50" y1="50" x2="550" y2="50" stroke="#1e293b"/>
-                                <line x1="50" y1="50" x2="50" y2="250" stroke="#1e293b"/>
-                                <line x1="550" y1="50" x2="550" y2="250" stroke="#1e293b"/>
-                                <!-- Axes -->
-                                <line x1="50" y1="250" x2="560" y2="250" stroke="#6b7280" stroke-width="2"/>
-                                <line x1="50" y1="50" x2="50" y2="260" stroke="#6b7280" stroke-width="2"/>
-                                <!-- Start and Goal dots -->
-                                <circle cx="100" cy="200" r="6" fill="#00f0ff"/>
-                                <text x="80" y="220" fill="#00f0ff" font-size="10">Start (0,0)</text>
-                                <circle cx="500" cy="100" r="6" fill="#00ff66"/>
-                                <text x="490" y="85" fill="#00ff66" font-size="10">Goal (10,10)</text>
-                                <!-- Trajectory Curve -->
-                                <path d="M 100 200 C 200 180 350 120 500 100" fill="none" stroke="#00f0ff" stroke-width="2.5" stroke-dasharray="2 2"/>
-                                <path d="M 100 200 C 200 180 350 120 500 100" fill="none" stroke="#00f0ff" stroke-width="2.5" opacity="0.3"/>
-                                <!-- Label -->
-                                <text x="280" y="280" fill="#9ca3af" font-size="10">X Position (m)</text>
-                                <text x="20" y="150" fill="#9ca3af" font-size="10" transform="rotate(-90 20 150)">Y Position (m)</text>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <!-- Slide 3: Obstacle Avoidance Trace -->
-                    <div class="carousel-slide">
-                        <div class="slide-header">
-                            <h3>Figure 1.3: Obstacle Avoidance Trace (0.5m vs 1.0m)</h3>
-                            <p>At 0.5m limit, the drone collides with the obstacle at (5,5). At 1.0m safety limit, the drone bypasses it.</p>
-                        </div>
-                        <div class="slide-body">
-                            <svg viewBox="0 0 600 300" class="vector-chart">
-                                <!-- Grid -->
-                                <line x1="50" y1="250" x2="550" y2="250" stroke="#1e293b"/>
-                                <!-- Obstacle -->
-                                <circle cx="300" cy="150" r="25" fill="rgba(255, 51, 102, 0.2)" stroke="#ff3366" stroke-width="1.5"/>
-                                <circle cx="300" cy="150" r="4" fill="#ff3366"/>
-                                <text x="310" y="145" fill="#ff3366" font-size="10">Obstacle (5,5)</text>
-                                <!-- 1.0m avoidance trace (Green - Smooth curve bypass) -->
-                                <path d="M 80 220 Q 220 220 250 110 T 380 90 L 520 90" fill="none" stroke="#00ff66" stroke-width="2.5"/>
-                                <text x="180" y="120" fill="#00ff66" font-size="10">1.0m Safety Limit</text>
-                                <!-- 0.5m avoidance trace (Red - Collides and stops) -->
-                                <path d="M 80 220 L 275 152" fill="none" stroke="#ff3366" stroke-width="2.5" stroke-dasharray="4 4"/>
-                                <circle cx="275" cy="152" r="6" fill="#ff3366" stroke="#fff" stroke-width="1"/>
-                                <text x="200" y="170" fill="#ff3366" font-size="10">0.5m Crash Point</text>
-                                <!-- Labels -->
-                                <text x="280" y="280" fill="#9ca3af" font-size="10">X coordinate</text>
-                                <text x="20" y="150" fill="#9ca3af" font-size="10" transform="rotate(-90 20 150)">Y coordinate</text>
-                            </svg>
-                        </div>
-                    </div>
-
                 </div>
 
-                <!-- Carousel Controls -->
-                <button class="carousel-control prev" onclick="moveSlide(-1)">&#10094;</button>
-                <button class="carousel-control next" onclick="moveSlide(1)">&#10095;</button>
-                <div class="carousel-indicators">
-                    <span class="indicator active" onclick="setSlide(0)"></span>
-                    <span class="indicator" onclick="setSlide(1)"></span>
-                    <span class="indicator" onclick="setSlide(2)"></span>
+                <!-- Card 2 -->
+                <div class="fig-comparison-card">
+                    <h3 class="fig-title">Figure 1.2: 2D Horizontal Trajectory to (10, 10)</h3>
+                    <p class="fig-desc">Shows the horizontal flight path of the quadrotor from the start coordinates (0, 0) to target coordinates (10, 10) at a constant 5m altitude in an obstacle-free environment.</p>
+                    <div class="fig-media-row">
+                        <div class="fig-media-box">
+                            <span class="fig-label">Original Graph (Paper)</span>
+                            <img src="original_2.png" alt="Original Figure 1.2" class="fig-img">
+                        </div>
+                        <div class="fig-media-box">
+                            <span class="fig-label">Replicated Graph (Matlab)</span>
+                            <img src="replica_2.png" alt="Replicated Figure 1.2" class="fig-img">
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Card 3 -->
+                <div class="fig-comparison-card">
+                    <h3 class="fig-title">Figure 1.3: Obstacle Avoidance Trajectory (Bat Algorithm)</h3>
+                    <p class="fig-desc">Demonstrates the path planning capability of the LiDAR-driven Elite Opposition Bat Algorithm (EOBA). With a 1.0m safety margin, the drone successfully bypasses the obstacle at (5, 5). With a 0.5m margin, the trajectory intersects the safety radius, indicating a collision.</p>
+                    <div class="fig-media-row">
+                        <div class="fig-media-box">
+                            <span class="fig-label">Original Graph (Paper)</span>
+                            <img src="original_3.png" alt="Original Figure 1.3" class="fig-img">
+                        </div>
+                        <div class="fig-media-box">
+                            <span class="fig-label">Replicated Graph (Matlab)</span>
+                            <img src="replica_3.png" alt="Replicated Figure 1.3" class="fig-img">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="fig-comparison-card">
+                    <h3 class="fig-title">Figure 1.4: Multi-Obstacle Trajectory & Velocity Profile</h3>
+                    <p class="fig-desc">Illustrates the quadrotor's trajectory in a cluttered environment containing multiple stationary obstacles, along with the corresponding rotor velocity changes over time as it maneuvers.</p>
+                    <div class="fig-media-row">
+                        <div class="fig-media-box">
+                            <span class="fig-label">Original Graph (Paper)</span>
+                            <img src="original_4.png" alt="Original Figure 1.4" class="fig-img">
+                        </div>
+                        <div class="fig-media-box">
+                            <span class="fig-label">Replicated Graph (Matlab)</span>
+                            <img src="replica_4.png" alt="Replicated Figure 1.4" class="fig-img">
+                        </div>
+                    </div>
+                </div>
+
             </div>
+        </section>
         </section>
 
 
