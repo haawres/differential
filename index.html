@@ -58,6 +58,10 @@
                     <li class="nav-item"><a href="#about-7" onclick="navigateToPage('about-7')" class="nav-link">References</a></li>
                 </ul>
             </nav>
+            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
         </div>
     </header>
 
@@ -90,26 +94,53 @@
                     </div>
                 </div>
 
-                <!-- Video Presentation & Modern Era Section -->
+                <!-- Problem Statement & Predicted Future Modifications Section -->
                 <div class="bard-main-grid">
-                    <!-- Left: Video Panel -->
-                    <div class="bard-panel video-panel">
-                        <div class="bard-panel-header">THE VISION: FUTURE OF DRONES</div>
-                        <div class="video-iframe-wrapper">
-                            <iframe src="https://www.youtube.com/embed/4ErEBkj_dq4?autoplay=1&mute=1" title="The Future of Flying Robots" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-
-                    <!-- Right: Info Panel -->
-                    <div class="bard-panel info-panel">
-                        <div class="bard-panel-header">THE CHALLENGE</div>
-                        <h3 class="panel-heading">Drones in the Modern Era</h3>
+                    <!-- Left: Problem Statement Panel -->
+                    <div class="bard-panel problem-panel">
+                        <div class="bard-panel-header">THE PROBLEM STATEMENT</div>
+                        <h3 class="panel-heading">Introduction to the Navigation Problem</h3>
                         <p class="panel-body-text">
-                            Unmanned Aerial Vehicles (UAVs) have transitioned from simple remote-controlled toys to highly sophisticated civilian assets. Today, they are transforming industries like livestock management—where they monitor grazing herds, survey terrain, and track animals across expansive fields.
+                            The primary challenge in autonomous drone flight is navigating a highly non-linear, under-actuated system. A quadrotor has six degrees of freedom (moving translationally along x, y, z and rotating along roll, pitch, yaw) but only four rotor control inputs. This requires precise, dynamic feedback controllers to regulate flight stability.
                         </p>
                         <p class="panel-body-text" style="margin-top: 12px;">
-                            However, true utility demands absolute autonomy. A drone cannot rely on constant manual telemetry or fragile GPS links in dense forests or remote fields. It must fly, perceive, decide, and stabilize its trajectory entirely on its own.
+                            Under manual teleoperation, flight fails in GPS-denied, remote, or complex agricultural environments (such as cattle tracking fields). Autopilots must instantly process raw sensor telemetry (such as LiDAR data) to steer around obstacles, making mathematical optimization of both flight control loops (PID tuning) and path-planning algorithms (Bat Algorithm) highly critical.
                         </p>
+                    </div>
+
+                    <!-- Right: Predictions Panel -->
+                    <div class="bard-panel predictions-panel">
+                        <div class="bard-panel-header">FUTURE HORIZONS</div>
+                        <h3 class="panel-heading">Predicted Modifications</h3>
+                        <ul class="panel-list">
+                            <li><strong>Model Predictive Control (MPC)</strong>: Transitioning from standard PID loops to MPC to forecast trajectory deviations and correct them dynamically before errors accumulate.</li>
+                            <li><strong>Optical Flow Camera Fusion</strong>: Integrating LiDAR sensors with stereo-vision camera feeds using Convolutional Neural Networks (CNNs) for real-time semantic obstacle classification.</li>
+                            <li><strong>Multi-Agent Swarm Coordination</strong>: Upgrading the single-agent Bat Algorithm to coordinate multiple cooperative drones communicating over decentralized peer-to-peer networks.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Drone Fun Facts Panel -->
+                <div class="bard-panel fun-facts-panel" style="margin-bottom: 45px;">
+                    <div class="bard-panel-header">DRONE TECH TRIVIA</div>
+                    <h3 class="panel-heading">Fun Facts About Drones</h3>
+                    <div class="fun-facts-grid">
+                        <div class="fact-card">
+                            <span class="fact-num">[FACT #1]</span>
+                            <p class="panel-body-text" style="font-size: 0.9rem;">The name <strong>"drone"</strong> was inspired by the slow, continuous buzzing flight of male honeybees, first referenced in the 1930s with DH.82B Queen Bee target biplanes.</p>
+                        </div>
+                        <div class="fact-card">
+                            <span class="fact-num">[FACT #2]</span>
+                            <p class="panel-body-text" style="font-size: 0.9rem;">Drones were first used in commercial agriculture back in the 1980s in Japan, helping farmers spray steep, terraced rice paddies that were unsafe for manual labor.</p>
+                        </div>
+                        <div class="fact-card">
+                            <span class="fact-num">[FACT #3]</span>
+                            <p class="panel-body-text" style="font-size: 0.9rem;">Modern wildlife conservationists deploy thermal-imaging drones to track migratory paths and detect poachers in complete darkness without disturbing the animals.</p>
+                        </div>
+                        <div class="fact-card">
+                            <span class="fact-num">[FACT #4]</span>
+                            <p class="panel-body-text" style="font-size: 0.9rem;">Power consumption is highly asymmetric: vertical climbs consume up to 4 times more battery power than horizontal drifts, which is why trajectory planning is key.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -156,7 +187,6 @@
                 </div>
 
             </div>
-        </section>
         </section>
 
 

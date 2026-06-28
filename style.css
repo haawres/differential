@@ -1700,4 +1700,207 @@ body {
     }
 }
 
+/* ==========================================================================
+   Light / Dark Mode Toggle Styles
+   ========================================================================== */
+.theme-toggle-btn {
+    background: transparent;
+    border: 1px solid rgba(100, 255, 218, 0.25);
+    color: var(--color-mint);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+    margin-left: 15px;
+}
+.theme-toggle-btn:hover {
+    border-color: var(--color-mint);
+    color: var(--color-cyan);
+}
+
+/* Toggle Sun/Moon icons dynamically */
+body.light-mode .sun-icon {
+    display: none !important;
+}
+body.light-mode .moon-icon {
+    display: block !important;
+}
+body:not(.light-mode) .sun-icon {
+    display: block !important;
+}
+body:not(.light-mode) .moon-icon {
+    display: none !important;
+}
+
+/* ==========================================================================
+   Light Mode Theme Color Token Overrides
+   ========================================================================== */
+body.light-mode {
+    --color-bg-dark: #f0f2f5;         /* Soft light gray background */
+    --color-bg-deep: #ffffff;         /* Pure white cards/nav */
+    --color-card-bg: rgba(255, 255, 255, 0.9);
+    --color-border-slate: #d1d5db;    /* Light border lines */
+    
+    /* Accents - adapted for readability on light backgrounds */
+    --color-mint: #0f766e;            /* Dark teal for high contrast */
+    --color-cyan: #0284c7;            /* Sky blue secondary */
+    --color-red: #dc2626;             /* Crimson alert */
+
+    /* Typography */
+    --color-white: #111827;           /* Off-black charcoal for headings/body */
+    --color-text-secondary: #4b5563;  /* Muted grey metadata */
+}
+
+/* Custom adjustments for light mode elements */
+body.light-mode #site-header {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid rgba(15, 118, 110, 0.15);
+}
+
+body.light-mode .logo-text, 
+body.light-mode .nav-link {
+    color: #111827 !important;
+}
+body.light-mode .nav-link.active,
+body.light-mode .nav-link:hover {
+    color: var(--color-mint) !important;
+}
+
+body.light-mode .dropdown-menu {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+}
+body.light-mode .dropdown-menu a {
+    color: #374151 !important;
+}
+body.light-mode .dropdown-menu a:hover {
+    background: #f3f4f6 !important;
+    color: var(--color-mint) !important;
+}
+
+body.light-mode .category-card {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+}
+body.light-mode .category-card:hover {
+    border-color: var(--color-mint) !important;
+}
+
+body.light-mode .equation-block {
+    background: #f9fafb !important;
+    border-color: #d1d5db !important;
+}
+
+body.light-mode .data-table th {
+    background: rgba(15, 118, 110, 0.08) !important;
+    border-bottom: 1px solid rgba(15, 118, 110, 0.2) !important;
+}
+body.light-mode .data-table td {
+    border-bottom: 1px solid #e5e7eb !important;
+    color: #1f2937 !important;
+}
+body.light-mode .data-table tr:hover {
+    background: rgba(15, 118, 110, 0.04) !important;
+}
+
+body.light-mode .lp-block {
+    background: #ffffff !important;
+}
+
+body.light-mode .vector-chart rect {
+    fill: #ffffff !important;
+    stroke: #d1d5db !important;
+}
+body.light-mode .vector-chart text {
+    fill: #374151 !important;
+}
+body.light-mode .vector-chart line[stroke="#1e293b"] {
+    stroke: rgba(0, 0, 0, 0.08) !important;
+}
+
+body.light-mode #simulation-canvas {
+    border-color: #d1d5db;
+}
+
+body.light-mode .control-panel {
+    background: #ffffff !important;
+}
+body.light-mode .slider-input {
+    background: #e5e7eb !important;
+}
+
+/* Mobile dropdown adjustment */
+@media (max-width: 1024px) {
+    body.light-mode #nav-bar {
+        background: rgba(255, 255, 255, 0.98) !important;
+        border-bottom: 1px solid #d1d5db !important;
+    }
+}
+
+/* ==========================================================================
+   Drone Fun Facts Grid & Panel Styles
+   ========================================================================== */
+.fun-facts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.fact-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(100, 255, 218, 0.08);
+    border-radius: 8px;
+    padding: 22px 20px;
+    transition: transform var(--transition-normal), border-color var(--transition-normal);
+}
+.fact-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(100, 255, 218, 0.25);
+}
+
+body.light-mode .fact-card {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+}
+body.light-mode .fact-card:hover {
+    border-color: rgba(15, 118, 110, 0.3) !important;
+}
+
+.fact-num {
+    display: block;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--color-mint);
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+}
+
+.panel-list {
+    margin-top: 15px;
+    padding-left: 20px;
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    list-style: square;
+}
+.panel-list li {
+    margin-bottom: 10px;
+}
+.panel-list li strong {
+    color: var(--color-white);
+}
+
+@media (max-width: 768px) {
+    .fun-facts-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+
 

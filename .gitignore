@@ -1,0 +1,9 @@
+# Ignore large video assets
+*.mp4
+*.mov
+0628 (1)/
+
+# Ignore design screenshots and logs
+*.png
+*.log
+wix_pages_content.txt
