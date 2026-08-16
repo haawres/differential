@@ -1,5 +1,5 @@
 function replicate_fig3_single_obstacle()
-% REPLICATE_FIG3_SINGLE_OBSTACLE Replicates Figure 13 from the paper
+% REPLICATE_FIG3_SINGLE_OBSTACLE replicates Figure 13 from the paper
 % Simulates quadcopter path navigating around a single obstacle centered at (15, 20)
 
 %% 1. Simulation Coordinates and Obstacle Position

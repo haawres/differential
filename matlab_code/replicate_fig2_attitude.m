@@ -1,5 +1,5 @@
 function replicate_fig2_attitude()
-% REPLICATE_FIG2_ATTITUDE Replicates Figure 12 from the paper
+% REPLICATE_FIG2_ATTITUDE replicates Figure 12 from the paper
 % Compares ITAE vs ISE controller tuning for Attitude Step Response (Roll, Pitch, Yaw)
 
 %% 1. Time Vector and Target Attitude Angle

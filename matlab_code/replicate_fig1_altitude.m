@@ -1,5 +1,5 @@
 function replicate_fig1_altitude()
-% REPLICATE_FIG1_ALTITUDE Replicates Figure 11 from the paper
+% REPLICATE_FIG1_ALTITUDE replicates Figure 11 from the paper
 % Compares ITAE vs ISE controller tuning for Altitude Step Response (5 meters)
 
 %% 1. Time Vector and Target Altitude
