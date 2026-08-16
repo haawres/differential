@@ -1,6 +1,9 @@
 function dY = drone_obstacle_dynamics(t, Y, params)
+% Drone Flight Simulation Project
+%
 % Drone dynamics with obstacle avoidance.
-% When the drone gets close to the obstacle, a sideways acceleration is applied to steer around it.
+% When the drone gets close to the obstacle, a sideways
+% acceleration is applied to steer around it.
 
 
 % State variables

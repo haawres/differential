@@ -1,4 +1,7 @@
-%% Main File
+%% Drone Simulation
+% AP Group 5
+% Submission 3
+
 clear;
 clc;
 close all;
@@ -19,7 +22,7 @@ disp('Euler solver completed successfully.');
 disp('Final State Vector (Euler):');
 disp(YEuler(:,end));
 
-%% 3.Visualizations & Error Analysis
+%% 3. Visualizations & Error Analysis
 % Generates velocity comparisons and 3D trajectory
 plot_results(tAna, YAna, YEuler, YRK4, YODE45);
 

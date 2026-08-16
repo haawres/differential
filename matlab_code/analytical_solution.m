@@ -1,7 +1,14 @@
 function [t, Y] = analytical_solution(params)
 
 % Analytical Solution
+%
 % Calculates the analytical solution for the drone motion.
+%
+% NOTE:
+% This is a function file.
+% Do NOT run this file directly.
+% Run main.m instead.
+
 
 % Time vector
 t = params.t0 : params.h : params.tf;

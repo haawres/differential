@@ -1,38 +1,27 @@
 function params = parameters()
 
-% Parameter used in the simulation
+% AP GROUP 5
+% Drone Simulation Project - Submission 3
+%
+% This file stores all the physical parameters used
+% throughout the simulation.
 
-% Drone mass (kg)
-params.mass = 1.5; 
-
-% Total thrust (N)
-params.thrust = 20;    
-
-% Linear drag coefficient (N.s/m)
-params.drag = 0.5;
-
-% Gravity (m/s^2)
-params.gravity = 9.81;          
-
+params.mass = 1.5;              % Drone mass (kg)
+params.thrust = 20;             % Total thrust (N)
+params.drag = 0.5;              % Linear drag coefficient (N.s/m)
+params.gravity = 9.81;          % Gravity (m/s^2)
 
 % Drone orientation
-% Pitch angle (rad)
-params.pitch = deg2rad(10);  
+params.pitch = deg2rad(10);     % Pitch angle (rad)
+params.roll  = deg2rad(5);      % Roll angle (rad)
 
-% Roll angle (rad)
-params.roll  = deg2rad(5);    
-
-% Simulation parameters
-% Start time (s)
-params.t0 = 0;       
-
-% End time (s)
-params.tf = 45;     
-
-% Default step size
-params.h  = 0.1;                
+% Simulation settings
+params.t0 = 0;                  % Start time (s)
+params.tf = 45;                 % End time (s)
+params.h  = 0.1;                % Default step size
 
 % Initial conditions
+% Format:
 % [x y z vx vy vz]
 
 params.Y0 = [0;0;0;0;0;0];

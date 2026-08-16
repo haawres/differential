@@ -1,13 +1,60 @@
-%% Drone Simulation & Paper Figure Replication
-% All project codes consolidated for simulation, analysis, and publishing.
+%% Drone Simulation & Analysis
+% Submission 3
 
 clear;
 clc;
 close all;
 
-%% 1. Physical Parameters and Simulation Settings
-% Parameter used in the simulation
+%% 1. Load Parameters
+% Loads physical parameters and initial conditions
+params = parameters();
+disp('Parameters loaded:');
+disp(params);
 
+%% 2. Calculate Trajectories (Analytical, Euler, RK4, ode45)
+% Run all four methods for the standard trajectory
+[tAna, YAna]     = analytical_solution(params);
+[tEuler, YEuler] = euler_solver(@drone_trajectory_dynamics, params);
+[tRK4, YRK4]     = rk4_solver(@drone_trajectory_dynamics, params);
+[tODE45, YODE45] = ode45_solver(@drone_trajectory_dynamics, params);
+
+disp('Euler solver completed successfully.');
+disp('Final State Vector (Euler):');
+disp(YEuler(:,end));
+
+%% 3. Visualizations
+% Generates velocity comparisons and 3D trajectory
+plot_results(tAna, YAna, YEuler, YRK4, YODE45);
+
+%% 4. Error Analysis
+% Compares numerical methods against analytical solution
+error_analysis(tAna, YAna, YEuler, YRK4, YODE45);
+
+%% 5. System Stability Analysis
+% Investigates Euler step sizes
+stability_analysis(params);
+
+%% 6. Parameter Sensitivity Analysis
+% Investigates mass, drag, and pitch
+sensitivity_analysis(params);
+
+%% 7. Obstacle Avoidance Simulation
+% Generates the obstacle avoidance plot
+obstacle_simulation(params);
+
+%% 8. Drone Flight Path Animation
+% Generate the specific trajectory to animate the drone
+[~, YObstacle] = euler_solver(@drone_obstacle_dynamics, params);
+animate_drone(YObstacle, params);
+
+disp('All simulations and analyses complete!');
+
+
+%% =========================================================================
+%  LOCAL FUNCTIONS
+%  =========================================================================
+
+function params = parameters()
 % Drone mass (kg)
 params.mass = 1.5; 
 
@@ -37,24 +84,22 @@ params.tf = 45;
 % Default step size
 params.h  = 0.1;                
 
-% Initial conditions [x y z vx vy vz]
+% Initial conditions
+% [x y z vx vy vz]
 params.Y0 = [0;0;0;0;0;0];
+end
 
-disp('Parameters loaded successfully:');
-disp(params);
-
-%% 2. Exact Analytical Solution
-% Calculates the analytical solution for the drone motion.
-
+function [t, Y] = analytical_solution(params)
 % Time vector
-tAna = params.t0 : params.h : params.tf;
-N = length(tAna);
-YAna = zeros(6, N);
+t = params.t0 : params.h : params.tf;
+N = length(t);
+Y = zeros(6, N);
 
 m = params.mass;
 T = params.thrust;
 k = params.drag;
 g = params.gravity;
+
 theta = params.pitch;
 phi = params.roll;
 
@@ -63,96 +108,34 @@ Ax = (T/m) * sin(theta) * cos(phi);
 Ay = -(T/m) * sin(phi);
 Az = (T/m) * cos(theta) * cos(phi) - g;
 
-x0  = params.Y0(1); y0  = params.Y0(2); z0  = params.Y0(3);
-vx0 = params.Y0(4); vy0 = params.Y0(5); vz0 = params.Y0(6);
+% Initial conditions
+x0  = params.Y0(1);
+y0  = params.Y0(2);
+z0  = params.Y0(3);
+
+vx0 = params.Y0(4);
+vy0 = params.Y0(5);
+vz0 = params.Y0(6);
 
 for i = 1:N
-    ti = tAna(i);
+    ti = t(i);
+
+    % Velocity
     vx = (vx0 - Ax*m/k)*exp(-k*ti/m) + Ax*m/k;
     vy = (vy0 - Ay*m/k)*exp(-k*ti/m) + Ay*m/k;
     vz = (vz0 - Az*m/k)*exp(-k*ti/m) + Az*m/k;
 
+    % Position
     x = x0 + (vx0 - Ax*m/k)*(m/k)*(1-exp(-k*ti/m)) + (Ax*m/k)*ti;
     y = y0 + (vy0 - Ay*m/k)*(m/k)*(1-exp(-k*ti/m)) + (Ay*m/k)*ti;
     z = z0 + (vz0 - Az*m/k)*(m/k)*(1-exp(-k*ti/m)) + (Az*m/k)*ti;
 
-    YAna(:,i) = [x; y; z; vx; vy; vz];
+    % Store results
+    Y(:,i) = [x; y; z; vx; vy; vz];
+end
 end
 
-disp('Analytical solution computed.');
-
-%% 3. Numerical Solvers: Euler, RK4, and ode45
-% Solves the trajectory using all three numerical integration methods.
-
-[tEuler, YEuler] = euler_solver(@drone_trajectory_dynamics, params);
-[tRK4, YRK4]     = rk4_solver(@drone_trajectory_dynamics, params);
-[tODE45, YODE45] = ode45_solver(@drone_trajectory_dynamics, params);
-
-disp('Euler solver completed successfully.');
-disp('Final State Vector (Euler):');
-disp(YEuler(:,end));
-
-%% 4. Visualizations: Trajectory and Velocities
-% Generates velocity comparisons and 3D trajectory.
-
-plot_results(tAna, YAna, YEuler, YRK4, YODE45);
-
-%% 5. Numerical Error Analysis
-% Compares numerical methods against analytical solution.
-
-error_analysis(tAna, YAna, YEuler, YRK4, YODE45);
-
-%% 6. Stability Analysis (Euler Step Sizes)
-% Investigates Euler step sizes.
-
-stability_analysis(params);
-
-%% 7. Parameter Sensitivity Analysis
-% Investigates mass, drag, and pitch.
-
-sensitivity_analysis(params);
-
-%% 8. Obstacle Avoidance Simulation
-% Generates the obstacle avoidance plot.
-
-obstacle_simulation(params);
-
-%% 9. Flight Path Animation
-% Generate the specific trajectory to animate the drone.
-
-[~, YObstacle] = euler_solver(@drone_obstacle_dynamics, params);
-animate_drone(YObstacle, params);
-
-%% 10. Replicate Figure 1: Altitude Step Response
-% Replicates Figure 11 from the paper (ITAE vs ISE tuning for 5m altitude).
-
-replicate_fig1_altitude();
-
-%% 11. Replicate Figure 2: Attitude Tilt Angles
-% Replicates Figure 12 from the paper (Roll, Pitch, Yaw step responses).
-
-replicate_fig2_attitude();
-
-%% 12. Replicate Figure 3: Single Obstacle Avoidance Trajectory
-% Replicates Figure 13 from the paper (Single obstacle at 15, 20).
-
-replicate_fig3_single_obstacle();
-
-%% 13. Replicate Figure 4: Multiple Obstacle Navigation Trajectory
-% Replicates Figure 14 from the paper (Three consecutive obstacles).
-
-replicate_fig4_multi_obstacle();
-
-disp('All simulations, analyses, and figure replications complete!');
-
-
-%% =========================================================================
-%  LOCAL FUNCTIONS
-%  =========================================================================
-
 function dY = drone_trajectory_dynamics(~, Y, params)
-% 6-DOF Drone Trajectory Dynamics
-
 m     = params.mass;
 T     = params.thrust;
 k     = params.drag;
@@ -173,8 +156,6 @@ dY = [vx; vy; vz; ax; ay; az];
 end
 
 function dY = drone_obstacle_dynamics(~, Y, params)
-% Drone Obstacle Avoidance Dynamics
-
 m = params.mass;
 k = params.drag;
 g = params.gravity;
@@ -203,7 +184,6 @@ dY = [vx; vy; vz; ax; ay; az];
 end
 
 function [t, Y] = euler_solver(dynamics, params)
-% Euler Solver
 t = params.t0:params.h:params.tf;
 numSteps = length(t);
 Y = zeros(6, numSteps);
@@ -216,7 +196,6 @@ end
 end
 
 function [t, Y] = rk4_solver(dynamics, params)
-% Classical 4th-Order Runge-Kutta Solver
 t = params.t0:params.h:params.tf;
 numSteps = length(t);
 h = params.h;
@@ -237,14 +216,196 @@ end
 end
 
 function [t, Y] = ode45_solver(dynamics, params)
-% MATLAB ode45 Solver
 tspan = [params.t0 params.tf];
 Y0 = params.Y0;
 
 [t, Y_temp] = ode45(@(t, y) dynamics(t, y, params), tspan, Y0);
 
-% Interpolate to match fixed time grid
 t_fixed = params.t0:params.h:params.tf;
 Y = interp1(t, Y_temp, t_fixed)';
 t = t_fixed;
+end
+
+function plot_results(tAna, YAna, YEuler, YRK4, YODE45)
+figure('Name','Translational Velocities');
+subplot(3,1,1);
+plot(tAna, YAna(4,:), 'k-', 'LineWidth', 2); hold on;
+plot(tEuler, YEuler(4,:), 'r--');
+plot(tRK4, YRK4(4,:), 'b:');
+plot(tODE45, YODE45(4,:), 'm-.');
+title('Velocity in x-direction');
+xlabel('Time (s)'); ylabel('v_x (m/s)');
+legend('Analytical','Euler','RK4','ODE45');
+grid on;
+
+subplot(3,1,2);
+plot(tAna, YAna(5,:), 'k-', 'LineWidth', 2); hold on;
+plot(tEuler, YEuler(5,:), 'r--');
+plot(tRK4, YRK4(5,:), 'b:');
+plot(tODE45, YODE45(5,:), 'm-.');
+title('Velocity in y-direction');
+xlabel('Time (s)'); ylabel('v_y (m/s)');
+legend('Analytical','Euler','RK4','ODE45');
+grid on;
+
+subplot(3,1,3);
+plot(tAna, YAna(6,:), 'k-', 'LineWidth', 2); hold on;
+plot(tEuler, YEuler(6,:), 'r--');
+plot(tRK4, YRK4(6,:), 'b:');
+plot(tODE45, YODE45(6,:), 'm-.');
+title('Velocity in z-direction');
+xlabel('Time (s)'); ylabel('v_z (m/s)');
+legend('Analytical','Euler','RK4','ODE45');
+grid on;
+
+figure('Name','3D Flight Path');
+plot3(YAna(1,:), YAna(2,:), YAna(3,:), 'k-', 'LineWidth', 2); hold on;
+plot3(YEuler(1,:), YEuler(2,:), YEuler(3,:), 'r--');
+plot3(YRK4(1,:), YRK4(2,:), YRK4(3,:), 'b:');
+plot3(YODE45(1,:), YODE45(2,:), YODE45(3,:), 'm-.');
+title('3D Trajectory Comparison');
+xlabel('x (m)'); ylabel('y (m)'); zlabel('z (m)');
+legend('Analytical','Euler','RK4','ODE45');
+grid on; view(3);
+end
+
+function error_analysis(tAna, YAna, YEuler, YRK4, YODE45)
+err_euler_vx = abs(YEuler(4,:) - YAna(4,:));
+err_euler_vy = abs(YEuler(5,:) - YAna(5,:));
+err_euler_vz = abs(YEuler(6,:) - YAna(6,:));
+
+err_rk4_vx = abs(YRK4(4,:) - YAna(4,:));
+err_rk4_vy = abs(YRK4(5,:) - YAna(5,:));
+err_rk4_vz = abs(YRK4(6,:) - YAna(6,:));
+
+err_ode45_vx = abs(YODE45(4,:) - YAna(4,:));
+err_ode45_vy = abs(YODE45(5,:) - YAna(5,:));
+err_ode45_vz = abs(YODE45(6,:) - YAna(6,:));
+
+figure('Name','Velocity Error Analysis');
+subplot(3,1,1);
+plot(tAna, err_euler_vx, 'r-', tAna, err_rk4_vx, 'b--', tAna, err_ode45_vx, 'm:');
+title('Absolute Error in v_x'); xlabel('Time (s)'); ylabel('|Error| (m/s)');
+legend('Euler Error','RK4 Error','ODE45 Error'); grid on;
+
+subplot(3,1,2);
+plot(tAna, err_euler_vy, 'r-', tAna, err_rk4_vy, 'b--', tAna, err_ode45_vy, 'm:');
+title('Absolute Error in v_y'); xlabel('Time (s)'); ylabel('|Error| (m/s)');
+legend('Euler Error','RK4 Error','ODE45 Error'); grid on;
+
+subplot(3,1,3);
+plot(tAna, err_euler_vz, 'r-', tAna, err_rk4_vz, 'b--', tAna, err_ode45_vz, 'm:');
+title('Absolute Error in v_z'); xlabel('Time (s)'); ylabel('|Error| (m/s)');
+legend('Euler Error','RK4 Error','ODE45 Error'); grid on;
+end
+
+function stability_analysis(params)
+step_sizes = [0.1, 0.5, 1.0];
+colors = {'b', 'm', 'r'};
+
+figure('Name','Euler Stability Analysis');
+for i = 1:length(step_sizes)
+    p = params;
+    p.h = step_sizes(i);
+    [t, Y] = euler_solver(@drone_trajectory_dynamics, p);
+    subplot(3,1,i);
+    plot(t, Y(4,:), colors{i}, 'LineWidth', 1.5);
+    title(sprintf('Euler Velocity v_x with Step Size h = %.1f s', p.h));
+    xlabel('Time (s)'); ylabel('v_x (m/s)'); grid on;
+end
+end
+
+function sensitivity_analysis(params)
+figure('Name','Sensitivity Analysis (3x3)');
+
+% 1. Mass variation (1.0 kg vs 3.0 kg)
+p1 = params; p1.mass = 1.0; [t1, Y1] = euler_solver(@drone_trajectory_dynamics, p1);
+p2 = params; p2.mass = 3.0; [t2, Y2] = euler_solver(@drone_trajectory_dynamics, p2);
+
+subplot(3,3,1); plot(t1, Y1(4,:), 'b', t2, Y2(4,:), 'r--'); title('v_x: Mass 1kg vs 3kg'); xlabel('Time (s)'); ylabel('v_x'); legend('1kg','3kg'); grid on;
+subplot(3,3,4); plot(t1, Y1(5,:), 'b', t2, Y2(5,:), 'r--'); title('v_y: Mass 1kg vs 3kg'); xlabel('Time (s)'); ylabel('v_y'); grid on;
+subplot(3,3,7); plot(t1, Y1(6,:), 'b', t2, Y2(6,:), 'r--'); title('v_z: Mass 1kg vs 3kg'); xlabel('Time (s)'); ylabel('v_z'); grid on;
+
+% 2. Drag variation (k=0.5 vs k=1.0)
+p3 = params; p3.drag = 0.5; [t3, Y3] = euler_solver(@drone_trajectory_dynamics, p3);
+p4 = params; p4.drag = 1.0; [t4, Y4] = euler_solver(@drone_trajectory_dynamics, p4);
+
+subplot(3,3,2); plot(t3, Y3(4,:), 'b', t4, Y4(4,:), 'm--'); title('v_x: Drag 0.5 vs 1.0'); xlabel('Time (s)'); ylabel('v_x'); legend('k=0.5','k=1.0'); grid on;
+subplot(3,3,5); plot(t3, Y3(5,:), 'b', t4, Y4(5,:), 'm--'); title('v_y: Drag 0.5 vs 1.0'); xlabel('Time (s)'); ylabel('v_y'); grid on;
+subplot(3,3,8); plot(t3, Y3(6,:), 'b', t4, Y4(6,:), 'm--'); title('v_z: Drag 0.5 vs 1.0'); xlabel('Time (s)'); ylabel('v_z'); grid on;
+
+% 3. Pitch variation (10 deg vs 25 deg)
+p5 = params; p5.pitch = deg2rad(10); [t5, Y5] = euler_solver(@drone_trajectory_dynamics, p5);
+p6 = params; p6.pitch = deg2rad(25); [t6, Y6] = euler_solver(@drone_trajectory_dynamics, p6);
+
+subplot(3,3,3); plot(t5, Y5(4,:), 'b', t6, Y6(4,:), 'k--'); title('v_x: Pitch 10° vs 25°'); xlabel('Time (s)'); ylabel('v_x'); legend('10°','25°'); grid on;
+subplot(3,3,6); plot(t5, Y5(5,:), 'b', t6, Y6(5,:), 'k--'); title('v_y: Pitch 10° vs 25°'); xlabel('Time (s)'); ylabel('v_y'); grid on;
+subplot(3,3,9); plot(t5, Y5(6,:), 'b', t6, Y6(6,:), 'k--'); title('v_z: Pitch 10° vs 25°'); xlabel('Time (s)'); ylabel('v_z'); grid on;
+end
+
+function obstacle_simulation(params)
+[~, Y] = euler_solver(@drone_obstacle_dynamics, params);
+
+theta = linspace(0,2*pi,200);
+obs_x = 150 + 20*cos(theta);
+obs_y = -70 + 20*sin(theta);
+
+figure('Name','Obstacle Avoidance');
+plot(Y(1,:), Y(2,:), 'b-', 'LineWidth', 2); hold on;
+plot(obs_x, obs_y, 'r--', 'LineWidth', 2);
+plot(150, -70, 'ro', 'MarkerFaceColor', 'r');
+plot(Y(1,1), Y(2,1), 'gs', 'MarkerFaceColor', 'g');
+plot(Y(1,end), Y(2,end), 'ms', 'MarkerFaceColor', 'm');
+title('Obstacle Avoidance Trajectory');
+xlabel('x (m)'); ylabel('y (m)');
+legend('Flight Path','Obstacle Boundary (R=20m)','Obstacle Center','Start','End');
+grid on; axis equal;
+end
+
+function animate_drone(Y, params)
+fig = figure('Name','Drone Flight Animation','Position',[120 80 1000 650],'Color','w');
+hold on; grid on; box on; axis equal;
+xlabel('x Position (m)'); ylabel('y Position (m)'); title('Drone Flight Animation');
+
+theta = linspace(0,2*pi,200);
+plot(150 + 20*cos(theta), -70 + 20*sin(theta), 'k', 'LineWidth', 2);
+plot(150, -70, 'ko', 'MarkerFaceColor', 'k', 'MarkerSize', 8);
+text(153, -68, 'Obstacle', 'FontWeight', 'bold');
+plot(Y(1,:), Y(2,:), '--', 'Color', [0.75 0.75 0.75], 'LineWidth', 1.5);
+plot(Y(1,1), Y(2,1), 'gs', 'MarkerFaceColor', 'g', 'MarkerSize', 8);
+plot(Y(1,end), Y(2,end), 'rs', 'MarkerFaceColor', 'r', 'MarkerSize', 8);
+xlim([0 max(Y(1,:))+20]); ylim([min(Y(2,:))-20 20]);
+
+trail = animatedline('Color', 'b', 'LineWidth', 2);
+L = 5;
+arm1 = plot([0 0], [0 0], 'r', 'LineWidth', 2);
+arm2 = plot([0 0], [0 0], 'r', 'LineWidth', 2);
+body = plot(0, 0, 'ko', 'MarkerFaceColor', 'y', 'MarkerSize', 9);
+timeText = text(10, 16, 'Time = 0.0 s', 'FontSize', 12, 'FontWeight', 'bold', 'BackgroundColor', 'white');
+
+dt_val = 0.1;
+if isfield(params, 'h'); dt_val = params.h; end
+
+num_points = size(Y, 2);
+step = max(1, round(num_points / 100));
+
+for k = 1:step:num_points
+    if ~isvalid(fig) || ~isvalid(trail); break; end
+    x = Y(1,k); y = Y(2,k);
+    addpoints(trail, x, y);
+    set(arm1, 'XData', [x-L x+L], 'YData', [y y]);
+    set(arm2, 'XData', [x x], 'YData', [y-L y+L]);
+    set(body, 'XData', x, 'YData', y);
+    set(timeText, 'String', sprintf('Time = %.1f s', (k-1)*dt_val));
+    drawnow limitrate;
+    pause(0.01);
+end
+
+if isvalid(trail) && isvalid(fig)
+    addpoints(trail, Y(1,end), Y(2,end));
+    set(arm1, 'XData', [Y(1,end)-L Y(1,end)+L], 'YData', [Y(2,end) Y(2,end)]);
+    set(arm2, 'XData', [Y(1,end) Y(1,end)], 'YData', [Y(2,end)-L Y(2,end)+L]);
+    set(body, 'XData', Y(1,end), 'YData', Y(2,end));
+    drawnow;
+end
 end

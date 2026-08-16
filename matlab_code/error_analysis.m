@@ -1,6 +1,14 @@
 function error_analysis(t, YAna, YEuler, YRK4, YODE45)
+
 % Error Analysis
-% Compares the numerical methods against the analytical solution by plotting the absolute error in velocity.
+%
+% Compares the numerical methods against the analytical
+% solution by plotting the absolute error in velocity.
+%
+% NOTE:
+% This is a function file.
+% Do NOT run this file directly.
+
 
 %% Calculate Absolute Errors
 

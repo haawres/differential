@@ -1,6 +1,15 @@
 function plot_results(t, YAna, YEuler, YRK4, YODE45)
+
 % Plot Results
-%A function that shows all the plots fpr the numerical method
+%
+% This function generates all the comparison plots for the
+% numerical methods.
+%
+% NOTE:
+% This is a function file.
+% Do NOT run this file directly.
+% Run main.m instead.
+
 
 %% Velocity Comparison
 

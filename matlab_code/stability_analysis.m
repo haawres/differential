@@ -1,7 +1,10 @@
 function stability_analysis(params)
 % Drone Flight Simulation Project
+%
 % Stability Analysis
-% This function investigates how the Euler method behaves when different step sizes are used.
+%
+% This function investigates how the Euler method behaves
+% when different step sizes are used.
 
 % Step sizes to test
 stepSizes = [0.1 0.5 1.0];
