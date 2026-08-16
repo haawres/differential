@@ -226,140 +226,193 @@ Y = interp1(t, Y_temp, t_fixed)';
 t = t_fixed;
 end
 
-function plot_results(tAna, YAna, YEuler, YRK4, YODE45)
-figure('Name','Translational Velocities');
-subplot(3,1,1);
-plot(tAna, YAna(4,:), 'k-', 'LineWidth', 2); hold on;
-plot(tEuler, YEuler(4,:), 'r--');
-plot(tRK4, YRK4(4,:), 'b:');
-plot(tODE45, YODE45(4,:), 'm-.');
-title('Velocity in x-direction');
-xlabel('Time (s)'); ylabel('v_x (m/s)');
-legend('Analytical','Euler','RK4','ODE45');
-grid on;
+function plot_results(t, YAna, YEuler, YRK4, YODE45)
+figure('Name','Velocity Comparison','NumberTitle','off');
+labels = {'v_x','v_y','v_z'};
 
-subplot(3,1,2);
-plot(tAna, YAna(5,:), 'k-', 'LineWidth', 2); hold on;
-plot(tEuler, YEuler(5,:), 'r--');
-plot(tRK4, YRK4(5,:), 'b:');
-plot(tODE45, YODE45(5,:), 'm-.');
-title('Velocity in y-direction');
-xlabel('Time (s)'); ylabel('v_y (m/s)');
-legend('Analytical','Euler','RK4','ODE45');
-grid on;
-
-subplot(3,1,3);
-plot(tAna, YAna(6,:), 'k-', 'LineWidth', 2); hold on;
-plot(tEuler, YEuler(6,:), 'r--');
-plot(tRK4, YRK4(6,:), 'b:');
-plot(tODE45, YODE45(6,:), 'm-.');
-title('Velocity in z-direction');
-xlabel('Time (s)'); ylabel('v_z (m/s)');
-legend('Analytical','Euler','RK4','ODE45');
-grid on;
-
-figure('Name','3D Flight Path');
-plot3(YAna(1,:), YAna(2,:), YAna(3,:), 'k-', 'LineWidth', 2); hold on;
-plot3(YEuler(1,:), YEuler(2,:), YEuler(3,:), 'r--');
-plot3(YRK4(1,:), YRK4(2,:), YRK4(3,:), 'b:');
-plot3(YODE45(1,:), YODE45(2,:), YODE45(3,:), 'm-.');
-title('3D Trajectory Comparison');
-xlabel('x (m)'); ylabel('y (m)'); zlabel('z (m)');
-legend('Analytical','Euler','RK4','ODE45');
-grid on; view(3);
+for i = 1:3
+    subplot(3,1,i)
+    plot(t,YAna(i+3,:),'k','LineWidth',2)
+    hold on
+    plot(t,YEuler(i+3,:),'r--','LineWidth',1.5)
+    plot(t,YRK4(i+3,:),'g-.','LineWidth',1.5)
+    plot(t,YODE45(i+3,:),'b:','LineWidth',2)
+    grid on
+    xlabel('Time (s)')
+    ylabel(labels{i} + " (m/s)")
+    title(labels{i} + " Comparison")
+    legend('Analytical','Euler','RK4','ode45','Location','best')
 end
 
-function error_analysis(tAna, YAna, YEuler, YRK4, YODE45)
-err_euler_vx = abs(YEuler(4,:) - YAna(4,:));
-err_euler_vy = abs(YEuler(5,:) - YAna(5,:));
-err_euler_vz = abs(YEuler(6,:) - YAna(6,:));
+figure('Name','3D Trajectory','NumberTitle','off');
+plot3(YAna(1,:),YAna(2,:),YAna(3,:),'k','LineWidth',2)
+hold on
+plot3(YEuler(1,:),YEuler(2,:),YEuler(3,:),'r--','LineWidth',1.5)
+plot3(YRK4(1,:),YRK4(2,:),YRK4(3,:),'g-.','LineWidth',1.5)
+plot3(YODE45(1,:),YODE45(2,:),YODE45(3,:),'b:','LineWidth',2)
+grid on
+xlabel('x Position (m)')
+ylabel('y Position (m)')
+zlabel('z Position (m)')
+title('3D Flight Trajectory')
+legend('Analytical','Euler','RK4','ode45','Location','best')
+view(3)
+end
 
-err_rk4_vx = abs(YRK4(4,:) - YAna(4,:));
-err_rk4_vy = abs(YRK4(5,:) - YAna(5,:));
-err_rk4_vz = abs(YRK4(6,:) - YAna(6,:));
+function error_analysis(t, YAna, YEuler, YRK4, YODE45)
+eEuler = abs(YAna(4:6,:) - YEuler(4:6,:));
+eRK4   = abs(YAna(4:6,:) - YRK4(4:6,:));
+eODE45 = abs(YAna(4:6,:) - YODE45(4:6,:));
 
-err_ode45_vx = abs(YODE45(4,:) - YAna(4,:));
-err_ode45_vy = abs(YODE45(5,:) - YAna(5,:));
-err_ode45_vz = abs(YODE45(6,:) - YAna(6,:));
+titles = {'Absolute Error in Forward Velocity (v_x)','Absolute Error in Lateral Velocity (v_y)','Absolute Error in Vertical Velocity (v_z)'};
+ylabels = {'|Error in v_x| (m/s)','|Error in v_y| (m/s)','|Error in v_z| (m/s)'};
 
-figure('Name','Velocity Error Analysis');
-subplot(3,1,1);
-plot(tAna, err_euler_vx, 'r-', tAna, err_rk4_vx, 'b--', tAna, err_ode45_vx, 'm:');
-title('Absolute Error in v_x'); xlabel('Time (s)'); ylabel('|Error| (m/s)');
-legend('Euler Error','RK4 Error','ODE45 Error'); grid on;
+figure('Name','Error Analysis','NumberTitle','off','Position', [100 100 950 750]);
 
-subplot(3,1,2);
-plot(tAna, err_euler_vy, 'r-', tAna, err_rk4_vy, 'b--', tAna, err_ode45_vy, 'm:');
-title('Absolute Error in v_y'); xlabel('Time (s)'); ylabel('|Error| (m/s)');
-legend('Euler Error','RK4 Error','ODE45 Error'); grid on;
-
-subplot(3,1,3);
-plot(tAna, err_euler_vz, 'r-', tAna, err_rk4_vz, 'b--', tAna, err_ode45_vz, 'm:');
-title('Absolute Error in v_z'); xlabel('Time (s)'); ylabel('|Error| (m/s)');
-legend('Euler Error','RK4 Error','ODE45 Error'); grid on;
+for i = 1:3
+    subplot(3,1,i)
+    plot(t, zeros(size(t)), 'k', 'LineWidth', 2)
+    hold on
+    plot(t,eEuler(i,:),'r--','LineWidth', 2)
+    plot(t,eRK4(i,:),'g-.','LineWidth', 2)
+    plot(t,eODE45(i,:),'b:','LineWidth',2)
+    grid minor
+    box on
+    title(titles{i})
+    xlabel('Time (s)')
+    ylabel(ylabels{i})
+    legend('Analytical (Reference)','Euler','RK4','ode45','Location','best');
+end
 end
 
 function stability_analysis(params)
-step_sizes = [0.1, 0.5, 1.0];
-colors = {'b', 'm', 'r'};
+stepSizes = [0.1 0.5 1.0];
+styles = {'b','g','r'};
 
-figure('Name','Euler Stability Analysis');
-for i = 1:length(step_sizes)
+figure('Name','Euler Stability Analysis','NumberTitle','off','Position',[100 100 900 600]);
+hold on
+
+for k = 1:length(stepSizes)
     p = params;
-    p.h = step_sizes(i);
-    [t, Y] = euler_solver(@drone_trajectory_dynamics, p);
-    subplot(3,1,i);
-    plot(t, Y(4,:), colors{i}, 'LineWidth', 1.5);
-    title(sprintf('Euler Velocity v_x with Step Size h = %.1f s', p.h));
-    xlabel('Time (s)'); ylabel('v_x (m/s)'); grid on;
+    p.h = stepSizes(k);
+
+    [tAna, YAna] = analytical_solution(p);
+    [~, YEuler] = euler_solver(@drone_trajectory_dynamics,p);
+
+    error = sqrt( ...
+        (YAna(1,:)-YEuler(1,:)).^2 + ...
+        (YAna(2,:)-YEuler(2,:)).^2 + ...
+        (YAna(3,:)-YEuler(3,:)).^2 );
+
+    plot(tAna,error,styles{k},'LineWidth',2,'DisplayName',['h = ' num2str(stepSizes(k))]);
 end
+
+grid on
+grid minor
+box on
+xlabel('Time (s)')
+ylabel('Position Error (m)')
+title('Euler Method Stability for Different Step Sizes')
+legend('Location','northwest')
 end
 
 function sensitivity_analysis(params)
-figure('Name','Sensitivity Analysis (3x3)');
+figure('Name','Sensitivity Analysis','NumberTitle','off','Position',[100 50 1200 900]);
 
-% 1. Mass variation (1.0 kg vs 3.0 kg)
-p1 = params; p1.mass = 1.0; [t1, Y1] = euler_solver(@drone_trajectory_dynamics, p1);
-p2 = params; p2.mass = 3.0; [t2, Y2] = euler_solver(@drone_trajectory_dynamics, p2);
+%% MASS 
+massValues = [1.0 3.0];
+for j = 1:length(massValues)
+    p = params;
+    p.mass = massValues(j);
+    [t,Y] = analytical_solution(p);
+    vxMass(j,:) = Y(4,:);
+    vyMass(j,:) = Y(5,:);
+    vzMass(j,:) = Y(6,:);
+end
 
-subplot(3,3,1); plot(t1, Y1(4,:), 'b', t2, Y2(4,:), 'r--'); title('v_x: Mass 1kg vs 3kg'); xlabel('Time (s)'); ylabel('v_x'); legend('1kg','3kg'); grid on;
-subplot(3,3,4); plot(t1, Y1(5,:), 'b', t2, Y2(5,:), 'r--'); title('v_y: Mass 1kg vs 3kg'); xlabel('Time (s)'); ylabel('v_y'); grid on;
-subplot(3,3,7); plot(t1, Y1(6,:), 'b', t2, Y2(6,:), 'r--'); title('v_z: Mass 1kg vs 3kg'); xlabel('Time (s)'); ylabel('v_z'); grid on;
+%% DRAG 
+dragValues = [0.5 1.0];
+for j = 1:length(dragValues)
+    p = params;
+    p.drag = dragValues(j);
+    [t,Y] = analytical_solution(p);
+    vxDrag(j,:) = Y(4,:);
+    vyDrag(j,:) = Y(5,:);
+    vzDrag(j,:) = Y(6,:);
+end
 
-% 2. Drag variation (k=0.5 vs k=1.0)
-p3 = params; p3.drag = 0.5; [t3, Y3] = euler_solver(@drone_trajectory_dynamics, p3);
-p4 = params; p4.drag = 1.0; [t4, Y4] = euler_solver(@drone_trajectory_dynamics, p4);
+%% PITCH
+pitchValues = [10 25];
+for j = 1:length(pitchValues)
+    p = params;
+    p.pitch = deg2rad(pitchValues(j));
+    [t,Y] = analytical_solution(p);
+    vxPitch(j,:) = Y(4,:);
+    vyPitch(j,:) = Y(5,:);
+    vzPitch(j,:) = Y(6,:);
+end
 
-subplot(3,3,2); plot(t3, Y3(4,:), 'b', t4, Y4(4,:), 'm--'); title('v_x: Drag 0.5 vs 1.0'); xlabel('Time (s)'); ylabel('v_x'); legend('k=0.5','k=1.0'); grid on;
-subplot(3,3,5); plot(t3, Y3(5,:), 'b', t4, Y4(5,:), 'm--'); title('v_y: Drag 0.5 vs 1.0'); xlabel('Time (s)'); ylabel('v_y'); grid on;
-subplot(3,3,8); plot(t3, Y3(6,:), 'b', t4, Y4(6,:), 'm--'); title('v_z: Drag 0.5 vs 1.0'); xlabel('Time (s)'); ylabel('v_z'); grid on;
+%% MASS PLOTS
+subplot(3,3,1)
+plot(t,vxMass(1,:),'b',t,vxMass(2,:),'r--','LineWidth',1.5)
+grid on; title('v_x for Different Masses'); xlabel('Time (s)'); ylabel('v_x (m/s)'); legend('1.0 kg','3.0 kg')
 
-% 3. Pitch variation (10 deg vs 25 deg)
-p5 = params; p5.pitch = deg2rad(10); [t5, Y5] = euler_solver(@drone_trajectory_dynamics, p5);
-p6 = params; p6.pitch = deg2rad(25); [t6, Y6] = euler_solver(@drone_trajectory_dynamics, p6);
+subplot(3,3,4)
+plot(t,vyMass(1,:),'b',t,vyMass(2,:),'r--','LineWidth',1.5)
+grid on; title('v_y for Different Masses'); xlabel('Time (s)'); ylabel('v_y (m/s)')
 
-subplot(3,3,3); plot(t5, Y5(4,:), 'b', t6, Y6(4,:), 'k--'); title('v_x: Pitch 10° vs 25°'); xlabel('Time (s)'); ylabel('v_x'); legend('10°','25°'); grid on;
-subplot(3,3,6); plot(t5, Y5(5,:), 'b', t6, Y6(5,:), 'k--'); title('v_y: Pitch 10° vs 25°'); xlabel('Time (s)'); ylabel('v_y'); grid on;
-subplot(3,3,9); plot(t5, Y5(6,:), 'b', t6, Y6(6,:), 'k--'); title('v_z: Pitch 10° vs 25°'); xlabel('Time (s)'); ylabel('v_z'); grid on;
+subplot(3,3,7)
+plot(t,vzMass(1,:),'b',t,vzMass(2,:),'r--','LineWidth',1.5)
+grid on; title('v_z for Different Masses'); xlabel('Time (s)'); ylabel('v_z (m/s)')
+
+%% DRAG PLOTS
+subplot(3,3,2)
+plot(t,vxDrag(1,:),'b',t,vxDrag(2,:),'r--','LineWidth',1.5)
+grid on; title('v_x for Different Drag'); xlabel('Time (s)'); ylabel('v_x (m/s)'); legend('k=0.5','k=1.0')
+
+subplot(3,3,5)
+plot(t,vyDrag(1,:),'b',t,vyDrag(2,:),'r--','LineWidth',1.5)
+grid on; title('v_y for Different Drag'); xlabel('Time (s)'); ylabel('v_y (m/s)')
+
+subplot(3,3,8)
+plot(t,vzDrag(1,:),'b',t,vzDrag(2,:),'r--','LineWidth',1.5)
+grid on; title('v_z for Different Drag'); xlabel('Time (s)'); ylabel('v_z (m/s)')
+
+%% PITCH PLOTS
+subplot(3,3,3)
+plot(t,vxPitch(1,:),'b',t,vxPitch(2,:),'r--','LineWidth',1.5)
+grid on; title('v_x for Different Pitch'); xlabel('Time (s)'); ylabel('v_x (m/s)'); legend('10^\circ','25^\circ')
+
+subplot(3,3,6)
+plot(t,vyPitch(1,:),'b',t,vyPitch(2,:),'r--','LineWidth',1.5)
+grid on; title('v_y for Different Pitch'); xlabel('Time (s)'); ylabel('v_y (m/s)')
+
+subplot(3,3,9)
+plot(t,vzPitch(1,:),'b',t,vzPitch(2,:),'r--','LineWidth',1.5)
+grid on; title('v_z for Different Pitch'); xlabel('Time (s)'); ylabel('v_z (m/s)')
 end
 
 function obstacle_simulation(params)
-[~, Y] = euler_solver(@drone_obstacle_dynamics, params);
+[~,Y] = euler_solver(@drone_obstacle_dynamics,params);
+
+figure('Name','Obstacle Avoidance','NumberTitle','off');
+hold on; grid on; grid minor; box on; axis equal
 
 theta = linspace(0,2*pi,200);
-obs_x = 150 + 20*cos(theta);
-obs_y = -70 + 20*sin(theta);
+plot(150 + 20*cos(theta), -70 + 20*sin(theta), 'k', 'LineWidth', 2);
+plot(150, -70, 'ko', 'MarkerFaceColor', 'k', 'MarkerSize', 8);
+text(153, -68, 'Obstacle (R=20m)', 'FontWeight', 'bold');
 
-figure('Name','Obstacle Avoidance');
-plot(Y(1,:), Y(2,:), 'b-', 'LineWidth', 2); hold on;
-plot(obs_x, obs_y, 'r--', 'LineWidth', 2);
-plot(150, -70, 'ro', 'MarkerFaceColor', 'r');
-plot(Y(1,1), Y(2,1), 'gs', 'MarkerFaceColor', 'g');
-plot(Y(1,end), Y(2,end), 'ms', 'MarkerFaceColor', 'm');
+plot(Y(1,:), Y(2,:), 'b-', 'LineWidth', 2);
+plot(Y(1,1), Y(2,1), 'gs', 'MarkerFaceColor', 'g', 'MarkerSize', 8);
+text(Y(1,1)+5, Y(2,1)-2, 'Start (0,0)', 'FontWeight', 'bold');
+
+plot(Y(1,end), Y(2,end), 'rs', 'MarkerFaceColor', 'r', 'MarkerSize', 8);
+text(Y(1,end)-18, Y(2,end)-8, 'Finish', 'FontWeight', 'bold');
+
+xlabel('x Position (m)'); ylabel('y Position (m)');
 title('Obstacle Avoidance Trajectory');
-xlabel('x (m)'); ylabel('y (m)');
-legend('Flight Path','Obstacle Boundary (R=20m)','Obstacle Center','Start','End');
-grid on; axis equal;
+legend('Obstacle Boundary','Obstacle Center','Avoidance Path','Start','Finish','Location','best');
 end
 
 function animate_drone(Y, params)
