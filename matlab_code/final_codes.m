@@ -1,5 +1,4 @@
 %% Drone Simulation, Analysis & Figure Replication
-% All project codes compiled into one file for execution and publishing.
 
 clear;
 clc;
@@ -11,7 +10,7 @@ params = parameters();
 disp('Parameters:');
 disp(params);
 
-%% 2. Calculate Trajectories (Analytical, Euler, RK4, ode45)
+%% 2. Calculate Trajectories
 % Run all four methods for the standard trajectory
 [tAna, YAna]     = analytical_solution(params);
 [tEuler, YEuler] = euler_solver(@drone_trajectory_dynamics, params);
@@ -19,37 +18,34 @@ disp(params);
 [tODE45, YODE45] = ode45_solver(@drone_trajectory_dynamics, params);
 
 disp('Euler solver completed.');
-disp('Final State (Euler):');
+disp('Final State Vector (Euler):');
 disp(YEuler(:,end));
 
-%% 3. Visualizations
+%% 3. Visualizations & Error Analysis
 % Generates velocity comparisons and 3D trajectory
 plot_results(tAna, YAna, YEuler, YRK4, YODE45);
 
-%% 4. Error Analysis
 % Compares numerical methods against analytical solution
 error_analysis(tAna, YAna, YEuler, YRK4, YODE45);
 
-%% 5. System Stability Analysis
+%% 4. System Stability and Sensitivity Analysis
 % Investigates Euler step sizes
 stability_analysis(params);
 
-%% 6. Parameter Sensitivity Analysis
 % Investigates mass, drag, and pitch
 sensitivity_analysis(params);
 
-%% 7. Obstacle Avoidance Simulation
+%% 5. Obstacle Avoidance Simulation
 % Generates the obstacle avoidance plot
 obstacle_simulation(params);
 
-%% 8. Drone Flight Path Animation
-% Generate the specific trajectory to animate the drone
-[~, YObstacle] = euler_solver(@drone_obstacle_dynamics, params);
-animate_drone(YObstacle, params);
-
-%% 9. Figure Replication
-% Replicates the four figures from the original paper
+%% 6. Figure Replication
+% Generates the four replication figures from the paper
 figure_replication();
+
+%% 7. Flight Animation Code
+% The animation is a dynamic video simulation.
+% The function animate_drone(YObstacle, params) is defined below in the local functions.
 
 disp('All simulations, analyses, and figure replications complete.');
 
@@ -367,8 +363,9 @@ grid on; axis equal;
 end
 
 function animate_drone(Y, params)
-fig = figure('Name','Drone Flight Animation','Position',[120 80 1000 650],'Color','w');
-hold on; grid on; box on; axis equal;
+% Animation of the drone flying around an obstacle.
+figure('Name','Drone Flight Animation','Position',[120 80 1000 650],'Color','w');
+hold on; grid on; grid minor; box on; axis equal;
 xlabel('x Position (m)'); ylabel('y Position (m)'); title('Drone Flight Animation');
 
 theta = linspace(0,2*pi,200);
@@ -387,30 +384,15 @@ arm2 = plot([0 0], [0 0], 'r', 'LineWidth', 2);
 body = plot(0, 0, 'ko', 'MarkerFaceColor', 'y', 'MarkerSize', 9);
 timeText = text(10, 16, 'Time = 0.0 s', 'FontSize', 12, 'FontWeight', 'bold', 'BackgroundColor', 'white');
 
-dt_val = 0.1;
-if isfield(params, 'h'); dt_val = params.h; end
-
-num_points = size(Y, 2);
-step = max(1, round(num_points / 100));
-
-for k = 1:step:num_points
-    if ~isvalid(fig) || ~isvalid(trail); break; end
+for k = 1:length(Y)
     x = Y(1,k); y = Y(2,k);
     addpoints(trail, x, y);
     set(arm1, 'XData', [x-L x+L], 'YData', [y y]);
     set(arm2, 'XData', [x x], 'YData', [y-L y+L]);
     set(body, 'XData', x, 'YData', y);
-    set(timeText, 'String', sprintf('Time = %.1f s', (k-1)*dt_val));
-    drawnow limitrate;
-    pause(0.01);
-end
-
-if isvalid(trail) && isvalid(fig)
-    addpoints(trail, Y(1,end), Y(2,end));
-    set(arm1, 'XData', [Y(1,end)-L Y(1,end)+L], 'YData', [Y(2,end) Y(2,end)]);
-    set(arm2, 'XData', [Y(1,end) Y(1,end)], 'YData', [Y(2,end)-L Y(2,end)+L]);
-    set(body, 'XData', Y(1,end), 'YData', Y(2,end));
+    set(timeText, 'String', sprintf('Time = %.1f s', (k-1)*params.h));
     drawnow;
+    pause(0.01);
 end
 end
 
