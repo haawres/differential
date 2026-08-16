@@ -1,7 +1,4 @@
-%% Drone Simulation
-% AP Group 5
-% Submission 3
-
+%% KEMS UAV Drone Flight Simulation
 clear;
 clc;
 close all;
