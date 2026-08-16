@@ -1,6 +1,4 @@
 function animate_drone(Y, params)
-% Drone Flight Simulation Project
-%
 % Animation of the drone flying around an obstacle.
 
 figure('Name','Drone Flight Animation',...

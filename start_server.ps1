@@ -41,6 +41,7 @@ try {
             elseif ($ext -eq ".css") { $mime = "text/css" }
             elseif ($ext -eq ".js") { $mime = "text/javascript" }
             elseif ($ext -eq ".png") { $mime = "image/png" }
+            elseif ($ext -eq ".svg") { $mime = "image/svg+xml" }
             elseif ($ext -eq ".jpg" -or $ext -eq ".jpeg") { $mime = "image/jpeg" }
             elseif ($ext -eq ".mp4") { $mime = "video/mp4" }
             
