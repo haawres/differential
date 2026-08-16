@@ -1,4 +1,4 @@
-%% KEMS UAV Drone Flight Simulation
+%% Main File
 clear;
 clc;
 close all;

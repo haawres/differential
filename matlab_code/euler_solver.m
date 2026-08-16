@@ -1,13 +1,7 @@
 function [t, Y] = euler_solver(dynamics, params)
-% NOTE:
-% This is a function file.
-% Do NOT run this file directly.
-% Run main.m instead.
 
 % Euler Solver
-%
 % Solves first-order ODEs using the Euler Method.
-
 
 % Time vector
 t = params.t0:params.h:params.tf;
