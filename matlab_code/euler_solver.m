@@ -1,24 +1,33 @@
-function [t, Y] = euler_solver(ode_fun, params, ctrl_mode)
-% =========================================================================
-% Forward Euler Method (First-Order Explicit Solver)
-% Formula: Y_{n+1} = Y_n + h * f(t_n, Y_n)
-% =========================================================================
+function [t, Y] = euler_solver(dynamics, params)
+% NOTE:
+% This is a function file.
+% Do NOT run this file directly.
+% Run main.m instead.
 
-if nargin < 3
-    ctrl_mode = 'itae';
-end
+% Euler Solver
+%
+% Solves first-order ODEs using the Euler Method.
 
-t = params.t0:params.dt:params.tf;
-N = length(t);
-h = params.dt;
-num_states = length(params.Y0);
 
-Y = zeros(num_states, N);
-Y(:, 1) = params.Y0;
+% Time vector
+t = params.t0:params.h:params.tf;
 
-for n = 1:N-1
-    dY = ode_fun(t(n), Y(:, n), params, ctrl_mode);
-    Y(:, n+1) = Y(:, n) + h * dY;
+% Number of time steps
+numSteps = length(t);
+
+% Preallocate memory
+Y = zeros(6, numSteps);
+
+% Initial condition
+Y(:,1) = params.Y0;
+
+% Euler Integration
+for i = 1:numSteps-1
+
+    dY = dynamics(t(i), Y(:,i), params);
+
+    Y(:,i+1) = Y(:,i) + params.h*dY;
+
 end
 
 end

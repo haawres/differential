@@ -1,19 +1,25 @@
-function [t, Y] = ode45_solver(ode_fun, params, ctrl_mode)
-% =========================================================================
-% MATLAB ode45 Solver Wrapper (Explicit Runge-Kutta (4,5) Formula)
-% Adaptive Step-Size Numerical Integration
-% =========================================================================
+function [t, Y] = ode45_solver(dynamics, params)
 
-if nargin < 3
-    ctrl_mode = 'itae';
-end
+% ode45 Solver
+%
+% Solves the drone dynamics using MATLAB's built-in ode45 solver.
+%
+% NOTE:
+% This is a function file.
+% Do NOT run this file directly.
+% Run main.m instead.
 
-tspan = [params.t0 params.tf];
-options = odeset('RelTol', 1e-6, 'AbsTol', 1e-8);
 
-[t, Y_out] = ode45(@(t, y) ode_fun(t, y, params, ctrl_mode), tspan, params.Y0, options);
+% Time vector
+tspan = params.t0:params.h:params.tf;
 
-% Output as state rows for consistency
-Y = Y_out';
+% Solve the ODE
+[t, Y] = ode45(@(t,Y) dynamics(t,Y,params), tspan, params.Y0);
+
+% Transpose so the format matches the other solvers
+Y = Y';
+
+% Convert time to a row vector
+t = t';
 
 end

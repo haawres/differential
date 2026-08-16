@@ -1,106 +1,102 @@
-# 🎬 2-Minute Promo Video Script & Production Storyboard
+# KEMS UAV Autonomous Navigation Project — Official Promo Video Script & Storyboard
 
-**Project Title:** Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System  
+**Project Title:** Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System in Precision Agriculture  
 **Courses:** MATH221 (Differential Equations & Numerical Methods) & CE122 (Applied Programming)  
-**Authors:** KEMS UAV Research Group — Ashesi University  
-**Target Duration:** Exactly 120 Seconds (2 Minutes)  
-**Music Track:** Uplifting, fast-paced electronic/ambient STEM soundtrack (e.g., synth pads + subtle driving tech beat)  
+**Institution:** Ashesi University  
+**Target Video Duration:** 3 Minutes (180 Seconds)  
+**Format:** High-energy academic & visual pitch combining live website screencasts, MATLAB simulation animations, equation callouts, and real-world drone footage.
 
 ---
 
-## ⏱️ Video Structure Overview
+## 🎬 Master Production Overview
 
-| Scene | Time Window | Title / Section Focus | Key Message |
-|:---:|:---:|:---|:---|
-| **1** | `00:00 - 00:20` | **The Hook & Problem Statement** | Livestock monitoring challenges & why UAV autonomous navigation matters |
-| **2** | `00:20 - 00:45` | **The Mathematical Formulation** | 6-DOF Newton-Euler ODEs & Genetic Algorithm-optimized PID controllers |
-| **3** | `00:45 - 01:10` | **Our Contributions & Modifications** | Wind disturbance injection, payload mass variations, non-linear body drag |
-| **4** | `01:10 - 01:35` | **Numerical Methods & Error Analysis** | Solver benchmarking (`ode45` vs `ode23` vs `RK4` vs Euler) & convergence |
-| **5** | `01:35 - 01:50` | **Interactive Flight Simulator & Results** | Real-time web simulator, ITAE vs ISE performance, 1.0m safety threshold |
-| **6** | `01:50 - 02:00` | **Closing & Future Frontiers** | Multi-agent swarms, GPS-denied SLAM & team credits |
-
----
-
-## 📽️ Scene-by-Scene Production Script
-
-### 🎬 Scene 1: The Hook & Precision Agriculture (00:00 - 00:20)
-* **Visual on Screen:**  
-  * Aerial video footage / 3D render of agricultural pasture with grazing sheep.
-  * Animated quadcopter drone swooping in smoothly over the landscape with glowing telemetry HUD overlays.
-  * Graphic showing obstacles: trees, fence lines, and livestock.
-* **On-Screen Text (Lower Third):**  
-  `Autonomous Quadrotor Navigation | Livestock Surveillance & Tracking`
-* **Voiceover Narration:**  
-  > *"Managing expansive livestock pastures requires continuous aerial monitoring, counting, and health surveillance. But navigating a quadrotor through dynamic outdoor terrain full of natural obstacles demands more than human piloting—it demands rigorous mathematical modelling and autonomous control."*
+| Scene | Timecode | Topic / Section | Visual Assets & B-Roll | Primary Speaker |
+|:---:|:---:|---|---|:---:|
+| **1** | 0:00 – 0:28 | **The Hook:** Livestock Challenges on African Savannas | Aerial footage of Ghanaian savanna pastures / grazing herds | Speaker 1 (Introduction) |
+| **2** | 0:28 – 0:58 | **The Math:** 6-DOF Newton-Euler Differential Equations | Website Equation view + 3D Quadrotor tilt diagram | Speaker 2 (Model Derivation) |
+| **3** | 0:58 – 1:30 | **Control & Tuning:** ITAE vs. ISE Controller Dynamics | Side-by-side Figure 11 & 12 replication curves | Speaker 3 (Study Results) |
+| **4** | 1:30 – 2:05 | **Our Engineering Modifications:** Wind, Drag & Solvers | Live HTML5 Flight Simulator + White Academic MATLAB Charts | Speaker 4 (Modifications) |
+| **5** | 2:05 – 2:38 | **Applied Programming:** Modular MATLAB Architecture | MATLAB R2024b code suite + Error convergence log-log plots | Speaker 4 (Applied Programming) |
+| **6** | 2:38 – 3:00 | **Conclusion & Future Horizons:** Autonomous Agritech | Swarm drone visual + Website URL callout | All Speakers (Closing) |
 
 ---
 
-### 🎬 Scene 2: The Differential Equations & Control System (00:20 - 00:45)
-* **Visual on Screen:**  
-  * Zoom-in on the creative infographic diagram showing the quadcopter's 6 degrees of freedom ($\phi, \theta, \psi, x, y, z$).
-  * Dynamic equations fading in:
-    $$\ddot{x} = \frac{U_1}{m}(\cos\phi\sin\theta\cos\psi + \sin\phi\sin\psi)$$
-    $$\ddot{z} = \frac{U_1}{m}(\cos\phi\cos\theta) - g$$
-  * PID Controller block diagram animation showing error calculation and motor thrust mapping: $f_i = b \cdot \omega_i^2$.
-* **On-Screen Text:**  
-  `6-DOF Newton-Euler Dynamic Formulation | GA-Tuned ITAE vs. ISE PID Controllers`
-* **Voiceover Narration:**  
-  > *"We modelled the quadrotor as a six-degree-of-freedom under-actuated rigid body. Six output states are driven by four rotor inputs using the Newton-Euler formalism. Using Genetic Algorithms, we optimized dual PID feedback loops under both Integral of Square Error (ISE) and Integral of Time-weighted Absolute Error (ITAE) cost functions."*
+## 📜 Scene-by-Scene Script & Storyboard
+
+```
+[0:00 - 0:05]
+[AUDIO CUE: Upbeat, modern electronic STEM background music begins softly at 20% volume]
+[VISUAL: Cinematic aerial drone footage over the lush green rolling pastures of the Afram Plains at sunrise. Title card animates: "KEMS UAV Autonomous Navigation Project".]
+```
+
+### Scene 1: The Challenge in Precision Agriculture (0:00 – 0:28)
+* **Speaker 1 (Introduction):**  
+  *"Across large-scale livestock pastures in Ghana and Sub-Saharan Africa, tracking grazing livestock across hundreds of hectares is one of the most grueling challenges in agriculture. Over 60% of animal losses occur in unmonitored blind spots, dense acacia scrub, and rocky gullies.*  
+  *Manual herding under scorching heat is slow and risky—but what if an autonomous aerial robot could scout the pasture, monitor grazing herds, and steer around trees and fences entirely on its own?*  
+  *Welcome to the KEMS UAV Autonomous Navigation Project, where we turn ordinary differential equations into intelligent autonomous flight."*
+
+```
+[0:28 - 0:32]
+[VISUAL: Smooth transition to the project website (https://differential-kems.vercel.app/). Animated camera zooms into the "Understanding the Model" section showing the quadcopter free-body diagram with 4 spinning rotors.]
+```
+
+### Scene 2: The Differential Equations of Motion (0:28 – 0:58)
+* **Speaker 2 (Mathematical Modeling):**  
+  *"To achieve autonomous flight, we model the quadcopter as a 6-degree-of-freedom rigid body governed by Newton’s Second Law and Euler’s rotational dynamics.*  
+  *A quadrotor is under-actuated: it has six outputs—position $X, Y, Z$ and Euler angles Roll $\phi$, Pitch $\theta$, and Yaw $\psi$—but only four motor inputs.*  
+  *To fly forward in the $X$-direction, the drone doesn't have a horizontal propeller. Instead, back motor 3 spins faster than front motor 1, tilting the pitch angle $\theta$ forward. This tilts the total upward thrust $U_1$, redirecting part of that vertical lift horizontally to drive acceleration.*  
+  *Meanwhile, an onboard 2D LiDAR rangefinder continuously scans for obstacles within a 1.0-meter safety radius."*
+
+```
+[0:58 - 1:02]
+[VISUAL: Screen displays Figure Replication 1 & 2 side-by-side with original paper figures and our replicated MATLAB step-response graphs. Red highlights flash on the 14.30% overshoot peak vs the 2.65% ITAE curve.]
+```
+
+### Scene 3: Controller Tuning & Published Study Results (0:58 – 1:30)
+* **Speaker 3 (Control & Results Discussion):**  
+  *"In our study of Alanezi et al. (MDPI Drones 2022), the authors tuned dual PID feedback controllers using Genetic Algorithms under two cost criteria: Integral Square Error (ISE) and Integral Time Absolute Error (ITAE).*  
+  *Our replicated simulations reveal why ITAE is vastly superior: ISE squares early errors, causing the motors to surge violently, resulting in a dangerous 14.30% altitude overshoot.*  
+  *In contrast, ITAE weights error by time, yielding an optimal damping ratio $\zeta = 0.8158$ with only 2.65% overshoot and a 1-millimeter steady-state error—ensuring the drone never crashes into livestock or tree canopies during vertical ascent."*
+
+```
+[1:30 - 1:35]
+[VISUAL: Transition to the live interactive HTML5 Flight Simulator on the website. Cursor drags the "Lateral Wind Disturbance" slider to +0.15N and toggles "3 Obstacles", showing the drone dynamically banking and evading in real time.]
+```
+
+### Scene 4: Our Modifications & Environmental Robustness (1:30 – 2:05)
+* **Speaker 4 (Model Modifications & Numerical Solvers):**  
+  *"While the published paper assumed calm indoor air and static obstacles, real-world African farms face harsh environmental disturbances.*  
+  *We expanded the equations of motion by introducing aerodynamic body drag ($-k_d v$), variable payload masses ($1.4\text{ kg}$ to $2.5\text{ kg}$ for multi-spectral crop cameras), and continuous crosswind gusts ($F_{w,x}(t)$).*  
+  *On our interactive web testbed, you can dynamically adjust wind force, mass, and sensor latency, observing how the Bat Algorithm evasion vectors maintain safe 1.0-meter clearance."*
+
+```
+[2:05 - 2:10]
+[VISUAL: Screen switches to the MATLAB R2024b IDE. We run `main.m`. Authentic MATLAB figure windows pop up showing: (1) Altitude step response, (2) Error convergence log-log plot, (3) Numerical stability breakdown.]
+```
+
+### Scene 5: Applied Programming & Multi-Solver Analysis (2:05 – 2:38)
+* **Speaker 4 (Applied Programming & Error Analysis):**  
+  *"For our Applied Programming codebase in CE122, we built a modular 14-script MATLAB suite.*  
+  *We benchmarked the numerical methods taught in class: MATLAB's adaptive `ode45`, Classical fixed-step `RK4`, and `Forward Euler` against our exact analytical closed-form solution.*  
+  *`ode45` proved to be the champion solver: its adaptive step size takes micro-steps around tight obstacle turns and large steps in straight hover, achieving $0.04\text{ mm}$ precision in just $1.84\text{ ms}$.*  
+  *Our log-log convergence analysis proves RK4 achieves fourth-order accuracy $O(h^4)$, while Forward Euler is only conditionally stable ($h < 0.10\text{s}$) and completely blows up if step size exceeds the critical threshold."*
+
+```
+[2:38 - 2:42]
+[AUDIO CUE: Music swells to a grand, inspiring crescendo.]
+[VISUAL: Dynamic montage of the interactive website, the creative science infographic in motion, and 3D MATLAB flight trajectories. Final slide displays project credits, Ashesi University emblem, and live website URL.]
+```
+
+### Scene 6: Agritech Impact & Conclusion (2:38 – 3:00)
+* **All Speakers:**  
+  *"By bridging theoretical ordinary differential equations, control theory, and numerical algorithms, the KEMS UAV project demonstrates how autonomous robotics can revolutionize precision agriculture across Ghana and beyond.*  
+  *Explore our interactive simulator, inspect our complete open-source MATLAB codebase, and test the equations yourself at **differential-kems.vercel.app**.*  
+  *Thank you!"*
 
 ---
 
-### 🎬 Scene 3: Our Contributions & Real-World Modifications (00:45 - 01:10)
-* **Visual on Screen:**  
-  * Side-by-side simulation screen showing a drone flying in still air vs. drifting under a crosswind.
-  * Animated wind force vector ($F_{\text{wind}}$) and aerodynamic quadratic drag force equation:
-    $$\mathbf{F}_{\text{drag}} = -\frac{1}{2}\rho C_d A \|\mathbf{v}\|\mathbf{v}$$
-  * Slider showing payload variation (1.5 kg to 2.5 kg camera rig) and its effect on motor thrust requirements.
-* **On-Screen Text:**  
-  `Our Contribution: Environmental Wind Disturbances + Dynamic Payload Mass Sensitivity`
-* **Voiceover Narration:**  
-  > *"The original paper assumed calm air and fixed mass. To bridge the gap to real-world deployment, our project introduced lateral crosswind disturbances, stochastic wind gusts, and non-linear aerodynamic body drag directly into the differential equations. We systematically investigated how variable camera payloads impact controller stability."*
+## 🛠️ Recording Tips & Production Guidelines for the Team
 
----
-
-### 🎬 Scene 4: Numerical Methods & Solver Benchmarking (01:10 - 01:35)
-* **Visual on Screen:**  
-  * MATLAB / Python benchmark plots: Log-log convergence curves showing Forward Euler $O(h)$ vs. Classical Runge-Kutta 4th Order $O(h^4)$.
-  * Multi-solver comparison bar charts showing execution runtime and RMSE across `ode45`, `ode23`, `ode15s`, `ode113`, and RK4.
-  * Analytical closed-form solution curve overlaid with numerical approximations.
-* **On-Screen Text:**  
-  `Applied Programming: Solver Convergence $O(h^4)$ | RMSE Error Benchmarking`
-* **Voiceover Narration:**  
-  > *"For Applied Programming, we solved the linearized system analytically and benchmarked six numerical integration schemes in MATLAB R2024b. While Forward Euler requires micro-steps to prevent numerical divergence, adaptive Dormand-Prince ode45 achieved sub-millimeter precision with over 90% fewer function evaluations."*
-
----
-
-### 🎬 Scene 5: Interactive Simulator & Key Findings (01:35 - 01:50)
-* **Visual on Screen:**  
-  * Screen capture of our web-based interactive flight simulator running on `http://localhost:8000/`.
-  * User dragging the lateral wind force slider and toggling between ITAE and ISE loops.
-  * Demonstration of the 1.0m safety radius steering smoothly around obstacles vs 0.5m collision threshold.
-* **On-Screen Text:**  
-  `Web-Based Flight Simulator | Real-Time Telemetry & Bat Algorithm Avoidance`
-* **Voiceover Narration:**  
-  > *"Our interactive browser simulator proves that ITAE tuning provides superior damping with only 2.65% overshoot compared to 14.3% in ISE, while a 1.0-meter obstacle clearance threshold guarantees collision-free navigation even under severe sensor latency."*
-
----
-
-### 🎬 Scene 6: Conclusion & Future Research Frontiers (01:50 - 02:00)
-* **Visual on Screen:**  
-  * Animated 3D drone flight animation with trail trace reaching the final waypoint.
-  * Brief visual icons for Future Work: Swarm Collaboration, GPS-Denied Visual SLAM, and Energy-Optimal Trajectories.
-  * Team credits card: Ashesi University — KEMS UAV Research Group.
-* **On-Screen Text:**  
-  `Diff'd Up UAV | MATH221 & CE122 Final Project | Ashesi University`
-* **Voiceover Narration:**  
-  > *"From mathematical derivation to real-time interactive simulation, our work lays the foundation for multi-agent swarm coordination and smart agricultural robotics. Explore our full research and flight simulator on our website. Thank you!"*
-
----
-
-## 🎙️ Recording & Production Tips for Students
-
-1. **Audio Recording:** Use a clear microphone (or headset mic), speak at a steady pace (~130 words per minute), and keep energy high and articulate.
-2. **Screen Recording:** Capture the interactive simulator on full screen at 1080p, 60fps using OBS Studio or PowerPoint Screen Recorder.
-3. **Editing Software:** Use CapCut, DaVinci Resolve, Premiere Pro, or Clipchamp to sync voiceover with on-screen equation callouts and MATLAB plots.
-4. **Music Volume:** Keep background music ducked at -18dB when voiceover is speaking, and raise to -10dB during the opening and closing transitions.
+1. **Screen Recording Tools:** Use OBS Studio or QuickTime at 1080p 60fps to capture smooth 60fps flight simulator animations on `http://localhost:8000/` or `https://differential-kems.vercel.app/`.
+2. **Audio Quality:** Use a USB microphone or headset with noise suppression. Speak clearly with confident, enthusiastic pacing.
+3. **MATLAB Live Run:** Capture a quick screen recording of running `main.m` in MATLAB R2024b to show the figures popping up live!

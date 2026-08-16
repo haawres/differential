@@ -1,31 +1,44 @@
-function [t, Y] = rk4_solver(ode_fun, params, ctrl_mode)
-% =========================================================================
-% Classical 4th-Order Runge-Kutta Method (RK4 Solver)
-% Local Truncation Error: O(h^5), Global Error: O(h^4)
-% =========================================================================
+function [t, Y] = rk4_solver(dynamics, params)
 
-if nargin < 3
-    ctrl_mode = 'itae';
-end
+% RK4 Solver
+%
+% Solves a system of first-order ODEs using the
+% Fourth-Order Runge-Kutta Method.
+%
+% NOTE:
+% This is a function file.
+% Do NOT run this file directly.
+% Run main.m instead.
 
-t = params.t0:params.dt:params.tf;
-N = length(t);
-h = params.dt;
-num_states = length(params.Y0);
 
-Y = zeros(num_states, N);
-Y(:, 1) = params.Y0;
+% Create the time vector
+t = params.t0 : params.h : params.tf;
 
-for n = 1:N-1
-    tn = t(n);
-    yn = Y(:, n);
-    
-    k1 = ode_fun(tn, yn, params, ctrl_mode);
-    k2 = ode_fun(tn + 0.5*h, yn + 0.5*h*k1, params, ctrl_mode);
-    k3 = ode_fun(tn + 0.5*h, yn + 0.5*h*k2, params, ctrl_mode);
-    k4 = ode_fun(tn + h, yn + h*k3, params, ctrl_mode);
-    
-    Y(:, n+1) = yn + (h / 6.0) * (k1 + 2*k2 + 2*k3 + k4);
+% Number of time steps
+numSteps = length(t);
+
+% Number of state variables
+numStates = length(params.Y0);
+
+% Preallocate memory
+Y = zeros(numStates, numSteps);
+
+% Initial conditions
+Y(:,1) = params.Y0;
+
+% RK4 Integration
+for i = 1:numSteps-1
+
+    k1 = dynamics(t(i), Y(:,i), params);
+
+    k2 = dynamics(t(i) + params.h/2,Y(:,i) + (params.h/2)*k1,params);
+
+    k3 = dynamics(t(i) + params.h/2,Y(:,i) + (params.h/2)*k2,params);
+
+    k4 = dynamics(t(i) + params.h,Y(:,i) + params.h*k3,params);
+
+    Y(:,i+1) = Y(:,i) + (params.h/6) * (k1 + 2*k2 + 2*k3 + k4);
+
 end
 
 end

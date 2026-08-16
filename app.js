@@ -1,7 +1,7 @@
 // =========================================================================
 // KEMS - UAV Autonomous Navigation Project — Client-Side Application Engine
 // Author: KEMS UAV Research Group (MATH221 & CE122)
-// Features: SPA Router, Interactive HTML5 Canvas Flight Simulator, Chart.js Visualizations (White Academic Theme)
+// Features: SPA Router, Interactive HTML5 Canvas Flight Simulator, Authentic MATLAB Palette Chart Visualizations
 // =========================================================================
 
 // =========================================================================
@@ -373,7 +373,7 @@ function renderScene() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // 1. Grid Background
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
     ctx.lineWidth = 1;
     for (let x = 0; x < canvas.width; x += 40) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
@@ -395,7 +395,7 @@ function renderScene() {
         }
 
         // Safety Margin Circle
-        ctx.strokeStyle = (simConfig.threshold === 1.0) ? 'rgba(0, 240, 255, 0.35)' : 'rgba(255, 77, 109, 0.4)';
+        ctx.strokeStyle = (simConfig.threshold === 1.0) ? 'rgba(0, 180, 216, 0.4)' : 'rgba(231, 111, 81, 0.45)';
         ctx.lineWidth = 1.5;
         ctx.setLineDash([5, 4]);
         ctx.beginPath();
@@ -405,10 +405,10 @@ function renderScene() {
 
         // Obstacle Body
         const gradient = ctx.createRadialGradient(obs.x, obs.y, 5, obs.x, obs.y, obs.r);
-        gradient.addColorStop(0, 'rgba(255, 77, 109, 0.7)');
-        gradient.addColorStop(1, 'rgba(255, 77, 109, 0.25)');
+        gradient.addColorStop(0, 'rgba(231, 111, 81, 0.75)');
+        gradient.addColorStop(1, 'rgba(231, 111, 81, 0.25)');
         ctx.fillStyle = gradient;
-        ctx.strokeStyle = '#ff4d6d';
+        ctx.strokeStyle = '#e76f51';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(obs.x, obs.y, obs.r, 0, Math.PI * 2);
@@ -422,20 +422,20 @@ function renderScene() {
     });
 
     // 3. Target Goal
-    ctx.fillStyle = '#00ff88';
+    ctx.fillStyle = '#2ec4b6';
     ctx.beginPath();
     ctx.arc(simConfig.target.x, simConfig.target.y, 12, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#00ff88';
+    ctx.fillStyle = '#2ec4b6';
     ctx.font = 'bold 11px JetBrains Mono';
     ctx.fillText('TARGET GOAL (5m Hover)', simConfig.target.x - 70, simConfig.target.y - 18);
 
     // 4. Flight Path Trail
     if (drone.trail.length > 1) {
         ctx.beginPath();
-        ctx.strokeStyle = (simConfig.controller === 'itae') ? '#00f0ff' : '#ffb703';
+        ctx.strokeStyle = (simConfig.controller === 'itae') ? '#00b4d8' : '#f4a261';
         ctx.lineWidth = 3;
-        ctx.shadowColor = (simConfig.controller === 'itae') ? '#00f0ff' : '#ffb703';
+        ctx.shadowColor = (simConfig.controller === 'itae') ? '#00b4d8' : '#f4a261';
         ctx.shadowBlur = 8;
         ctx.moveTo(drone.trail[0].x, drone.trail[0].y);
         for (let i = 1; i < drone.trail.length; i++) {
@@ -446,8 +446,8 @@ function renderScene() {
     }
 
     // 5. 2D LiDAR Scanning Cone
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.25)';
-    ctx.fillStyle = 'rgba(0, 240, 255, 0.05)';
+    ctx.strokeStyle = 'rgba(0, 180, 216, 0.28)';
+    ctx.fillStyle = 'rgba(0, 180, 216, 0.06)';
     ctx.beginPath();
     ctx.arc(drone.x, drone.y, 85, -0.6 + drone.phi, 0.6 + drone.phi);
     ctx.lineTo(drone.x, drone.y);
@@ -475,7 +475,7 @@ function renderScene() {
 
     motorPositions.forEach((pos, idx) => {
         // Motor Mount
-        ctx.fillStyle = '#00ff88';
+        ctx.fillStyle = '#2ec4b6';
         ctx.beginPath();
         ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
         ctx.fill();
@@ -484,7 +484,7 @@ function renderScene() {
         ctx.save();
         ctx.translate(pos.x, pos.y);
         ctx.rotate((idx % 2 === 0 ? 1 : -1) * rotorAngle);
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.8)';
+        ctx.strokeStyle = 'rgba(0, 180, 216, 0.85)';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(-10, 0); ctx.lineTo(10, 0);
@@ -493,8 +493,8 @@ function renderScene() {
     });
 
     // Center Fuselage & Camera Gimbal
-    ctx.fillStyle = '#0a0f1d';
-    ctx.strokeStyle = '#00f0ff';
+    ctx.fillStyle = '#070c1e';
+    ctx.strokeStyle = '#00b4d8';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(0, 0, 8, 0, Math.PI * 2);
@@ -505,15 +505,15 @@ function renderScene() {
 
     // Status Banner in Canvas
     if (collisionDetected) {
-        ctx.fillStyle = 'rgba(255, 77, 109, 0.9)';
+        ctx.fillStyle = 'rgba(231, 111, 81, 0.92)';
         ctx.fillRect(15, 15, 230, 30);
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 12px Inter';
         ctx.fillText('⚠️ WARNING: COLLISION DETECTED!', 25, 35);
     } else {
-        ctx.fillStyle = 'rgba(0, 255, 136, 0.85)';
+        ctx.fillStyle = 'rgba(46, 196, 182, 0.9)';
         ctx.fillRect(15, 15, 190, 30);
-        ctx.fillStyle = '#0a0f1d';
+        ctx.fillStyle = '#070c1e';
         ctx.font = 'bold 12px Inter';
         ctx.fillText('✅ SAFE CLEARANCE ACTIVE', 25, 35);
     }
@@ -529,7 +529,15 @@ function updateTelemetry() {
 
 
 // =========================================================================
-// 4. Chart.js Interactive Benchmark & Sensitivity Visualizations (White Academic Theme)
+// 4. Chart.js Interactive Benchmark Visualizations (Authentic MATLAB Color Palette)
+// MATLAB Default 'lines' Palette:
+// [1] Blue:   #0072BD (rgb: 0, 114, 189)
+// [2] Orange: #D95319 (rgb: 217, 83, 25)
+// [3] Yellow: #EDB120 (rgb: 237, 177, 32)
+// [4] Purple: #7E2F8E (rgb: 126, 47, 142)
+// [5] Green:  #77AC30 (rgb: 119, 172, 48)
+// [6] Cyan:   #4DBEEE (rgb: 77, 190, 238)
+// [7] Maroon: #A2142F (rgb: 162, 20, 47)
 // =========================================================================
 let chartRuntime = null;
 let chartRmse = null;
@@ -539,20 +547,8 @@ let chartSensKd = null;
 let chartSensMass = null;
 let chartSensKp = null;
 
-// Academic Chart Configuration Defaults
-const whiteChartScales = {
-    y: { 
-        grid: { color: '#e2e8f0', drawBorder: true }, 
-        ticks: { color: '#334155', font: { weight: '600', size: 11 } } 
-    },
-    x: { 
-        grid: { color: '#f1f5f9' }, 
-        ticks: { color: '#334155', font: { weight: '600', size: 11 } } 
-    }
-};
-
 function initSolverCharts() {
-    // 1. Solver Runtime Bar Chart (ode45 vs RK4 vs Euler)
+    // 1. Solver Runtime Bar Chart (ode45 vs RK4 vs Euler) - Authentic MATLAB Bar Style
     const ctxRuntime = document.getElementById('chart-solver-runtime');
     if (ctxRuntime && !chartRuntime) {
         chartRuntime = new Chart(ctxRuntime, {
@@ -562,31 +558,34 @@ function initSolverCharts() {
                 datasets: [{
                     label: 'Runtime (ms)',
                     data: [1.84, 4.20, 3.10],
-                    backgroundColor: ['#0284c7', '#0d9488', '#e11d48'],
-                    borderRadius: 6
+                    backgroundColor: ['#0072BD', '#D95319', '#7E2F8E'],
+                    borderColor: '#222222',
+                    borderWidth: 1,
+                    borderRadius: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: '#1e293b', font: { weight: '700' } } }
+                    legend: { labels: { color: '#111827', font: { weight: '600' } } }
                 },
                 scales: {
                     y: { 
-                        grid: { color: '#e2e8f0' }, 
-                        ticks: { color: '#1e293b', font: { weight: '600' } } 
+                        grid: { color: '#e5e7eb' }, 
+                        ticks: { color: '#111827', font: { weight: '600' } },
+                        title: { display: true, text: 'Execution Time (ms)', color: '#111827', font: { weight: '700' } }
                     },
                     x: { 
                         grid: { display: false }, 
-                        ticks: { color: '#1e293b', font: { weight: '700' } } 
+                        ticks: { color: '#111827', font: { weight: '700' } } 
                     }
                 }
             }
         });
     }
 
-    // 2. Solver Accuracy (RMSE) Bar Chart
+    // 2. Solver Accuracy (RMSE) Bar Chart - Authentic MATLAB Bar Style
     const ctxRmse = document.getElementById('chart-solver-rmse');
     if (ctxRmse && !chartRmse) {
         chartRmse = new Chart(ctxRmse, {
@@ -594,34 +593,37 @@ function initSolverCharts() {
             data: {
                 labels: ['MATLAB ode45', 'Classical RK4', 'Forward Euler'],
                 datasets: [{
-                    label: 'RMSE Error vs. Exact Solution (m)',
+                    label: 'RMSE Error vs. Exact Benchmark (m)',
                     data: [0.0000412, 0.0000894, 0.0482],
-                    backgroundColor: ['#059669', '#0284c7', '#e11d48'],
-                    borderRadius: 6
+                    backgroundColor: ['#0072BD', '#77AC30', '#A2142F'],
+                    borderColor: '#222222',
+                    borderWidth: 1,
+                    borderRadius: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: '#1e293b', font: { weight: '700' } } }
+                    legend: { labels: { color: '#111827', font: { weight: '600' } } }
                 },
                 scales: {
                     y: { 
                         type: 'logarithmic',
-                        grid: { color: '#e2e8f0' }, 
-                        ticks: { color: '#1e293b', font: { weight: '600' } } 
+                        grid: { color: '#e5e7eb' }, 
+                        ticks: { color: '#111827', font: { weight: '600' } },
+                        title: { display: true, text: 'RMSE (m) [Log Scale]', color: '#111827', font: { weight: '700' } }
                     },
                     x: { 
                         grid: { display: false }, 
-                        ticks: { color: '#1e293b', font: { weight: '700' } } 
+                        ticks: { color: '#111827', font: { weight: '700' } } 
                     }
                 }
             }
         });
     }
 
-    // 3. Step-Size Convergence Log-Log Chart (White Background)
+    // 3. Step-Size Convergence Log-Log Chart - Authentic MATLAB Line Style
     const ctxConv = document.getElementById('chart-convergence');
     if (ctxConv && !chartConvergence) {
         chartConvergence = new Chart(ctxConv, {
@@ -632,20 +634,20 @@ function initSolverCharts() {
                     {
                         label: 'Forward Euler (Slope = 1, O(h))',
                         data: [0.48, 0.24, 0.12, 0.048, 0.024, 0.012],
-                        borderColor: '#e11d48',
-                        backgroundColor: '#e11d48',
-                        borderWidth: 2.5,
+                        borderColor: '#A2142F',
+                        backgroundColor: '#A2142F',
+                        borderWidth: 2,
                         pointRadius: 4,
-                        tension: 0.1
+                        tension: 0
                     },
                     {
                         label: 'Classical RK4 (Slope = 4, O(h⁴))',
                         data: [0.091, 0.0057, 0.00035, 0.000089, 0.0000056, 0.00000012],
-                        borderColor: '#0284c7',
-                        backgroundColor: '#0284c7',
-                        borderWidth: 2.5,
+                        borderColor: '#0072BD',
+                        backgroundColor: '#0072BD',
+                        borderWidth: 2,
                         pointRadius: 4,
-                        tension: 0.1
+                        tension: 0
                     }
                 ]
             },
@@ -653,26 +655,26 @@ function initSolverCharts() {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: '#1e293b', font: { weight: '700' } } }
+                    legend: { labels: { color: '#111827', font: { weight: '700' } } }
                 },
                 scales: {
                     y: { 
                         type: 'logarithmic',
-                        grid: { color: '#e2e8f0' }, 
-                        ticks: { color: '#1e293b', font: { weight: '600' } },
-                        title: { display: true, text: 'Global Error (RMSE, Log Scale)', color: '#1e293b', font: { weight: '700' } }
+                        grid: { color: '#e5e7eb' }, 
+                        ticks: { color: '#111827', font: { weight: '600' } },
+                        title: { display: true, text: 'Global Error (RMSE, Log Scale)', color: '#111827', font: { weight: '700' } }
                     },
                     x: { 
-                        grid: { color: '#f1f5f9' }, 
-                        ticks: { color: '#1e293b', font: { weight: '700' } },
-                        title: { display: true, text: 'Time Step Size h (seconds)', color: '#1e293b', font: { weight: '700' } }
+                        grid: { color: '#f3f4f6' }, 
+                        ticks: { color: '#111827', font: { weight: '700' } },
+                        title: { display: true, text: 'Time Step Size h (seconds)', color: '#111827', font: { weight: '700' } }
                     }
                 }
             }
         });
     }
 
-    // 4. Numerical Stability Chart (Euler Breakdown vs RK4)
+    // 4. Numerical Stability Chart - Authentic MATLAB Line Style
     const ctxStab = document.getElementById('chart-stability');
     if (ctxStab && !chartStability) {
         chartStability = new Chart(ctxStab, {
@@ -681,38 +683,38 @@ function initSolverCharts() {
                 labels: ['0s', '1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '10s'],
                 datasets: [
                     {
-                        label: 'Exact Analytical Benchmark (5m Target)',
+                        label: 'Exact Analytical Benchmark',
                         data: [0.0, 2.5, 4.4, 5.13, 5.04, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#059669',
-                        borderWidth: 3,
+                        borderColor: '#000000',
+                        borderWidth: 2.5,
                         pointRadius: 0,
-                        tension: 0.3
+                        tension: 0
                     },
                     {
                         label: 'Euler (h = 0.02s - Stable)',
                         data: [0.0, 2.45, 4.38, 5.18, 5.05, 5.01, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#0284c7',
+                        borderColor: '#0072BD',
                         borderDash: [5, 4],
                         pointRadius: 3
                     },
                     {
                         label: 'Euler (h = 0.10s - Severe Oscillations)',
                         data: [0.0, 2.8, 5.4, 4.2, 5.8, 4.5, 5.4, 4.7, 5.2, 4.9, 5.0],
-                        borderColor: '#d97706',
+                        borderColor: '#D95319',
                         borderWidth: 2,
                         pointRadius: 4
                     },
                     {
                         label: 'Euler (h = 0.25s - Diverging Blowup)',
                         data: [0.0, 3.8, 7.2, 1.8, 9.4, 0.2, 12.5, 0.0, 16.0, 0.0, 22.0],
-                        borderColor: '#dc2626',
-                        borderWidth: 2.5,
+                        borderColor: '#A2142F',
+                        borderWidth: 2,
                         pointRadius: 4
                     },
                     {
-                        label: 'RK4 (h = 0.10s - Rock Solid)',
+                        label: 'RK4 (h = 0.10s - Stable)',
                         data: [0.0, 2.5, 4.4, 5.13, 5.04, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#7c3aed',
+                        borderColor: '#77AC30',
                         borderDash: [2, 2],
                         pointRadius: 3
                     }
@@ -722,19 +724,19 @@ function initSolverCharts() {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: '#1e293b', font: { weight: '700' } } }
+                    legend: { labels: { color: '#111827', font: { weight: '700' } } }
                 },
                 scales: {
                     y: { 
                         min: 0, max: 12,
-                        grid: { color: '#e2e8f0' }, 
-                        ticks: { color: '#1e293b', font: { weight: '600' } },
-                        title: { display: true, text: 'Altitude z (meters)', color: '#1e293b', font: { weight: '700' } }
+                        grid: { color: '#e5e7eb' }, 
+                        ticks: { color: '#111827', font: { weight: '600' } },
+                        title: { display: true, text: 'Altitude z (meters)', color: '#111827', font: { weight: '700' } }
                     },
                     x: { 
-                        grid: { color: '#f1f5f9' }, 
-                        ticks: { color: '#1e293b', font: { weight: '700' } },
-                        title: { display: true, text: 'Time (seconds)', color: '#1e293b', font: { weight: '700' } }
+                        grid: { color: '#f3f4f6' }, 
+                        ticks: { color: '#111827', font: { weight: '700' } },
+                        title: { display: true, text: 'Time (seconds)', color: '#111827', font: { weight: '700' } }
                     }
                 }
             }
@@ -742,7 +744,7 @@ function initSolverCharts() {
     }
 }
 
-// 5. Parameter Sensitivity Time-Series Response Charts (White Academic Theme)
+// 5. Parameter Sensitivity Time-Series Response Charts (Authentic MATLAB Palette)
 function initSensitivityCharts() {
     // Chart 1: Kd Damping Sensitivity
     const ctxKd = document.getElementById('chart-sens-kd');
@@ -753,39 +755,39 @@ function initSensitivityCharts() {
                 labels: ['0s', '1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '10s'],
                 datasets: [
                     {
-                        label: '-20% Kd (2.92) - High Overshoot (7.80%)',
+                        label: '-20% Kd (2.92) - Overshoot 7.80%',
                         data: [0.0, 2.7, 4.7, 5.39, 4.88, 5.05, 4.98, 5.01, 5.00, 5.00, 5.00],
-                        borderColor: '#dc2626',
-                        borderWidth: 2.5,
-                        tension: 0.3
+                        borderColor: '#A2142F',
+                        borderWidth: 2,
+                        tension: 0
                     },
                     {
-                        label: '-10% Kd (3.28) - Overshoot (4.90%)',
+                        label: '-10% Kd (3.28) - Overshoot 4.90%',
                         data: [0.0, 2.6, 4.5, 5.25, 4.94, 5.02, 4.99, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#d97706',
+                        borderColor: '#D95319',
                         borderWidth: 2,
-                        tension: 0.3
+                        tension: 0
                     },
                     {
-                        label: 'Baseline Kd (3.65) - Optimal (2.65%)',
+                        label: 'Baseline Kd (3.65) - Optimal 2.65%',
                         data: [0.0, 2.5, 4.4, 5.13, 5.02, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#059669',
+                        borderColor: '#0072BD',
                         borderWidth: 3,
-                        tension: 0.3
+                        tension: 0
                     },
                     {
-                        label: '+10% Kd (4.01) - Well Damped (1.20%)',
+                        label: '+10% Kd (4.01) - Well Damped 1.20%',
                         data: [0.0, 2.4, 4.2, 5.06, 5.01, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#0284c7',
+                        borderColor: '#77AC30',
                         borderWidth: 2,
-                        tension: 0.3
+                        tension: 0
                     },
                     {
-                        label: '+20% Kd (4.38) - Overdamped (0.40%)',
+                        label: '+20% Kd (4.38) - Overdamped 0.40%',
                         data: [0.0, 2.3, 4.0, 5.02, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#7c3aed',
+                        borderColor: '#7E2F8E',
                         borderWidth: 2,
-                        tension: 0.3
+                        tension: 0
                     }
                 ]
             },
@@ -793,11 +795,20 @@ function initSensitivityCharts() {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: '#1e293b', font: { weight: '600', size: 10 } } }
+                    legend: { labels: { color: '#111827', font: { weight: '600', size: 10 } } }
                 },
                 scales: {
-                    y: { min: 0, max: 6.0, grid: { color: '#e2e8f0' }, ticks: { color: '#1e293b' } },
-                    x: { grid: { color: '#f1f5f9' }, ticks: { color: '#1e293b' } }
+                    y: { 
+                        min: 0, max: 6.0, 
+                        grid: { color: '#e5e7eb' }, 
+                        ticks: { color: '#111827' },
+                        title: { display: true, text: 'Altitude z (m)', color: '#111827', font: { weight: '700' } }
+                    },
+                    x: { 
+                        grid: { color: '#f3f4f6' }, 
+                        ticks: { color: '#111827' },
+                        title: { display: true, text: 'Time (s)', color: '#111827', font: { weight: '700' } }
+                    }
                 }
             }
         });
@@ -814,23 +825,23 @@ function initSensitivityCharts() {
                     {
                         label: '-20% Mass (1.51 kg) - Fast Rise',
                         data: [0.0, 2.8, 4.7, 5.06, 5.01, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#0284c7',
-                        borderWidth: 2.5,
-                        tension: 0.3
+                        borderColor: '#77AC30',
+                        borderWidth: 2,
+                        tension: 0
                     },
                     {
                         label: 'Baseline Mass (1.89 kg) - Standard',
                         data: [0.0, 2.5, 4.4, 5.13, 5.02, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#059669',
+                        borderColor: '#0072BD',
                         borderWidth: 3,
-                        tension: 0.3
+                        tension: 0
                     },
                     {
                         label: '+20% Mass (2.27 kg) - Heavy Camera Payload (Slow Rise)',
                         data: [0.0, 2.1, 3.8, 4.85, 5.18, 5.04, 5.01, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#dc2626',
-                        borderWidth: 2.5,
-                        tension: 0.3
+                        borderColor: '#A2142F',
+                        borderWidth: 2,
+                        tension: 0
                     }
                 ]
             },
@@ -838,11 +849,20 @@ function initSensitivityCharts() {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: '#1e293b', font: { weight: '600', size: 10 } } }
+                    legend: { labels: { color: '#111827', font: { weight: '600', size: 10 } } }
                 },
                 scales: {
-                    y: { min: 0, max: 6.0, grid: { color: '#e2e8f0' }, ticks: { color: '#1e293b' } },
-                    x: { grid: { color: '#f1f5f9' }, ticks: { color: '#1e293b' } }
+                    y: { 
+                        min: 0, max: 6.0, 
+                        grid: { color: '#e5e7eb' }, 
+                        ticks: { color: '#111827' },
+                        title: { display: true, text: 'Altitude z (m)', color: '#111827', font: { weight: '700' } }
+                    },
+                    x: { 
+                        grid: { color: '#f3f4f6' }, 
+                        ticks: { color: '#111827' },
+                        title: { display: true, text: 'Time (s)', color: '#111827', font: { weight: '700' } }
+                    }
                 }
             }
         });
@@ -857,25 +877,25 @@ function initSensitivityCharts() {
                 labels: ['0s', '1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '10s'],
                 datasets: [
                     {
-                        label: 'Kp = 4.0 (-20% Spring) - Slow Rise Time',
+                        label: 'Kp = 4.0 (-20% Spring) - Slow Rise',
                         data: [0.0, 2.2, 4.0, 4.95, 5.03, 5.01, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#d97706',
+                        borderColor: '#D95319',
                         borderWidth: 2,
-                        tension: 0.3
+                        tension: 0
                     },
                     {
                         label: 'Kp = 5.0 (Baseline) - Optimal Rise',
                         data: [0.0, 2.5, 4.4, 5.13, 5.02, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#059669',
+                        borderColor: '#0072BD',
                         borderWidth: 3,
-                        tension: 0.3
+                        tension: 0
                     },
                     {
-                        label: 'Kp = 6.0 (+20% Spring) - High Kinetic Overshoot (4.80%)',
+                        label: 'Kp = 6.0 (+20% Spring) - Overshoot 4.80%',
                         data: [0.0, 2.8, 4.7, 5.24, 4.96, 5.02, 5.00, 5.00, 5.00, 5.00, 5.00],
-                        borderColor: '#dc2626',
-                        borderWidth: 2.5,
-                        tension: 0.3
+                        borderColor: '#A2142F',
+                        borderWidth: 2,
+                        tension: 0
                     }
                 ]
             },
@@ -883,11 +903,20 @@ function initSensitivityCharts() {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: '#1e293b', font: { weight: '600', size: 10 } } }
+                    legend: { labels: { color: '#111827', font: { weight: '600', size: 10 } } }
                 },
                 scales: {
-                    y: { min: 0, max: 6.0, grid: { color: '#e2e8f0' }, ticks: { color: '#1e293b' } },
-                    x: { grid: { color: '#f1f5f9' }, ticks: { color: '#1e293b' } }
+                    y: { 
+                        min: 0, max: 6.0, 
+                        grid: { color: '#e5e7eb' }, 
+                        ticks: { color: '#111827' },
+                        title: { display: true, text: 'Altitude z (m)', color: '#111827', font: { weight: '700' } }
+                    },
+                    x: { 
+                        grid: { color: '#f3f4f6' }, 
+                        ticks: { color: '#111827' },
+                        title: { display: true, text: 'Time (s)', color: '#111827', font: { weight: '700' } }
+                    }
                 }
             }
         });

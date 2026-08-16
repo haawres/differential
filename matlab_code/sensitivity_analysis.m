@@ -1,114 +1,175 @@
 function sensitivity_analysis(params)
-% =========================================================================
-% Differential Equations Requirement: Parameter Sensitivity Sweep (OAT)
-% Investigates +/-10% and +/-20% perturbations across 8 core parameters:
-%   - Mass (m), Arm Length (l), Inertia Ix, Iz, Thrust b, Drag d, Kp, Kd
-% Measures: Overshoot (%), Settling Time (s), Rise Time (s), Steady-State Error
-% Generates: Sensitivity Indices & Tornado Ranking Chart
-% =========================================================================
+% Drone Flight Simulation Project
+%
+% Sensitivity Analysis
+%
+% Investigates how mass, drag and pitch affect the drone
+% velocities.
 
-if nargin < 1
-    params = parameters();
-end
+figure('Name','Sensitivity Analysis',...
+       'NumberTitle','off',...
+       'Position',[100 50 1200 900]);
 
-fprintf('=================================================================\n');
-fprintf('        SYSTEMATIC PARAMETER SENSITIVITY SWEEP (+/- 20%%)        \n');
-fprintf('=================================================================\n');
+%% MASS 
+massValues = [1.0 3.0];
 
-param_names = {'Mass (m)', 'Inertia (Ix)', 'Inertia (Iz)', 'Thrust Coeff (b)', ...
-               'Drag Coeff (d)', 'Arm Length (l)', 'Altitude Kp', 'Altitude Kd'};
-num_params = length(param_names);
+for j = 1:length(massValues)
 
-% Perturbation factors
-pert_factors = [0.8, 0.9, 1.0, 1.1, 1.2]; % -20%, -10%, Baseline, +10%, +20%
+    p = params;
+    p.mass = massValues(j);
 
-% Baseline metrics
-[t_base, z_base, ~] = analytical_solution(params, 'itae');
-os_base = calculate_overshoot(z_base, params.target_z);
-st_base = calculate_settling_time(t_base, z_base, params.target_z);
+    [t,Y] = analytical_solution(p);
 
-sens_matrix_os = zeros(num_params, length(pert_factors));
-sens_matrix_st = zeros(num_params, length(pert_factors));
-
-for p = 1:num_params
-    for f = 1:length(pert_factors)
-        factor = pert_factors(f);
-        p_mod = params;
-        
-        switch p
-            case 1, p_mod.mass = params.mass * factor;
-            case 2, p_mod.Ix = params.Ix * factor;
-            case 3, p_mod.Iz = params.Iz * factor;
-            case 4, p_mod.thrust_b = params.thrust_b * factor;
-            case 5, p_mod.drag_d = params.drag_d * factor;
-            case 6, p_mod.arm_len = params.arm_len * factor;
-            case 7, p_mod.pid.itae.alt_kp = params.pid.itae.alt_kp * factor;
-            case 8, p_mod.pid.itae.alt_kd = params.pid.itae.alt_kd * factor;
-        end
-        
-        [t_sim, z_sim, ~] = analytical_solution(p_mod, 'itae');
-        sens_matrix_os(p, f) = calculate_overshoot(z_sim, params.target_z);
-        sens_matrix_st(p, f) = calculate_settling_time(t_sim, z_sim, params.target_z);
-    end
-end
-
-%% Print Formatted Table
-fprintf('%-18s | %-8s | %-8s | %-8s | %-8s | %-8s\n', 'Parameter', '-20%', '-10%', 'Baseline', '+10%', '+20%');
-fprintf('-----------------------------------------------------------------\n');
-for p = 1:num_params
-    fprintf('%-18s | %-8.2f | %-8.2f | %-8.2f | %-8.2f | %-8.2f  (Overshoot %%)\n', ...
-        param_names{p}, sens_matrix_os(p,1), sens_matrix_os(p,2), sens_matrix_os(p,3), sens_matrix_os(p,4), sens_matrix_os(p,5));
-end
-fprintf('=================================================================\n');
-
-%% Tornado Ranking Chart
-figure('Name', 'Parameter Sensitivity Tornado Ranking', 'Position', [100 100 1100 600]);
-
-subplot(1, 2, 1);
-delta_os_neg = sens_matrix_os(:, 1) - sens_matrix_os(:, 3); % -20% delta
-delta_os_pos = sens_matrix_os(:, 5) - sens_matrix_os(:, 3); % +20% delta
-[~, sort_idx] = sort(abs(delta_os_pos) + abs(delta_os_neg), 'ascend');
-
-b = barh(categorical(param_names(sort_idx)), [delta_os_neg(sort_idx), delta_os_pos(sort_idx)]);
-b(1).FaceColor = [0.9 0.3 0.3];
-b(2).FaceColor = [0.2 0.7 0.4];
-grid on; xlabel('Change in Overshoot (\Delta %)');
-title('Tornado Chart: Sensitivity to Overshoot');
-legend('-20% Perturbation', '+20% Perturbation', 'Location', 'southeast');
-
-subplot(1, 2, 2);
-delta_st_neg = sens_matrix_st(:, 1) - sens_matrix_st(:, 3);
-delta_st_pos = sens_matrix_st(:, 5) - sens_matrix_st(:, 3);
-[~, sort_idx_st] = sort(abs(delta_st_pos) + abs(delta_st_neg), 'ascend');
-
-b_st = barh(categorical(param_names(sort_idx_st)), [delta_st_neg(sort_idx_st), delta_st_pos(sort_idx_st)]);
-b_st(1).FaceColor = [0.9 0.5 0.2];
-b_st(2).FaceColor = [0.3 0.6 0.9];
-grid on; xlabel('Change in Settling Time (\Delta s)');
-title('Tornado Chart: Sensitivity to Settling Time');
-legend('-20% Perturbation', '+20% Perturbation', 'Location', 'southeast');
-
-saveas(gcf, 'tornado_sensitivity_figure.png');
-fprintf('Tornado sensitivity chart generated.\n');
+    vxMass(j,:) = Y(4,:);
+    vyMass(j,:) = Y(5,:);
+    vzMass(j,:) = Y(6,:);
 
 end
 
-%% Helper Functions
-function os = calculate_overshoot(z, z_target)
-    z_max = max(z);
-    if z_max > z_target
-        os = ((z_max - z_target) / z_target) * 100.0;
-    else
-        os = 0.0;
-    end
+%% DRAG 
+dragValues = [0.5 1.0];
+
+for j = 1:length(dragValues)
+
+    p = params;
+    p.drag = dragValues(j);
+
+    [t,Y] = analytical_solution(p);
+
+    vxDrag(j,:) = Y(4,:);
+    vyDrag(j,:) = Y(5,:);
+    vzDrag(j,:) = Y(6,:);
+
 end
 
-function st = calculate_settling_time(t, z, z_target)
-    band = 0.02 * z_target; % 2% error band
-    idx = find(abs(z - z_target) > band, 1, 'last');
-    if isempty(idx)
-        st = t(1);
-    else
-        st = t(idx);
-    end
+%% PITCH
+pitchValues = [10 25];
+
+for j = 1:length(pitchValues)
+
+    p = params;
+    p.pitch = deg2rad(pitchValues(j));
+
+    [t,Y] = analytical_solution(p);
+
+    vxPitch(j,:) = Y(4,:);
+    vyPitch(j,:) = Y(5,:);
+    vzPitch(j,:) = Y(6,:);
+
+end
+
+%% MASS 
+
+subplot(3,3,1)
+plot(t,vxMass(1,:),'k','LineWidth',2)
+hold on
+plot(t,vxMass(2,:),'m--','LineWidth',2)
+grid on
+title('Mass: Forward Velocity')
+xlabel('Time (s)')
+ylabel('v_x (m/s)')
+legend('1 kg','3 kg')
+
+subplot(3,3,2)
+plot(t,vyMass(1,:),'k','LineWidth',2)
+hold on
+plot(t,vyMass(2,:),'m--','LineWidth',2)
+grid on
+title('Mass: Lateral Velocity')
+xlabel('Time (s)')
+ylabel('v_y (m/s)')
+legend('1 kg','3 kg')
+
+subplot(3,3,3)
+plot(t,vzMass(1,:),'k','LineWidth',2)
+hold on
+plot(t,vzMass(2,:),'m--','LineWidth',2)
+grid on
+title('Mass: Vertical Velocity')
+xlabel('Time (s)')
+ylabel('v_z (m/s)')
+legend('1 kg','3 kg')
+
+%% DRAG
+
+subplot(3,3,4)
+plot(t,vxDrag(1,:),'k','LineWidth',2)
+hold on
+plot(t,vxDrag(2,:),'r--','LineWidth',2)
+grid on
+title('Drag: Forward Velocity')
+xlabel('Time (s)')
+ylabel('v_x (m/s)')
+legend('k = 0.5','k = 1.0')
+
+subplot(3,3,5)
+plot(t,vyDrag(1,:),'k','LineWidth',2)
+hold on
+plot(t,vyDrag(2,:),'r--','LineWidth',2)
+grid on
+title('Drag: Lateral Velocity')
+xlabel('Time (s)')
+ylabel('v_y (m/s)')
+legend('k = 0.5','k = 1.0')
+
+subplot(3,3,6)
+plot(t,vzDrag(1,:),'k','LineWidth',2)
+hold on
+plot(t,vzDrag(2,:),'r--','LineWidth',2)
+grid on
+title('Drag: Vertical Velocity')
+xlabel('Time (s)')
+ylabel('v_z (m/s)')
+legend('k = 0.5','k = 1.0')
+
+%% PITCH 
+
+subplot(3,3,7)
+plot(t,vxPitch(1,:),'k','LineWidth',2)
+hold on
+plot(t,vxPitch(2,:),'b--','LineWidth',2)
+grid on
+title('Pitch: Forward Velocity')
+xlabel('Time (s)')
+ylabel('v_x (m/s)')
+legend('10°','25°')
+
+subplot(3,3,8)
+plot(t,vyPitch(1,:),'k','LineWidth',2)
+hold on
+plot(t,vyPitch(2,:),'b--','LineWidth',2)
+grid on
+title('Pitch: Lateral Velocity')
+xlabel('Time (s)')
+ylabel('v_y (m/s)')
+legend('10°','25°')
+
+subplot(3,3,9)
+plot(t,vzPitch(1,:),'k','LineWidth',2)
+hold on
+plot(t,vzPitch(2,:),'b--','LineWidth',2)
+grid on
+title('Pitch: Vertical Velocity')
+xlabel('Time (s)')
+ylabel('v_z (m/s)')
+legend('10°','25°')
+
+%% Print summary
+
+fprintf('\n PARAMETER STUDY \n');
+
+fprintf('\nMass\n');
+fprintf('1 kg Final Speed : %.2f m/s\n',norm([vxMass(1,end),vyMass(1,end),vzMass(1,end)]));
+fprintf('3 kg Final Speed : %.2f m/s\n',norm([vxMass(2,end),vyMass(2,end),vzMass(2,end)]));
+
+fprintf('\nDrag\n');
+fprintf('k = 0.5 Final Speed : %.2f m/s\n',norm([vxDrag(1,end),vyDrag(1,end),vzDrag(1,end)]));
+fprintf('k = 1.0 Final Speed : %.2f m/s\n',norm([vxDrag(2,end),vyDrag(2,end),vzDrag(2,end)]));
+
+fprintf('\nPitch\n');
+fprintf('10 deg Final Speed : %.2f m/s\n',norm([vxPitch(1,end),vyPitch(1,end),vzPitch(1,end)]));
+fprintf('25 deg Final Speed : %.2f m/s\n',norm([vxPitch(2,end),vyPitch(2,end),vzPitch(2,end)]));
+
+fprintf('\n');
+
 end

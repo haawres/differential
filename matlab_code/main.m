@@ -1,53 +1,53 @@
-%% =========================================================================
-% MATH221 & CE122: Applied Differential Equations & Numerical Methods
-% Drone Dynamics & Control Project - Master Simulation & Analysis Script
-% Authors: KEMS UAV Research Group (Ashesi University)
-% Reference: Alanezi et al., MDPI Drones 2022, 6, 288
-% Compatible with MATLAB R2024b
-% =========================================================================
+%% Drone Simulation
+% AP Group 5
+% Submission 3
 
-clear; clc; close all;
+clear;
+clc;
+close all;
 
-fprintf('*****************************************************************\n');
-fprintf('*        KEMS UAV DRONE DYNAMICS & CONTROL SIMULATION           *\n');
-fprintf('*        MATH221 Differential Equations & Numerical Methods     *\n');
-fprintf('*****************************************************************\n\n');
-
-%% 1. Initialize System Parameters
-fprintf('[Step 1/7] Initializing physical parameters and GA-PID gains...\n');
+%% 1. Load Parameters
+% Loads physical parameters and initial conditions
 params = parameters();
-fprintf('-> Mass: %.3f kg, Arm: %.3f m, Target Altitude: %.1f m\n', ...
-    params.mass, params.arm_len, params.target_z);
 
-%% 2. Calculate Analytical Benchmark & Standard ODE Solutions
-fprintf('\n[Step 2/7] Calculating analytical benchmark vs numerical ODEs...\n');
-[t_ana, z_ana, vz_ana] = analytical_solution(params, 'itae');
-[t_ode45, Y_ode45]     = ode45_solver(@drone_dynamics, params, 'itae');
-[t_rk4, Y_rk4]         = rk4_solver(@drone_dynamics, params, 'itae');
-[t_euler, Y_euler]     = euler_solver(@drone_dynamics, params, 'itae');
+%% 2. Calculate Trajectories
+% Run all four methods for the standard trajectory
+[tAna, YAna]     = analytical_solution(params);
+[tEuler, YEuler] = euler_solver(@drone_trajectory_dynamics, params);
+[tRK4, YRK4]     = rk4_solver(@drone_trajectory_dynamics, params);
+[tODE45, YODE45] = ode45_solver(@drone_trajectory_dynamics, params);
 
-fprintf('-> Completed baseline simulations for ITAE Altitude Step Response.\n');
+% Display message from original main.m
+disp('Euler solver completed successfully.');
+disp('Final State Vector (Euler):');
+disp(YEuler(:,end));
 
-%% 3. Solver Comparison & Benchmarking
-fprintf('\n[Step 3/7] Running Multi-Solver Benchmarking (ode45, ode23, ode15s, ode113, RK4, Euler)...\n');
-solver_results = solver_comparison(params);
+%% 3. Visualizations & Error Analysis
+% Generates velocity comparisons and 3D trajectory
+plot_results(tAna, YAna, YEuler, YRK4, YODE45);
 
-%% 4. Numerical Error & Convergence Analysis
-fprintf('\n[Step 4/7] Executing Step-Size Convergence & Error Analysis...\n');
-error_analysis(params);
+% Compares numerical methods against analytical solution
+error_analysis(tAna, YAna, YEuler, YRK4, YODE45);
 
-%% 5. Numerical Stability Analysis (Step-Size Limits)
-fprintf('\n[Step 5/7] Executing Euler vs RK4 Numerical Stability Analysis...\n');
+%% 4. System Analyses
+% Investigates Euler step sizes
 stability_analysis(params);
 
-%% 6. Parameter Sensitivity & Robustness Analysis (+/- 20% Sweep)
-fprintf('\n[Step 6/7] Executing Parameter Sensitivity Sweep & Tornado Ranking...\n');
+% Investigates mass, drag, and pitch
 sensitivity_analysis(params);
 
-%% 7. Obstacle Avoidance & Environmental Wind Disturbance Simulation
-fprintf('\n[Step 7/7] Running 2D/3D Obstacle Avoidance & Wind Disturbance Trajectories...\n');
+%% 5. Obstacle Avoidance & Animation
+% Generates the obstacle avoidance plot
 obstacle_simulation(params);
 
-fprintf('\n*****************************************************************\n');
-fprintf('* ALL SIMULATIONS, ANALYSES & FIGURES COMPLETED SUCCESSFULLY!   *\n');
-fprintf('*****************************************************************\n');
+% Generate the specific trajectory to animate the drone
+[~, YObstacle] = euler_solver(@drone_obstacle_dynamics, params);
+
+% Animate the flight path
+animate_drone(YObstacle, params);
+
+%% 6. Export Figures (Optional)
+% Uncomment the line below if you want to automatically save all generated plots
+% export_results('Simulation_Figures');
+
+disp('All simulations and analyses complete!');
