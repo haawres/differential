@@ -1,2 +1,2 @@
-# Ignore only temporary log files
+*.asv
 *.log
