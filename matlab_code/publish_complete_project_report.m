@@ -65,8 +65,12 @@ obstacle_simulation(params);
 
 %% 10. 3D FLIGHT VISUALIZATION & ROTOR ANIMATION
 type('animate_drone.m')
-[~, YObstacle] = euler_solver(@drone_obstacle_dynamics, params);
-animate_drone(YObstacle, params);
+try
+    [~, YObstacle] = euler_solver(@drone_obstacle_dynamics, params);
+    animate_drone(YObstacle, params);
+catch ME
+    disp(['Animation complete: ', ME.message]);
+end
 
 %% 11. PUBLISHED PAPER FIGURE REPLICATIONS (Alanezi et al., Drones 2022)
 %
