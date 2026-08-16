@@ -3,53 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System. Replicating the scientific paper using interactive flight simulations, controllers, and sensitivity studies.">
-    <meta name="keywords" content="quadrotor dynamics, PID tuning, genetic algorithm, obstacle avoidance, elite opposition bat algorithm, livestock monitoring">
+    <meta name="description" content="KEMS UAV Autonomous Navigation Project: Modeling, Simulating, and Modifying Quadrotor Differential Equations for Autonomous Obstacle Avoidance in Agriculture.">
     <title>KEMS - UAV Autonomous Navigation Project</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- MathJax 3 for Beautiful, Textbook-Quality Equations -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)'], ['$', '$']],
+                displayMath: [['\\[', '\\]'], ['$$', '$$']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Chart.js for Visual Benchmarks -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Top Navigation Header (Replicating Wix layout) -->
+    <!-- Top Navigation Header -->
     <header id="site-header">
         <div class="header-container">
             <a href="#home" class="logo-link" onclick="navigateToPage('home')">
-                <div class="logo-icon">
-                    <svg viewBox="20.303 25.565 159.393 148.871" width="30" height="30">
-                        <g>
-                            <path d="M179.398 97.035c-2.089-12.835-17.014-19.402-28.953-14.029l-12.537 5.671c-11.94 5.373-25.371 5.373-37.311 0L88.06 83.006C76.12 77.633 61.196 84.2 59.107 97.035c-.299.895-.299 2.089-.299 3.283 0 .895 0 2.089.299 3.283 2.089 12.835 17.014 19.402 28.953 14.029l12.537-5.671c11.94-5.373 25.371-5.373 37.311 0l12.537 5.671c11.94 5.373 26.864-1.194 28.953-14.029.298-.895.298-2.089.298-3.283 0-.895 0-2.089-.298-3.283z" fill="#FD6262"/>
-                            <path d="M49.556 62.112l12.537-5.671c11.94-5.373 25.371-5.373 37.311 0l12.537 5.671c11.94 5.373 26.864-1.194 28.953-14.029.298-.895.298-2.089.298-3.283 0-.895 0-2.089-.298-3.283-2.089-12.835-17.014-19.402-28.953-14.029l-12.537 5.671c-11.94 5.373-25.371 5.373-37.311 0l-12.537-5.671c-11.94-5.373-26.864.895-28.953 14.029-.299.895-.299 2.089-.299 3.283 0 .896 0 2.089.299 3.283 2.089 12.835 17.013 19.402 28.953 14.029z" fill="#FD6262"/>
-                            <path d="M111.94 137.928l-12.537 5.671c-11.94 5.373-25.371 5.373-37.311 0l-12.537-5.671c-11.94-5.373-26.864 1.194-28.953 14.029-.299.895-.299 2.089-.299 3.283 0 .896 0 2.089.299 3.283 2.089 12.835 17.014 19.402 28.953 14.029l12.537-5.671c11.94-5.373 25.371-5.373 37.311 0l12.537 5.671c11.94 5.373 26.864-1.194 28.953-14.029.298-.896.298-2.089.298-3.283 0-.895 0-2.089-.298-3.283-2.089-12.836-17.014-19.402-28.953-14.029z" fill="#FD6262"/>
-                        </g>
-                    </svg>
-                </div>
-                <span class="logo-text">KEMS <span class="logo-sub">UAV</span></span>
+                <div class="logo-badge">KEMS UAV</div>
+                <span class="logo-text">AUTONOMOUS <span class="logo-sub">NAVIGATION</span></span>
             </a>
 
-            <!-- Mobile menu toggle -->
             <button class="nav-toggle" id="menu-toggle" aria-label="Toggle Menu">&#9776;</button>
 
-            <!-- Navigation Links -->
             <nav id="nav-bar">
                 <ul class="nav-links">
                     <li class="nav-item"><a href="#home" onclick="navigateToPage('home')" class="nav-link active">Home</a></li>
-                    
+                    <li class="nav-item"><a href="#picture-depiction" onclick="navigateToPage('picture-depiction')" class="nav-link comic-tab-highlight">Picture Depiction</a></li>
+
                     <li class="nav-item has-dropdown">
                         <a href="#the-model" onclick="navigateToPage('the-model')" class="nav-link">The Model <span class="arrow">&#9662;</span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#detailed-analysis" onclick="navigateToPage('detailed-analysis')">Understanding the Paper</a></li>
                             <li><a href="#equations-explained" onclick="navigateToPage('equations-explained')">Equations Explained</a></li>
                             <li><a href="#parameter-definition" onclick="navigateToPage('parameter-definition')">Figure Replication</a></li>
+                            <li><a href="#paper-results-discussion" onclick="navigateToPage('paper-results-discussion')">Discussion of Results</a></li>
                         </ul>
                     </li>
 
                     <li class="nav-item has-dropdown">
                         <a href="#copy-of-the-model" onclick="navigateToPage('copy-of-the-model')" class="nav-link">Our Contribution <span class="arrow">&#9662;</span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#model-shortcommings" onclick="navigateToPage('model-shortcommings')">Modifications</a></li>
-                            <li><a href="#parameter-sensitivity-analysis" onclick="navigateToPage('parameter-sensitivity-analysis')">Parameter Sensitivity</a></li>
-                            <li><a href="#future-improvements" onclick="navigateToPage('future-improvements')">Future Improvements</a></li>
+                            <li><a href="#model-shortcommings" onclick="navigateToPage('model-shortcommings')">Modifications & Simulator</a></li>
+                            <li><a href="#our-results-analysis" onclick="navigateToPage('our-results-analysis')">Our Results & Solvers</a></li>
+                            <li><a href="#parameter-sensitivity-analysis" onclick="navigateToPage('parameter-sensitivity-analysis')">Sensitivity & Robustness</a></li>
+                            <li><a href="#future-improvements" onclick="navigateToPage('future-improvements')">Further Research</a></li>
                             <li><a href="#applied-prgramming-aspect" onclick="navigateToPage('applied-prgramming-aspect')">Applied Programming</a></li>
                         </ul>
                     </li>
@@ -58,261 +66,338 @@
                     <li class="nav-item"><a href="#about-7" onclick="navigateToPage('about-7')" class="nav-link">References</a></li>
                 </ul>
             </nav>
-            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
-                <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            </button>
         </div>
     </header>
 
     <!-- Main Content Area -->
     <main id="main-wrapper">
 
-        <!-- 1. HOME PAGE -->
+        <!-- ===================================================================
+             1. HOME PAGE
+             =================================================================== -->
         <section id="home" class="page-section active-page">
-            <!-- Large Static Slider Banner matching Bard Drone Center -->
-            <div class="lp-staticslider">
-                <img class="lp-staticslider-image" alt="KEMS UAV Project" src="https://dronecenter.bard.edu/files/2019/09/cover-photo-website-dirk-dallas.jpg">
-                <div class="staticslider-caption">
-                    <h2 class="staticslider-caption-title">KEMS UAV Autonomous Navigation Project</h2>
-                    <span class="staticslider-sep"></span>
-                    <div class="staticslider-caption-text">Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System</div>
+            
+            <div class="comic-hero-banner">
+                <div class="comic-badge-tag">KEMS UAV RESEARCH PROJECT</div>
+                <h1 class="comic-main-title">OBSTACLE AVOIDANCE-BASED AUTONOMOUS NAVIGATION OF A QUADROTOR SYSTEM</h1>
+                <p class="comic-hero-tagline">
+                    Modeling, simulating, and modifying quadrotor differential equations for precision livestock monitoring and autonomous obstacle avoidance.
+                </p>
+                <div class="cta-group" style="margin-top: 25px;">
+                    <button class="btn btn-action" onclick="navigateToPage('picture-depiction')">🎨 View Picture Depiction</button>
+                    <button class="btn btn-neon" onclick="navigateToPage('model-shortcommings')">⚡ Launch Flight Simulator</button>
+                    <button class="btn btn-secondary" onclick="navigateToPage('equations-explained')">📐 How The Math Works</button>
                 </div>
             </div>
 
-            <div class="bard-content-wrapper">
-                
-                <!-- Quick Link Blocks matching Bard blocks -->
-                <div class="lp-blocks">
-                    <div class="lp-block" onclick="navigateToPage('the-model')">
-                        <span class="lp-block-subtitle">THE AUTOPILOT MODEL</span>
-                        <h4 class="lp-block-title">The Mathematical Model &rarr;</h4>
-                    </div>
-                    <div class="lp-block" onclick="navigateToPage('model-shortcommings')">
-                        <span class="lp-block-subtitle">FLIGHT CONTROLLER SIMULATOR</span>
-                        <h4 class="lp-block-title">Interactive Modifications &rarr;</h4>
-                    </div>
+            <!-- Short Story Card -->
+            <div class="comic-story-panel">
+                <div class="story-header-row">
+                    <span class="story-chapter-pill">PROJECT ORIGIN & CONTEXT</span>
+                    <span class="story-read-time">⏱️ 2 Min Read</span>
                 </div>
-
-                <!-- Problem Statement & Predicted Future Modifications Section -->
-                <div class="bard-main-grid">
-                    <!-- Left: Problem Statement Panel -->
-                    <div class="bard-panel problem-panel">
-                        <div class="bard-panel-header">THE PROBLEM STATEMENT</div>
-                        <h3 class="panel-heading">Introduction to the Navigation Problem</h3>
-                        <p class="panel-body-text">
-                            The primary challenge in autonomous drone flight is navigating a highly non-linear, under-actuated system. A quadrotor has six degrees of freedom (moving translationally along x, y, z and rotating along roll, pitch, yaw) but only four rotor control inputs. This requires precise, dynamic feedback controllers to regulate flight stability.
-                        </p>
-                        <p class="panel-body-text" style="margin-top: 12px;">
-                            Under manual teleoperation, flight fails in GPS-denied, remote, or complex agricultural environments (such as cattle tracking fields). Autopilots must instantly process raw sensor telemetry (such as LiDAR data) to steer around obstacles, making mathematical optimization of both flight control loops (PID tuning) and path-planning algorithms (Bat Algorithm) highly critical.
-                        </p>
-                    </div>
-
-                    <!-- Right: Predictions Panel -->
-                    <div class="bard-panel predictions-panel">
-                        <div class="bard-panel-header">FUTURE HORIZONS</div>
-                        <h3 class="panel-heading">Predicted Modifications</h3>
-                        <ul class="panel-list">
-                            <li><strong>Model Predictive Control (MPC)</strong>: Transitioning from standard PID loops to MPC to forecast trajectory deviations and correct them dynamically before errors accumulate.</li>
-                            <li><strong>Optical Flow Camera Fusion</strong>: Integrating LiDAR sensors with stereo-vision camera feeds using Convolutional Neural Networks (CNNs) for real-time semantic obstacle classification.</li>
-                            <li><strong>Multi-Agent Swarm Coordination</strong>: Upgrading the single-agent Bat Algorithm to coordinate multiple cooperative drones communicating over decentralized peer-to-peer networks.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Drone Fun Facts Panel -->
-                <div class="bard-panel fun-facts-panel" style="margin-bottom: 45px;">
-                    <div class="bard-panel-header">DRONE TECH TRIVIA</div>
-                    <h3 class="panel-heading">Fun Facts About Drones</h3>
-                    <div class="fun-facts-grid">
-                        <div class="fact-card">
-                            <span class="fact-num">[FACT #1]</span>
-                            <p class="panel-body-text" style="font-size: 0.9rem;">The name <strong>"drone"</strong> was inspired by the slow, continuous buzzing flight of male honeybees, first referenced in the 1930s with DH.82B Queen Bee target biplanes.</p>
-                        </div>
-                        <div class="fact-card">
-                            <span class="fact-num">[FACT #2]</span>
-                            <p class="panel-body-text" style="font-size: 0.9rem;">Drones were first used in commercial agriculture back in the 1980s in Japan, helping farmers spray steep, terraced rice paddies that were unsafe for manual labor.</p>
-                        </div>
-                        <div class="fact-card">
-                            <span class="fact-num">[FACT #3]</span>
-                            <p class="panel-body-text" style="font-size: 0.9rem;">Modern wildlife conservationists deploy thermal-imaging drones to track migratory paths and detect poachers in complete darkness without disturbing the animals.</p>
-                        </div>
-                        <div class="fact-card">
-                            <span class="fact-num">[FACT #4]</span>
-                            <p class="panel-body-text" style="font-size: 0.9rem;">Power consumption is highly asymmetric: vertical climbs consume up to 4 times more battery power than horizontal drifts, which is why trajectory planning is key.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Relevance announcement block (Quote panel like Bard blockquote text) -->
-                <div class="bard-announcement-panel">
-                    <div class="bard-panel-header">THE RELEVANCE</div>
-                    <h3 class="panel-heading">Why this Paper is Replicated</h3>
-                    <p class="panel-body-text">
-                        The paper we chose, <em>Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System</em>, is highly relevant because it directly bridges abstract mathematical theory with physical flight safety systems.
+                <h2 class="story-headline">The Shepherd’s New Wings: A Tale of Pastures, Mathematics & Autonomous Flight</h2>
+                <div class="story-body">
+                    <p class="story-paragraph">
+                        Across the rolling savanna pastures of the Afram Plains, livestock farming is vulnerable to unpredictable terrain, dense acacia thorn bushes, and unmonitored blind spots where cattle and sheep scatter. Tracking herds manually over hundreds of hectares under harsh heat is exhausting and risky.
                     </p>
-                    <p class="panel-body-text" style="margin-top: 12px;">
-                        By mapping rigid-body Euler equations of motion, the authors model a 6-degree-of-freedom under-actuated system. They then implement a Genetic Algorithm to optimize altitude and attitude PID loops under two criteria: the highly-damped ITAE (Integral of Time-weighted Absolute Error) and the fast-response ISE (Integral of Square Error).
+                    <div class="comic-quote-box">
+                        <span class="quote-speech-bubble">"How can an autonomous aerial robot navigate complex pastures, scout grazing livestock, and steer around obstacles on its own?"</span>
+                    </div>
+                    <p class="story-paragraph">
+                        The solution lies in the mathematics of <strong>six ordinary differential equations derived from Newton's Second Law and Euler angular dynamics</strong>. By continuously measuring altitude, position, and tilt angles, the quadrotor modulates its four motor speeds to maintain stable hover.
                     </p>
-                    <p class="panel-body-text" style="margin-top: 12px;">
-                        Finally, a LiDAR-based Bat Algorithm calculates steering vectors dynamically when obstacles are detected. This replication demonstrates how complex ordinary differential equations are transformed into a living, reactive autopilot.
+                    <p class="story-paragraph">
+                        When an obstacle (like a farm tree or fence) is detected by the onboard 2D LiDAR rangefinder, the controller injects a tangential repulsive steering force into the equations of motion—naturally bending the trajectory around the obstacle with a safe 1.0-meter clearance threshold.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4-Panel Overview Cards -->
+            <div class="section-header" style="margin-top: 50px;">
+                <h2>Currently in Precision Agriculture...</h2>
+                <p>Connecting the mathematics of differential equations to real-world autonomous farming.</p>
+            </div>
+
+            <div class="comic-grid-4">
+                <div class="comic-card card-cyan">
+                    <div class="comic-action-sticker">THINK!</div>
+                    <h3 class="comic-card-title">Food for Thought</h3>
+                    <p class="card-text">
+                        Over <strong>60% of livestock losses</strong> on large pastures occur in unmonitored blind spots. Autonomous quadrotors with obstacle-avoidance ODEs can scout acres in minutes without human piloting.
                     </p>
                 </div>
 
-                <!-- Stats readouts -->
-                <div class="bard-stats-panel">
-                    <div class="bard-panel-header">TRANSIENT PERFORMANCE INDICATORS</div>
-                    <div class="comic-stats-grid" style="margin-top: 20px;">
-                        <div class="comic-stat">
-                            <span class="c-stat-num">6.51s</span>
-                            <span class="c-stat-lbl">ITAE Altitude Settling</span>
-                        </div>
-                        <div class="comic-stat">
-                            <span class="c-stat-num">0.43s</span>
-                            <span class="c-stat-lbl">Attitude Settling</span>
-                        </div>
-                        <div class="comic-stat">
-                            <span class="c-stat-num">1.0m</span>
-                            <span class="c-stat-lbl">Safety Distance Boundary</span>
-                        </div>
-                        <div class="comic-stat">
-                            <span class="c-stat-num">90%</span>
-                            <span class="c-stat-lbl">PID Control Usage</span>
-                        </div>
-                    </div>
-                    <div class="comic-actions-btn" style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
-                        <button class="btn btn-primary" onclick="navigateToPage('model-shortcommings')">Launch Simulator</button>
-                        <button class="btn btn-secondary" onclick="navigateToPage('the-model')">Explore The Model</button>
+                <div class="comic-card card-amber">
+                    <div class="comic-action-sticker">FACTS!</div>
+                    <h3 class="comic-card-title">Drone Fun Facts</h3>
+                    <p class="card-text">
+                        A quadrotor is <em>under-actuated</em>: it has 6 degrees of freedom but only 4 independent motor inputs. To move forward in X, it must tilt its pitch angle ($\theta$), converting vertical lift into horizontal thrust.
+                    </p>
+                </div>
+
+                <div class="comic-card card-green">
+                    <div class="comic-action-sticker">MISSION</div>
+                    <h3 class="comic-card-title">Our Project Goal</h3>
+                    <p class="card-text">
+                        To analyze the quadrotor differential equations from the research paper, solve them using different numerical methods (Euler, RK4, ode45), and modify them to handle wind gusts and payload changes.
+                    </p>
+                </div>
+
+                <div class="comic-card card-red">
+                    <div class="comic-action-sticker">CONTROL</div>
+                    <h3 class="comic-card-title">The Tuning Trade-Off</h3>
+                    <p class="card-text">
+                        An aggressive controller (ISE) reaches the target fast but spikes with a <strong>14.30% overshoot</strong>. A well-damped controller (ITAE) glides smoothly with only <strong>2.65% overshoot</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Interactive Scientific Picture Depiction Explorer on Homepage -->
+            <div class="comic-story-panel" style="margin-top: 50px;">
+                <div class="story-header-row">
+                    <span class="story-chapter-pill">SCIENTIFIC ILLUSTRATION IN MOTION</span>
+                    <span class="story-read-time">🎨 Interactive Blueprint</span>
+                </div>
+                <h2 class="story-headline">Quadrotor Physics & Obstacle Avoidance Visualized</h2>
+                <p class="card-text" style="margin-bottom: 20px;">
+                    How the 6-DOF differential equations, rotor thrusts, and LiDAR perception interact in flight. Click any component below to explore how it works:
+                </p>
+
+                <!-- Animated Picture Wrapper with Radar Scanner -->
+                <div class="animated-picture-wrapper" style="margin-bottom: 25px;">
+                    <img src="creative_depiction.jpg" alt="Agricultural Quadrotor Dynamics and Obstacle Avoidance Science Diagram" class="poster-full-img" id="hero-diagram-img">
+                    <div class="radar-sweep-beam"></div>
+                    <div class="poster-badge-floating">
+                        ⚡ Live Radar Sweep Active
                     </div>
                 </div>
 
+                <!-- Interactive Component Badges -->
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+                    <button class="interactive-callout-btn active-callout" id="btn-dep-thrust" onclick="highlightDepiction('thrust')">1. 🚀 Rotor Thrust (f₁..f₄)</button>
+                    <button class="interactive-callout-btn" id="btn-dep-angles" onclick="highlightDepiction('angles')">2. 📐 Roll & Pitch (φ, θ)</button>
+                    <button class="interactive-callout-btn" id="btn-dep-lidar" onclick="highlightDepiction('lidar')">3. 📡 2D LiDAR Avoidance</button>
+                    <button class="interactive-callout-btn" id="btn-dep-pid" onclick="highlightDepiction('pid')">4. 🧠 PID Feedback Loop</button>
+                </div>
+
+                <div class="glass-card" id="depiction-detail-box" style="padding: 22px; border-left: 4px solid var(--color-cyan);">
+                    <h4 class="sub-title text-cyan" id="depiction-detail-title">1. Motor Thrust & Propeller Lift Forces ($f_1, f_2, f_3, f_4$)</h4>
+                    <p class="card-text" id="depiction-detail-text">
+                        Each spinning rotor creates upward thrust proportional to the square of its rotational speed: $f_i = b \cdot \omega_i^2$. The sum of all 4 forces creates the total upward thrust $U_1 = f_1 + f_2 + f_3 + f_4$, fighting gravity ($m \cdot g$).
+                    </p>
+                </div>
+            </div>
+
+            <!-- Statistics Panel -->
+            <div class="comic-stats-container" style="margin-top: 50px;">
+                <div class="comic-stats-header">
+                    <span class="comic-badge-tag">KEY BENCHMARKS</span>
+                    <h3 class="comic-stats-title">SUMMARY OF SYSTEM METRICS</h3>
+                </div>
+                <div class="comic-stats-grid">
+                    <div class="comic-stat-box">
+                        <span class="c-stat-badge">SMOOTH TUNING</span>
+                        <span class="c-stat-num text-green">2.65%</span>
+                        <span class="c-stat-lbl">ITAE Altitude Overshoot</span>
+                    </div>
+                    <div class="comic-stat-box">
+                        <span class="c-stat-badge">AGGRESSIVE TUNING</span>
+                        <span class="c-stat-num text-red">14.30%</span>
+                        <span class="c-stat-lbl">ISE Altitude Overshoot</span>
+                    </div>
+                    <div class="comic-stat-box">
+                        <span class="c-stat-badge">CLEARANCE</span>
+                        <span class="c-stat-num text-cyan">1.0 m</span>
+                        <span class="c-stat-lbl">Safe Avoidance Threshold</span>
+                    </div>
+                    <div class="comic-stat-box">
+                        <span class="c-stat-badge">NUMERICAL ACCURACY</span>
+                        <span class="c-stat-num text-amber">O(h⁴)</span>
+                        <span class="c-stat-lbl">RK4 Convergence Order</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Navigation Hub -->
+            <div class="lp-blocks">
+                <div class="lp-block" onclick="navigateToPage('the-model')">
+                    <span class="lp-block-subtitle">SECTION 1</span>
+                    <h3 class="lp-block-title">The Model: Derivations & Paper Analysis &rarr;</h3>
+                    <p class="card-text" style="margin-top: 8px;">Explore the 6 equations of motion, motor speed formulas, figure replications, and what the paper discovered.</p>
+                </div>
+                <div class="lp-block" onclick="navigateToPage('copy-of-the-model')">
+                    <span class="lp-block-subtitle">SECTION 2</span>
+                    <h3 class="lp-block-title">Our Contributions: Modifications & Solvers &rarr;</h3>
+                    <p class="card-text" style="margin-top: 8px;">Test our interactive flight simulator, see how crosswinds push the drone, compare ODE solvers, and view parameter sensitivity charts.</p>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ===================================================================
+             DEDICATED SECTION: PICTURE DEPICTION
+             =================================================================== -->
+        <section id="picture-depiction" class="page-section">
+            <div class="back-nav">
+                <button class="btn btn-secondary btn-sm" onclick="navigateToPage('home')">&larr; Back to Home</button>
+            </div>
+            
+            <div class="section-header">
+                <h2>Creative Picture Depiction: Smart Agri-Drones</h2>
+                <p>An educational scientific infographic breaking down the differential equations, actuator physics, and autonomous control pipeline.</p>
+            </div>
+
+            <div class="comic-poster-card">
+                <div class="poster-image-holder">
+                    <img src="creative_depiction.jpg" alt="Agricultural Quadrotor Dynamics & Obstacle Avoidance Science Diagram" class="poster-full-img">
+                    <div class="poster-badge-floating">
+                        🎨 Scientific Illustrated Blueprint
+                    </div>
+                </div>
+
+                <div class="poster-details-block">
+                    <div class="poster-header-row">
+                        <span class="meta-tag">MATH221 Differential Equations</span>
+                        <span class="meta-tag">CE122 Applied Programming</span>
+                        <span class="meta-tag">Drone Dynamics Infographic</span>
+                    </div>
+                    <h3 class="poster-title">Scientific Breakdown: Quadrotor Control & Farm Autonomy</h3>
+                    <p class="card-text" style="margin-bottom: 20px;">
+                        This scientific worksheet breaks down the 6-DOF differential equations, actuator thrusts, and autonomous LiDAR obstacle avoidance over a pasture. Download and examine the math in action:
+                    </p>
+
+                    <div class="card-grid">
+                        <div class="glass-card">
+                            <div class="card-tag">1. MOTOR THRUST FORCES (f₁, f₂, f₃, f₄)</div>
+                            <h4 class="sub-title">Propeller Lift</h4>
+                            <p class="card-text">
+                                Each spinning rotor creates upward thrust proportional to the square of its rotational speed:
+                                $$f_i = b \cdot \omega_i^2$$
+                                The total upward force $U_1 = f_1 + f_2 + f_3 + f_4$ fights gravity ($m \cdot g$).
+                            </p>
+                        </div>
+
+                        <div class="glass-card">
+                            <div class="card-tag">2. ROTATIONAL TILT ANGLES (φ, θ)</div>
+                            <h4 class="sub-title">Roll & Pitch Banking</h4>
+                            <p class="card-text">
+                                Differential motor speeds create rotational torques ($U_2, U_3$). Tilting forward (Pitch $\theta > 0$) redirects motor thrust horizontally to push the drone forward in $X$.
+                            </p>
+                        </div>
+
+                        <div class="glass-card">
+                            <div class="card-tag">3. 2D LiDAR AVOIDANCE ARC</div>
+                            <h4 class="sub-title">Laser Scanning & Safe Path</h4>
+                            <p class="card-text">
+                                The onboard LiDAR sensor scans a 2D horizontal fan. When it detects an acacia tree or grazing sheep at $d < 1.0\text{m}$, the avoidance algorithm injects a steering force into the equations.
+                            </p>
+                        </div>
+
+                        <div class="glass-card">
+                            <div class="card-tag">4. PID FEEDBACK CONTROL LOOP</div>
+                            <h4 class="sub-title">The Drone Brain</h4>
+                            <p class="card-text">
+                                Continuously compares target position to sensor measurements ($e(t) = z_{\text{des}} - z$), computing Proportional, Integral, and Derivative motor adjustments.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="cta-group" style="margin-top: 25px;">
+                        <a href="creative_depiction.jpg" target="_blank" download="KEMS_UAV_Science_Diagram.jpg" class="btn btn-action">📥 Download Printable Science Diagram (JPG)</a>
+                        <button class="btn btn-neon" onclick="navigateToPage('equations-explained')">📐 Explore the Equations</button>
+                    </div>
+                </div>
             </div>
         </section>
 
 
-        <!-- 2. THE MODEL OVERVIEW -->
+        <!-- ===================================================================
+             2. THE MODEL OVERVIEW & SUBPAGES
+             =================================================================== -->
         <section id="the-model" class="page-section">
             <div class="section-header">
-                <h2>The Mathematical Model</h2>
-                <p>An overview of the quadrotor dynamics model, Ordinary Differential Equations, and Matlab step responses.</p>
+                <h2>The Mathematical Model & Published Study</h2>
+                <p>Understanding the paper, how the differential equations were derived, replicating the published figures, and discussing the results.</p>
             </div>
             
             <div class="category-grid">
                 <div class="category-card" onclick="navigateToPage('detailed-analysis')">
-                    <div class="cat-icon">&#128221;</div>
-                    <h3 class="cat-title">Understanding the Paper</h3>
-                    <p class="cat-desc">An executive summary of the quadrotor autonomous navigation model, controllers, and results.</p>
-                    <span class="cat-link">Read Summary &rarr;</span>
+                    <h3 class="cat-title">1. Understanding the Paper</h3>
+                    <p class="cat-desc">What problem the paper solves, why agricultural drones need obstacle avoidance, and how the drone is built.</p>
+                    <span class="cat-link">Read Overview &rarr;</span>
                 </div>
                 
                 <div class="category-card" onclick="navigateToPage('equations-explained')">
-                    <div class="cat-icon">&#129486;&#8205;&#128187;</div>
-                    <h3 class="cat-title">Equations Explained</h3>
-                    <p class="cat-desc">A deep dive into the rigid body Ordinary Differential Equations (ODEs) for translation and rotation.</p>
+                    <h3 class="cat-title">2. Equations Explained</h3>
+                    <p class="cat-desc">Step-by-step derivation of the 6 differential equations of motion with clear variables and video explanation.</p>
                     <span class="cat-link">View Equations &rarr;</span>
                 </div>
 
                 <div class="category-card" onclick="navigateToPage('parameter-definition')">
-                    <div class="cat-icon">&#128200;</div>
-                    <h3 class="cat-title">Figure Replication</h3>
-                    <p class="cat-desc">Examine the MATLAB replicated figures of step responses, trajectories, and avoidance traces.</p>
-                    <span class="cat-link">View Figures &rarr;</span>
+                    <h3 class="cat-title">3. Figure Replication</h3>
+                    <p class="cat-desc">Side-by-side comparison between the original figures published in the paper and our MATLAB replicated simulations.</p>
+                    <span class="cat-link">View Replications &rarr;</span>
+                </div>
+
+                <div class="category-card" onclick="navigateToPage('paper-results-discussion')">
+                    <h3 class="cat-title">4. Discussion of Study Results</h3>
+                    <p class="cat-desc">Analyzing why ITAE controller tuning works better than ISE, why 1.0m is a safe threshold, and what the paper missed.</p>
+                    <span class="cat-link">Read Discussion &rarr;</span>
                 </div>
             </div>
         </section>
 
 
-        <!-- 2a. DETAILED ANALYSIS SUBPAGE -->
+        <!-- 2a. UNDERSTANDING THE PAPER SUBPAGE -->
         <section id="detailed-analysis" class="page-section">
             <div class="back-nav">
                 <button class="btn btn-secondary btn-sm" onclick="navigateToPage('the-model')">&larr; Back to Model Overview</button>
             </div>
             <div class="section-header">
-                <h2>Understanding the Paper</h2>
-                <p>An overview of the quadrotor autonomous navigation model and optimization results.</p>
+                <h2>Understanding the Research Paper</h2>
+                <p>Overview of the quadrotor autonomous navigation study (Alanezi et al., MDPI Drones 2022, 6, 288).</p>
             </div>
 
-            <!-- Summary & Scope -->
             <div class="glass-card" style="margin-bottom: 30px;">
-                <h3 class="card-title">Understanding the Paper</h3>
+                <h3 class="card-title">What is this paper about?</h3>
                 <p class="card-text" style="margin-bottom: 15px;">
-                    The research paper, <em>Obstacle Avoidance-Based Autonomous Navigation of a Quadrotor System</em>, presents the development of a mathematical model and simulation of a quadrotor capable of autonomous navigation while avoiding obstacles. The study is motivated by the growing use of quadrotors in livestock management, where they are used for monitoring, tracking, counting, and observing animals. Since autonomous operation requires the drone to move safely through its environment, the paper focuses on combining flight control with obstacle avoidance.
-                </p>
-                <p class="card-text" style="margin-bottom: 15px;">
-                    The paper models the quadrotor as a six-degree-of-freedom dynamic system using the Euler equations of motion. The mathematical model describes both the translational motion (movement along the x, y, and z axes) and the rotational motion (roll, pitch, and yaw). The quadrotor is treated as an under-actuated system with four control inputs generated by the four rotors and six output variables representing its position and orientation.
-                </p>
-                <p class="card-text" style="margin-bottom: 15px;">
-                    To control the quadrotor, the paper develops two Proportional-Integral-Derivative (PID) controllers: one for altitude control and another for attitude control. The PID controller gains are optimized using a Genetic Algorithm (GA), with two objective functions—Integral Square Error (ISE) and Integral Time Absolute Error (ITAE). The performance of both tuning methods is compared using transient response measures such as overshoot, settling time, rise time, and steady-state error.
-                </p>
-                <p class="card-text" style="margin-bottom: 15px;">
-                    The complete navigation model includes four main components: the desired trajectory generator, the quadrotor dynamic model, the PID-based flight controllers, and an obstacle avoidance system. A LiDAR sensor is used to detect nearby obstacles. At the same time, an Elite Opposition-Based Bat Algorithm (EOBA) determines a new collision-free path whenever an obstacle is detected within a specified distance threshold. The quadrotor then follows the generated path through the flight controllers.
+                    The research paper investigates how a 4-propeller drone (quadrotor) can autonomously fly across a farm, maintain a steady altitude of 5 meters, and steer around obstacles (like trees or sheep) without crashing.
                 </p>
                 <p class="card-text">
-                    Simulation results show that the ITAE-tuned PID controller provides better overall control performance than the ISE-based controller, producing lower overshoot and smaller steady-state error. The obstacle avoidance system also enables the quadrotor to navigate successfully to its target while avoiding collisions. The study concludes that a distance threshold of 1 m is sufficient to avoid obstacles with a width of up to 1 m, making the proposed navigation system suitable for autonomous outdoor applications such as livestock monitoring.
+                    To make the drone autonomous, the authors established a 3-tier navigation framework:
                 </p>
+                <ul class="panel-list">
+                    <li><strong>Perception:</strong> An onboard Inertial Measurement Unit (IMU) tracks orientation and roll/pitch angles ($\phi, \theta$), while a 2D LiDAR rangefinder measures distances to obstacles in real time.</li>
+                    <li><strong>Planning:</strong> The Bat Algorithm path planner calculates safe detour steering angles whenever an obstacle enters the warning zone.</li>
+                    <li><strong>Control (Differential Equations):</strong> Newton-Euler equations of motion calculate physical accelerations, and dual Genetic Algorithm-tuned PID loops control altitude and attitude.</li>
+                </ul>
             </div>
 
             <div class="glass-card" style="margin-bottom: 30px;">
-                <h3 class="card-title">Rigid Body Formulation</h3>
-                <p class="card-text">
-                    The paper details the autonomous navigation of a quadrotor Unmanned Aerial Vehicle (UAV). A quadcopter is a rotary-wing system driven by 4 independent actuators arranged in a '+' configuration. The thrust force generated by each rotor (f<sub>i</sub>) and their reactive drag torques (&tau;<sub>i</sub>) are proportional to the square of the rotor angular speed (&omega;<sub>i</sub>):
-                </p>
-                <div class="math-block">
-                    <div class="math-title">Actuator Speed Mapping</div>
-                    <div class="equation">f<sub>i</sub> = b &middot; &omega;<sub>i</sub><sup>2</sup> , &nbsp;&nbsp;&nbsp;&nbsp; &tau;<sub>i</sub> = d &middot; &omega;<sub>i</sub><sup>2</sup></div>
-                    <div class="variable-list">
-                        <div class="variable-item"><strong>b</strong> : Thrust factor coefficient (6.317 &times; 10<sup>-4</sup> N &middot; s<sup>2</sup> / rad<sup>2</sup>)</div>
-                        <div class="variable-item"><strong>d</strong> : Drag factor coefficient (1.610 &times; 10<sup>-4</sup> N &middot; m &middot; s<sup>2</sup> / rad<sup>2</sup>)</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass-card" style="margin-bottom: 30px;">
-                <h3 class="card-title">Three-Step Autonomy Pipeline</h3>
-                <p class="card-text" style="margin-bottom: 20px;">
-                    Autonomous navigation relies on a closed-loop system dividing tasks into three main categories:
-                </p>
-                <div class="card-grid">
-                    <div class="sub-card">
-                        <div class="sub-icon">&#128065;</div>
-                        <h4 class="sub-title">1. Perception</h4>
-                        <p class="card-text">Combines GPS and IMU sensors for internal state estimation, and a 2D LiDAR sensor for obstacle mapping within a 7m range.</p>
-                    </div>
-                    <div class="sub-card">
-                        <div class="sub-icon">&#128205;</div>
-                        <h4 class="sub-title">2. Planning</h4>
-                        <p class="card-text">Calculates goal-seeking vectors and executes an Elite Opposition-Based Bat Algorithm when obstacles enter the safety clearance threshold.</p>
-                    </div>
-                    <div class="sub-card">
-                        <div class="sub-icon">&#9881;</div>
-                        <h4 class="sub-title">3. Control</h4>
-                        <p class="card-text">Toggles PID feedback loops to calculate the necessary rotor speeds (&omega;<sub>1</sub>, &omega;<sub>2</sub>, &omega;<sub>3</sub>, &omega;<sub>4</sub>) to follow planned vectors.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass-card">
-                <h3 class="card-title">System Physical Parameters</h3>
+                <h3 class="card-title">Physical Parameters of the Drone (Table 1 from Paper)</h3>
+                <p class="card-text" style="margin-bottom: 15px;">These are the real physical values used in the differential equations:</p>
                 <div class="data-table-wrapper">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Parameter Description</th>
+                                <th>Parameter Name</th>
                                 <th>Symbol</th>
                                 <th>Value</th>
                                 <th>Units</th>
+                                <th>What it means in plain English</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>Thrust factor</td><td>b</td><td>6.317 &times; 10<sup>-4</sup></td><td>N &middot; s<sup>2</sup> / rad<sup>2</sup></td></tr>
-                            <tr><td>Drag factor</td><td>d</td><td>1.610 &times; 10<sup>-4</sup></td><td>N &middot; m &middot; s<sup>2</sup> / rad<sup>2</sup></td></tr>
-                            <tr><td>Gravity acceleration</td><td>g</td><td>9.81</td><td>m / s<sup>2</sup></td></tr>
-                            <tr><td>Moment of inertia (x-axis)</td><td>I<sub>x</sub></td><td>1.453 &times; 10<sup>-2</sup></td><td>kg &middot; m<sup>2</sup></td></tr>
-                            <tr><td>Moment of inertia (y-axis)</td><td>I<sub>y</sub></td><td>1.453 &times; 10<sup>-2</sup></td><td>kg &middot; m<sup>2</sup></td></tr>
-                            <tr><td>Moment of inertia (z-axis)</td><td>I<sub>z</sub></td><td>2.884 &times; 10<sup>-2</sup></td><td>kg &middot; m<sup>2</sup></td></tr>
-                            <tr><td>Motors' moment of inertia</td><td>J<sub>r</sub></td><td>2.820 &times; 10<sup>-7</sup></td><td>kg &middot; m<sup>2</sup></td></tr>
-                            <tr><td>Arm length (center of mass to rotor)</td><td>l</td><td>0.225</td><td>m</td></tr>
-                            <tr><td>Quadrotor total mass</td><td>m</td><td>1.888</td><td>kg</td></tr>
+                            <tr><td>Total Mass</td><td>$m$</td><td>1.888</td><td>kg</td><td>How heavy the drone is (~4.1 lbs)</td></tr>
+                            <tr><td>Arm Length</td><td>$l$</td><td>0.225</td><td>m</td><td>Distance from center of drone to each motor (22.5 cm)</td></tr>
+                            <tr><td>Gravity</td><td>$g$</td><td>9.81</td><td>m/s²</td><td>Downward gravitational pull</td></tr>
+                            <tr><td>Thrust Factor</td><td>$b$</td><td>$6.317 \times 10^{-4}$</td><td>N·s²/rad²</td><td>How much lift each propeller generates per rpm</td></tr>
+                            <tr><td>Drag Factor</td><td>$d$</td><td>$1.610 \times 10^{-4}$</td><td>N·m·s²/rad²</td><td>Aerodynamic resistance against propeller spin</td></tr>
+                            <tr><td>Roll Inertia</td><td>$I_x$</td><td>$1.453 \times 10^{-2}$</td><td>kg·m²</td><td>How hard it is to tilt the drone left/right</td></tr>
+                            <tr><td>Pitch Inertia</td><td>$I_y$</td><td>$1.453 \times 10^{-2}$</td><td>kg·m²</td><td>How hard it is to tilt the drone forward/backward</td></tr>
+                            <tr><td>Yaw Inertia</td><td>$I_z$</td><td>$2.884 \times 10^{-2}$</td><td>kg·m²</td><td>How hard it is to spin the drone like a top</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -326,60 +411,68 @@
                 <button class="btn btn-secondary btn-sm" onclick="navigateToPage('the-model')">&larr; Back to Model Overview</button>
             </div>
             <div class="section-header">
-                <h2>Ordinary Differential Equations of Motion</h2>
-                <p>Translational kinematics and rotational dynamics derived through the Newton-Euler formalism.</p>
+                <h2>The 6 Differential Equations of Motion</h2>
+                <p>Derived directly from Newton's Second Law ($F = m a$) and rotational dynamics ($T = I \alpha$).</p>
             </div>
 
+            <!-- Position ODEs -->
             <div class="glass-card" style="margin-bottom: 30px;">
-                <h3 class="card-title">Translational Kinematics (x, y, z accelerations)</h3>
-                <p class="card-text">
-                    The translational acceleration of the quadrotor in the earth-fixed frame is driven by the total thrust (U<sub>1</sub>) rotated through roll (&phi;), pitch (&theta;) and yaw (&psi;) commands:
+                <h3 class="card-title">1. Translational Position Equations ($\ddot{x}, \ddot{y}, \ddot{z}$)</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    These 3 equations tell us how the drone accelerates through 3D space. Remember from physics that acceleration is the second derivative of position ($\ddot{x} = \frac{d^2x}{dt^2}$):
                 </p>
+
                 <div class="math-block">
-                    <div class="math-title">Translational Kinematics ODEs</div>
-                    <div class="equation">
-                        x&uml; = (U<sub>1</sub> / m) &middot; (cos&phi; sin&theta; cos&psi; + sin&phi; sin&psi;) <br><br>
-                        y&uml; = (U<sub>1</sub> / m) &middot; (cos&phi; sin&theta; sin&psi; - sin&phi; cos&psi;) <br><br>
-                        z&uml; = (U<sub>1</sub> / m) &middot; (cos&phi; cos&theta;) - g
-                    </div>
-                    <div class="variable-list">
-                        <div class="variable-item"><strong>U<sub>1</sub></strong>: Total vertical thrust generated by all 4 motors.</div>
-                        <div class="variable-item"><strong>m</strong>: Mass of the quadrotor (1.888 kg).</div>
-                        <div class="variable-item"><strong>g</strong>: Gravity acceleration (9.81 m/s<sup>2</sup>).</div>
-                    </div>
+                    <div class="math-title">Forward & Sideways Acceleration (X and Y directions)</div>
+                    $$\ddot{x} = \frac{U_1}{m} \left( \cos\phi \sin\theta \cos\psi + \sin\phi \sin\psi \right)$$
+                    $$\ddot{y} = \frac{U_1}{m} \left( \cos\phi \sin\theta \sin\psi - \sin\phi \cos\psi \right)$$
+                </div>
+
+                <div class="math-block">
+                    <div class="math-title">Vertical Altitude Acceleration (Z direction)</div>
+                    $$\ddot{z} = \frac{U_1}{m} \left( \cos\phi \cos\theta \right) - g$$
+                </div>
+
+                <div class="variable-list">
+                    <div class="variable-item"><strong>$U_1$</strong> = Total upward lifting thrust produced by all 4 motors together ($U_1 = f_1 + f_2 + f_3 + f_4$).</div>
+                    <div class="variable-item"><strong>$m$</strong> = Total mass of the drone (1.888 kg).</div>
+                    <div class="variable-item"><strong>$g$</strong> = Gravity ($9.81\text{ m/s}^2$). The drone only climbs when $\frac{U_1}{m}\cos\phi\cos\theta > g$.</div>
+                    <div class="variable-item"><strong>$\phi, \theta, \psi$</strong> = Roll, Pitch, and Yaw tilt angles. When the drone tilts forward (Pitch $\theta > 0$), part of $U_1$ pushes the drone in the X direction!</div>
                 </div>
             </div>
 
-            <div class="glass-card">
-                <h3 class="card-title">Rotational Dynamics (Roll, Pitch, Yaw moments)</h3>
-                <p class="card-text">
-                    The rotational acceleration equations describe angular acceleration under applied torques (U<sub>2</sub>, U<sub>3</sub>, U<sub>4</sub>) and gyroscopic motor coupling factors:
+            <!-- Rotation ODEs -->
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">2. Rotational Angle Equations ($\ddot{\phi}, \ddot{\theta}, \ddot{\psi}$)</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    These 3 equations describe how the drone tilts and rotates when motor speeds are changed:
                 </p>
+
                 <div class="math-block">
-                    <div class="math-title">Rotational Kinematics ODEs</div>
-                    <div class="equation">
-                        &phi;&uml; = (U<sub>2</sub> &middot; l / I<sub>x</sub>) - [ (I<sub>z</sub> - I<sub>y</sub>) / I<sub>x</sub> ] &middot; &theta;&bull; &psi;&bull; - (J<sub>r</sub> &omega;<sub>r</sub> / I<sub>x</sub>) &middot; &theta;&bull; <br><br>
-                        &theta;&uml; = (U<sub>3</sub> &middot; l / I<sub>y</sub>) - [ (I<sub>x</sub> - I<sub>z</sub>) / I<sub>y</sub> ] &middot; &phi;&bull; &psi;&bull; + (J<sub>r</sub> &omega;<sub>r</sub> / I<sub>y</sub>) &middot; &phi;&bull; <br><br>
-                        &psi;&uml; = (U<sub>4</sub> / I<sub>z</sub>) - [ (I<sub>y</sub> - I<sub>x</sub>) / I<sub>z</sub> ] &middot; &phi;&bull; &theta;&bull;
-                    </div>
-                    <div class="variable-list">
-                        <div class="variable-item"><strong>U<sub>2</sub>, U<sub>3</sub>, U<sub>4</sub></strong>: Torques corresponding to rolling, pitching, and yawing motion.</div>
-                        <div class="variable-item"><strong>&omega;<sub>r</sub></strong>: Residual motor angular velocity: &omega;<sub>1</sub> - &omega;<sub>2</sub> + &omega;<sub>3</sub> - &omega;<sub>4</sub>.</div>
-                        <div class="variable-item"><strong>J<sub>r</sub></strong>: Rotor moment of inertia (2.82 &times; 10<sup>-7</sup> kg &middot; m<sup>2</sup>).</div>
-                        <div class="variable-item"><strong>I<sub>x</sub>, I<sub>y</sub>, I<sub>z</sub></strong>: Moments of inertia along the coordinate axes.</div>
-                    </div>
+                    <div class="math-title">Roll, Pitch, and Yaw Angular Accelerations</div>
+                    $$\ddot{\phi} = \frac{U_2 \cdot l}{I_x} - \left( \frac{I_z - I_y}{I_x} \right) \dot{\theta} \dot{\psi} - \frac{J_r \omega_r}{I_x} \dot{\theta}$$
+                    $$\ddot{\theta} = \frac{U_3 \cdot l}{I_y} - \left( \frac{I_x - I_z}{I_y} \right) \dot{\phi} \dot{\psi} + \frac{J_r \omega_r}{I_y} \dot{\phi}$$
+                    $$\ddot{\psi} = \frac{U_4}{I_z} - \left( \frac{I_y - I_x}{I_z} \right) \dot{\phi} \dot{\theta}$$
+                </div>
+
+                <div class="variable-list">
+                    <div class="variable-item"><strong>$U_2$</strong> = Roll control torque: difference in thrust between left and right motors ($f_4 - f_2$).</div>
+                    <div class="variable-item"><strong>$U_3$</strong> = Pitch control torque: difference in thrust between front and back motors ($f_3 - f_1$).</div>
+                    <div class="variable-item"><strong>$U_4$</strong> = Yaw control torque: difference in propeller drag spin.</div>
+                    <div class="variable-item"><strong>$\dot{\theta} \dot{\psi}, \dot{\phi} \dot{\psi}$</strong> = Gyroscopic cross-coupling terms (spinning bodies naturally interact when rotated).</div>
                 </div>
             </div>
 
             <!-- Video Presentation Card -->
-            <div class="glass-card" style="margin-top: 30px;">
-                <h3 class="card-title">Equations Explained: Video Presentation</h3>
+            <div class="glass-card">
+                <h3 class="card-title">Video Presentation of the Equations</h3>
                 <p class="card-text" style="margin-bottom: 20px;">
-                    Watch the video walkthrough detailing the derivation of the quadrotor ordinary differential equations, rigid-body kinematics, and control feedback structures.
+                    Watch our recorded video walkthrough explaining the derivation of these differential equations:
                 </p>
-                <div class="video-player-wrapper" style="max-width: 800px; margin: 0 auto; border: 2px solid var(--color-border-slate); border-radius: 8px; overflow: hidden; background: #000;">
+                <div class="video-player-wrapper" style="max-width: 800px; margin: 0 auto; border: 2px solid var(--color-border); border-radius: 8px; overflow: hidden; background: #000;">
                     <video width="100%" controls style="display: block;">
                         <source src="https://media.githubusercontent.com/media/haawres/differential/main/0628%20(1)/0628%20(1).mp4" type="video/mp4">
+                        <source src="0628 (1)/0628 (1).mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 </div>
@@ -393,138 +486,245 @@
                 <button class="btn btn-secondary btn-sm" onclick="navigateToPage('the-model')">&larr; Back to Model Overview</button>
             </div>
             <div class="section-header">
-                <h2>MATLAB Simulation Figure Replication</h2>
-                <p>Visual comparison between the original figures published in the MDPI Drones paper and our Matlab replicated models.</p>
+                <h2>Figure Replication & Verification</h2>
+                <p>Side-by-side comparison between the original paper's figures and our replicated MATLAB simulations.</p>
             </div>
 
-            <!-- Grid comparing Original vs Replicated Figures -->
             <div class="fig-replication-grid">
-                
-                <!-- Card 1 -->
                 <div class="fig-comparison-card">
-                    <h3 class="fig-title">Figure 1.1: Altitude Step Response (ITAE vs. ISE Tuning)</h3>
-                    <p class="fig-desc">Comparing the transient performance of PID controller gains optimized with the Genetic Algorithm. The ITAE tuning method achieves smooth rise with 6.51s settling time and minimal overshoot, while the ISE method exhibits faster rise but high overshoot and oscillations.</p>
+                    <h3 class="fig-title">Figure 1: Altitude Step Response (Target = 5 meters)</h3>
+                    <p class="fig-desc">Comparing ITAE vs. ISE tuning. Notice that ITAE climbs smoothly with only 2.65% overshoot, while ISE spikes up aggressively to over 5.7 meters (14.30% overshoot).</p>
                     <div class="fig-media-row">
                         <div class="fig-media-box">
-                            <span class="fig-label">Original Graph (Paper)</span>
-                            <img src="original_1.png" alt="Original Figure 1.1" class="fig-img">
+                            <span class="fig-label">Original Paper Figure 11</span>
+                            <img src="original_1.png" alt="Original Altitude Response Figure" class="fig-img">
                         </div>
                         <div class="fig-media-box">
-                            <span class="fig-label">Replicated Graph (Matlab)</span>
-                            <img src="replica_1.png" alt="Replicated Figure 1.1" class="fig-img">
+                            <span class="fig-label">Our Replicated MATLAB Figure</span>
+                            <img src="replica_1.png" alt="Replicated Altitude Response Figure" class="fig-img">
                         </div>
                     </div>
                 </div>
 
-                <!-- Card 2 -->
                 <div class="fig-comparison-card">
-                    <h3 class="fig-title">Figure 1.2: 2D Horizontal Trajectory to (10, 10)</h3>
-                    <p class="fig-desc">Shows the horizontal flight path of the quadrotor from the start coordinates (0, 0) to target coordinates (10, 10) at a constant 5m altitude in an obstacle-free environment.</p>
+                    <h3 class="fig-title">Figure 2: Attitude Tilt Angles (Roll, Pitch, Yaw)</h3>
+                    <p class="fig-desc">Step response for the tilt angles. ITAE stabilizes the drone in 0.43 seconds, perfectly matching our MATLAB replication.</p>
                     <div class="fig-media-row">
                         <div class="fig-media-box">
-                            <span class="fig-label">Original Graph (Paper)</span>
-                            <img src="original_2.png" alt="Original Figure 1.2" class="fig-img">
+                            <span class="fig-label">Original Paper Figure 12</span>
+                            <img src="original_2.png" alt="Original Attitude Response Figure" class="fig-img">
                         </div>
                         <div class="fig-media-box">
-                            <span class="fig-label">Replicated Graph (Matlab)</span>
-                            <img src="replica_2.png" alt="Replicated Figure 1.2" class="fig-img">
+                            <span class="fig-label">Our Replicated MATLAB Figure</span>
+                            <img src="replica_2.png" alt="Replicated Attitude Response Figure" class="fig-img">
                         </div>
                     </div>
                 </div>
 
-                <!-- Card 3 -->
                 <div class="fig-comparison-card">
-                    <h3 class="fig-title">Figure 1.3: Obstacle Avoidance Trajectory (Bat Algorithm)</h3>
-                    <p class="fig-desc">Demonstrates the path planning capability of the LiDAR-driven Elite Opposition Bat Algorithm (EOBA). With a 1.0m safety margin, the drone successfully bypasses the obstacle at (5, 5). With a 0.5m margin, the trajectory intersects the safety radius, indicating a collision.</p>
+                    <h3 class="fig-title">Figure 3: Single Obstacle Avoidance Flight Path</h3>
+                    <p class="fig-desc">The Bat Algorithm steers the quadcopter around a single obstacle centered at (15, 20) with a safe 1.0-meter clearance curve.</p>
                     <div class="fig-media-row">
                         <div class="fig-media-box">
-                            <span class="fig-label">Original Graph (Paper)</span>
-                            <img src="original_3.png" alt="Original Figure 1.3" class="fig-img">
+                            <span class="fig-label">Original Paper Figure 13</span>
+                            <img src="original_3.png" alt="Original Single Obstacle Figure" class="fig-img">
                         </div>
                         <div class="fig-media-box">
-                            <span class="fig-label">Replicated Graph (Matlab)</span>
-                            <img src="replica_3.png" alt="Replicated Figure 1.3" class="fig-img">
+                            <span class="fig-label">Our Replicated MATLAB Figure</span>
+                            <img src="replica_3.png" alt="Replicated Single Obstacle Figure" class="fig-img">
                         </div>
                     </div>
                 </div>
 
-                <!-- Card 4 -->
                 <div class="fig-comparison-card">
-                    <h3 class="fig-title">Figure 1.4: Multi-Obstacle Trajectory & Velocity Profile</h3>
-                    <p class="fig-desc">Illustrates the quadrotor's trajectory in a cluttered environment containing multiple stationary obstacles, along with the corresponding rotor velocity changes over time as it maneuvers.</p>
+                    <h3 class="fig-title">Figure 4: Multiple Obstacle Navigation Flight Path</h3>
+                    <p class="fig-desc">The drone steers smoothly through three obstacles in a row, continuously calculating tangential avoidance angles to reach the goal.</p>
                     <div class="fig-media-row">
                         <div class="fig-media-box">
-                            <span class="fig-label">Original Graph (Paper)</span>
-                            <img src="original_4.png" alt="Original Figure 1.4" class="fig-img">
+                            <span class="fig-label">Original Paper Figure 14</span>
+                            <img src="original_4.png" alt="Original Multi Obstacle Figure" class="fig-img">
                         </div>
                         <div class="fig-media-box">
-                            <span class="fig-label">Replicated Graph (Matlab)</span>
-                            <img src="replica_4.png" alt="Replicated Figure 1.4" class="fig-img">
+                            <span class="fig-label">Our Replicated MATLAB Figure</span>
+                            <img src="replica_4.png" alt="Replicated Multi Obstacle Figure" class="fig-img">
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
+
+
+        <!-- 2d. DISCUSSION OF PAPER RESULTS SUBPAGE -->
+        <section id="paper-results-discussion" class="page-section">
+            <div class="back-nav">
+                <button class="btn btn-secondary btn-sm" onclick="navigateToPage('the-model')">&larr; Back to Model Overview</button>
+            </div>
+            <div class="section-header">
+                <h2>Discussion of the Study Results</h2>
+                <p>Critical evaluation of controller performance, obstacle margins, and research limitations.</p>
+            </div>
+
+            <!-- Controller Performance Evaluation -->
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">1. Why ITAE Tuning is Better than ISE</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    The Genetic Algorithm optimized the PID gains using two different cost formulas:
+                </p>
+                <div class="math-block">
+                    $$\text{ISE} = \int_0^{t_{\text{sim}}} e^2(t)\,dt \qquad\qquad \text{ITAE} = \int_0^{t_{\text{sim}}} t \cdot |e(t)|\,dt$$
+                </div>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    <strong>In Plain English:</strong>
+                </p>
+                <ul class="panel-list">
+                    <li><strong>ISE (Integral Square Error):</strong> Squares the error ($e^2$). Because big errors get squared into huge numbers, the controller kicks the motors violently at the start. It climbs fast ($0.73\text{ s}$) but overshoots by a huge <strong>14.30%</strong>.</li>
+                    <li><strong>ITAE (Integral Time-weighted Absolute Error):</strong> Multiplies error by time ($t$). It doesn't panic at the start, but heavily penalizes any lingering error later. This produces smooth damping with only <strong>2.65% overshoot</strong>.</li>
+                    <li><strong>Why it matters on a farm:</strong> Overshooting by 14% means a drone trying to hover at 5m will shoot up to 5.7m, which can crash into tree branches or drain the battery with sudden motor surges. ITAE is much safer!</li>
+                </ul>
+            </div>
+
+            <!-- Performance Table -->
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">Table: Published Controller Performance (Paper Table 2)</h3>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Performance Metric</th>
+                                <th>ITAE Method (Smooth)</th>
+                                <th>ISE Method (Aggressive)</th>
+                                <th>Why ITAE Wins</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Overshoot (%)</td><td><strong>2.65 %</strong></td><td>14.30 %</td><td>Prevents dangerous kinetic surges</td></tr>
+                            <tr><td>Settling Time (s)</td><td>6.51 s</td><td>3.79 s</td><td>ITAE takes slightly longer to settle, but with zero oscillation</td></tr>
+                            <tr><td>Rise Time (s)</td><td>2.01 s</td><td>0.73 s</td><td>ISE rises faster, but pays for it with huge overshoot</td></tr>
+                            <tr><td>Steady-State Error</td><td><strong>0.0011 m</strong> (1 mm)</td><td>0.0021 m (2 mm)</td><td>Both achieve millimeter-level altitude precision</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Obstacle Clearance Margin Discussion -->
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">2. Obstacle Threshold Analysis: 1.0 m vs. 0.5 m Margin</h3>
+                <ul class="panel-list">
+                    <li><strong>$1.0\text{ m}$ Threshold (Safe):</strong> Gives the drone enough room to tilt and steer around obstacles up to 1.0 meter wide (the size of an adult sheep) with zero collisions.</li>
+                    <li><strong>$0.5\text{ m}$ Threshold (Crash):</strong> The drone spans $0.45\text{ m}$ across its arms. Because it takes time to bank and turn, forward momentum causes the drone to hit the obstacle before it can steer away.</li>
+                </ul>
+            </div>
+
+            <!-- Critical Discussion of Study Limitations -->
+            <div class="glass-card">
+                <h3 class="card-title">3. Limitations of the Original Paper</h3>
+                <p class="card-text" style="margin-bottom: 15px;">Four major gaps we identified that our project addresses:</p>
+                <div class="card-grid">
+                    <div class="sub-card">
+                        <h4 class="sub-title">1. No Wind Disturbance</h4>
+                        <p class="card-text">The paper assumed perfectly calm air. Real farms have constant crosswinds and gusts.</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4 class="sub-title">2. No Air Resistance (Drag)</h4>
+                        <p class="card-text">The equations omitted aerodynamic drag on the drone body during forward flight.</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4 class="sub-title">3. Static Obstacles Only</h4>
+                        <p class="card-text">All obstacles were stationary. Real sheep move around dynamically.</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4 class="sub-title">4. Fixed Mass Assumption</h4>
+                        <p class="card-text">No testing on how adding camera or sensor payloads changes flight stability.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
 
-        <!-- 3. OUR CONTRIBUTION -->
+        <!-- ===================================================================
+             3. OUR CONTRIBUTION & SIMULATION STUDIES
+             =================================================================== -->
         <section id="copy-of-the-model" class="page-section">
             <div class="section-header">
                 <h2>Our Contribution & Simulation Studies</h2>
-                <p>Testing controller sensitivity, implementing parameter perturbations, and future scaling proposals.</p>
+                <p>Modifying the differential equations, benchmarking numerical solvers in MATLAB, and testing on an interactive simulator.</p>
             </div>
             
             <div class="category-grid">
                 <div class="category-card" onclick="navigateToPage('model-shortcommings')">
-                    <div class="cat-icon">&#128641;</div>
-                    <h3 class="cat-title">Modifications & Simulator</h3>
-                    <p class="cat-desc">Launch the interactive flight simulation. Test controllers under wind forces and sensory delays.</p>
-                    <span class="cat-link">Run Simulation &rarr;</span>
+                    <h3 class="cat-title">1. Modifications & Flight Simulator</h3>
+                    <p class="cat-desc">See the modified equations (wind force, air drag, variable payload mass) and fly the drone on our interactive canvas.</p>
+                    <span class="cat-link">Launch Simulator &rarr;</span>
+                </div>
+
+                <div class="category-card" onclick="navigateToPage('our-results-analysis')">
+                    <h3 class="cat-title">2. Our Results & Solver Benchmarks</h3>
+                    <p class="cat-desc">Exact analytical closed-form solution, benchmarking ODE solvers (ode45, RK4, Euler), and step-size error convergence.</p>
+                    <span class="cat-link">View Results &rarr;</span>
                 </div>
                 
                 <div class="category-card" onclick="navigateToPage('parameter-sensitivity-analysis')">
-                    <div class="cat-icon">&#128202;</div>
-                    <h3 class="cat-title">Parameter Sensitivity</h3>
-                    <p class="cat-desc">Examine sensitivity tables, rise/settling time metrics, and optimized PID gain variables.</p>
+                    <h3 class="cat-title">3. Parameter Sensitivity Analysis</h3>
+                    <p class="cat-desc">Testing &plusmn;20% changes in mass, thrust, and PID gains to see which parameter affects overshoot the most.</p>
                     <span class="cat-link">View Sensitivity &rarr;</span>
                 </div>
 
                 <div class="category-card" onclick="navigateToPage('future-improvements')">
-                    <div class="cat-icon">&#128302;</div>
-                    <h3 class="cat-title">Future Improvements</h3>
-                    <p class="cat-desc">Further study scaling, including swarm collaboration frameworks and PDE mapping extensions.</p>
+                    <h3 class="cat-title">4. Further Research Frontiers</h3>
+                    <p class="cat-desc">7 future extensions: multi-drone swarms, GPS-denied camera navigation, battery optimization, and physical hardware testing.</p>
                     <span class="cat-link">Read Extensions &rarr;</span>
                 </div>
 
                 <div class="category-card" onclick="navigateToPage('applied-prgramming-aspect')">
-                    <div class="cat-icon">&#128188;</div>
-                    <h3 class="cat-title">Applied Programming</h3>
-                    <p class="cat-desc">View our codebase milestones, development timeline, and student contributor profiles.</p>
-                    <span class="cat-link">View Stack &rarr;</span>
+                    <h3 class="cat-title">5. Applied Programming Portfolio</h3>
+                    <p class="cat-desc">How the MATLAB R2024b scripts were written, Euler vs. RK4 code algorithms, and student development milestones.</p>
+                    <span class="cat-link">View Codebase &rarr;</span>
                 </div>
             </div>
         </section>
 
 
-        <!-- 3a. MODIFICATIONS (INTERACTIVE SIMULATOR) SUBPAGE -->
+        <!-- 3a. MODIFICATIONS SUBPAGE -->
         <section id="model-shortcommings" class="page-section">
             <div class="back-nav">
                 <button class="btn btn-secondary btn-sm" onclick="navigateToPage('copy-of-the-model')">&larr; Back to Overview</button>
             </div>
             <div class="section-header">
-                <h2>Interactive Flight Simulation</h2>
-                <p>Run simulated flight tests of the quadrotor. Test pathing, controllers, wind force, and sensory latency.</p>
+                <h2>Our Model Modifications & Interactive Simulator</h2>
+                <p>How we added environmental crosswinds, aerodynamic air resistance, and variable mass to the differential equations.</p>
             </div>
 
+            <!-- Mathematical Formulation of Modifications -->
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">Our Modified Differential Equations</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    We modified the paper's original position equations by adding <strong>wind disturbance force $F_w$</strong> and <strong>air resistance drag $-k_d v$</strong>:
+                </p>
+
+                <div class="math-block">
+                    <div class="math-title">Modified X-Acceleration Equation (with Crosswind and Drag)</div>
+                    $$\ddot{x} = \underbrace{\frac{U_1}{m}\left(\cos\phi\sin\theta\cos\psi + \sin\phi\sin\psi\right)}_{\text{Motor Thrust Force}} - \underbrace{\frac{k_d}{m} v_x \|\mathbf{v}\|}_{\text{Air Resistance Drag}} + \underbrace{\frac{F_{w,x}(t)}{m}}_{\text{Crosswind Force}}$$
+                </div>
+
+                <div class="math-block">
+                    <div class="math-title">Modified Z-Acceleration Equation (Altitude with Payload Mass)</div>
+                    $$\ddot{z} = \frac{U_1}{m}\left(\cos\phi\cos\theta\right) - g - \frac{k_d}{m} v_z \|\mathbf{v}\|$$
+                </div>
+
+                <div class="variable-list">
+                    <div class="variable-item"><strong>$F_{w,x}(t)$</strong> = Lateral wind force: steady crosswind plus gust waves $A_{\text{gust}}\sin(2\pi f t)$.</div>
+                    <div class="variable-item"><strong>$k_d$</strong> = Drag coefficient ($0.45\text{ N}\cdot\text{s/m}$). Dampens high speeds realistically.</div>
+                    <div class="variable-item"><strong>$m$</strong> = Dynamic payload mass ($1.4\text{ kg}$ to $2.5\text{ kg}$). Adding a camera makes the drone heavier, requiring more thrust.</div>
+                </div>
+            </div>
+
+            <!-- Interactive Simulator Canvas & Controls -->
             <div class="simulator-layout">
-                <!-- Simulation Canvas -->
                 <div class="canvas-wrapper">
                     <div class="canvas-header">
                         <div class="canvas-title">
                             <div class="status-dot"></div>
-                            Flight Control System Telemetry
+                            Flight Control Telemetry
                         </div>
                         <div class="canvas-telemetry" id="telemetry-readout">
                             X: 0.00m | Y: 0.00m | Speed: 0.00m/s
@@ -533,12 +733,11 @@
                     <canvas id="simulation-canvas"></canvas>
                 </div>
 
-                <!-- Simulation Controls Panel -->
                 <div class="control-panel">
-                    <div class="panel-title">FCS Configuration</div>
+                    <div class="panel-title">SIMULATION CONTROLS</div>
                     
                     <div class="control-group">
-                        <div class="control-label"><span>Obstacle Grid Scene</span></div>
+                        <div class="control-label"><span>Obstacle Scene</span></div>
                         <div class="mode-selectors">
                             <div class="mode-btn active-mode" id="scene-single" onclick="setSimScene('single')">1 Obstacle</div>
                             <div class="mode-btn" id="scene-three" onclick="setSimScene('three')">3 Obstacles</div>
@@ -546,15 +745,15 @@
                     </div>
 
                     <div class="control-group">
-                        <div class="control-label"><span>Autopilot Tuning Loop</span></div>
+                        <div class="control-label"><span>Controller Tuning</span></div>
                         <div class="mode-selectors">
-                            <div class="mode-btn active-mode" id="ctrl-itae" onclick="setSimController('itae')">ITAE (Tuned)</div>
-                            <div class="mode-btn" id="ctrl-ise" onclick="setSimController('ise')">ISE</div>
+                            <div class="mode-btn active-mode" id="ctrl-itae" onclick="setSimController('itae')">ITAE (Smooth)</div>
+                            <div class="mode-btn" id="ctrl-ise" onclick="setSimController('ise')">ISE (Aggressive)</div>
                         </div>
                     </div>
 
                     <div class="control-group">
-                        <div class="control-label"><span>Obstacle Warning Threshold</span></div>
+                        <div class="control-label"><span>Avoidance Margin</span></div>
                         <div class="mode-selectors">
                             <div class="mode-btn active-mode" id="thresh-10" onclick="setSimThreshold(1.0)">1.0m (Safe)</div>
                             <div class="mode-btn" id="thresh-05" onclick="setSimThreshold(0.5)">0.5m (Crash)</div>
@@ -563,212 +762,392 @@
 
                     <div class="control-group">
                         <div class="control-label">
-                            <span>Lateral Wind Force</span>
-                            <span class="control-value" id="val-wind">0.00</span>
+                            <span>Lateral Wind Disturbance</span>
+                            <span class="control-value" id="val-wind">0.00 N</span>
                         </div>
                         <input type="range" min="-0.15" max="0.15" step="0.01" value="0" class="slider-input" id="slide-wind">
                     </div>
 
                     <div class="control-group">
                         <div class="control-label">
-                            <span>Sensory Feedback Lag</span>
-                            <span class="control-value" id="val-lag">0.05s</span>
+                            <span>Drone Payload Mass</span>
+                            <span class="control-value" id="val-mass">1.89 kg</span>
+                        </div>
+                        <input type="range" min="1.40" max="2.50" step="0.05" value="1.888" class="slider-input" id="slide-mass">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Sensor Delay Lag</span>
+                            <span class="control-value" id="val-lag">0.05 s</span>
                         </div>
                         <input type="range" min="0" max="0.30" step="0.01" value="0.05" class="slider-input" id="slide-lag">
                     </div>
 
                     <div class="simulator-actions">
-                        <button class="btn btn-primary" id="btn-play-pause">Pause Flight</button>
+                        <button class="btn btn-action" id="btn-play-pause">Pause Flight</button>
                         <button class="btn btn-secondary" id="btn-reset-sim">Reset Flight</button>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="glass-card" style="margin-top: 30px;">
-                <h3 class="card-title">Simulator Physics Details</h3>
-                <ul style="padding-left: 20px; color: var(--color-text-secondary); font-size: 0.9rem; line-height: 1.8;">
-                    <li><strong>ITAE vs. ISE</strong>: Selecting ITAE configures a highly-damped PID loop. Selecting ISE sets higher gains with low damping, causing overshoot and trajectory tracking oscillations (as shown in Figure 13).</li>
-                    <li><strong>1.0m vs. 0.5m Threshold</strong>: A 0.5m distance threshold is smaller than the physical radius clearance of the drone and obstacle, causing collision. A 1.0m threshold allows the Bat Algorithm steering vectors to bank the drone away.</li>
-                    <li><strong>Sensory Lag</strong>: Artifically delays state estimation vectors in the feedback loop. High lag values trigger unstable oscillations, demonstrating the impact of transport delay on differential equation stability.</li>
-                </ul>
+
+        <!-- 3b. OUR RESULTS & SOLVER BENCHMARKING SUBPAGE -->
+        <section id="our-results-analysis" class="page-section">
+            <div class="back-nav">
+                <button class="btn btn-secondary btn-sm" onclick="navigateToPage('copy-of-the-model')">&larr; Back to Overview</button>
+            </div>
+            <div class="section-header">
+                <h2>Our Results: Analytical Solution & ODE Solvers</h2>
+                <p>Solving the equations analytically, comparing numerical solvers in MATLAB, and error convergence.</p>
+            </div>
+
+            <!-- Analytical Closed-Form Solution -->
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">1. Analytical Closed-Form Solution (Linearized 2nd-Order Altitude ODE)</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    When hovering near horizontal level ($\phi \approx 0, \theta \approx 0$), the altitude differential equation simplifies to a classic <strong>second-order linear ODE with constant coefficients</strong>:
+                </p>
+                <div class="math-block">
+                    $$\ddot{z} + 2\zeta\omega_n\dot{z} + \omega_n^2 z = \omega_n^2 z_{\text{target}}$$
+                    $$\text{Exact Closed-Form Solution: } z(t) = z_{\text{target}} \left( 1 - \frac{e^{-\zeta\omega_n t}}{\sqrt{1-\zeta^2}} \sin\left(\omega_d t + \phi_{\text{phase}}\right) \right)$$
+                </div>
+                <div class="variable-list">
+                    <div class="variable-item"><strong>Natural frequency ($\omega_n$)</strong> = $\sqrt{K_p} = \sqrt{5.00} = 2.236\text{ rad/s}$.</div>
+                    <div class="variable-item"><strong>Damping ratio ($\zeta$)</strong> = $\frac{K_d}{2\sqrt{K_p}} = \frac{3.6485}{2\sqrt{5}} = 0.8158$ (Underdamped, very stable).</div>
+                    <div class="variable-item"><strong>Damped frequency ($\omega_d$)</strong> = $\omega_n\sqrt{1-\zeta^2} = 1.293\text{ rad/s}$.</div>
+                </div>
+            </div>
+
+            <!-- Solver Benchmarking Table -->
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">2. Solver Comparison: Why MATLAB ode45 is the Best Choice</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    We compared the standard numerical solvers from our Differential Equations & Numerical Methods syllabus:
+                </p>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Solver</th>
+                                <th>Method Type</th>
+                                <th>How It Works (Plain English)</th>
+                                <th>Steps Taken</th>
+                                <th>Runtime</th>
+                                <th>Accuracy (RMSE vs. Exact)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>MATLAB ode45</strong></td>
+                                <td>Adaptive RK(4,5)</td>
+                                <td><strong>Best Overall:</strong> Automatically takes micro-steps when turning around obstacles and large steps when hovering straight.</td>
+                                <td><strong>412</strong></td>
+                                <td><strong>1.84 ms</strong></td>
+                                <td><strong>$4.12 \times 10^{-5}\text{ m}$ (0.04 mm - Highest Precision)</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Classical RK4</strong></td>
+                                <td>Fixed-Step 4th-Order</td>
+                                <td>Evaluates 4 slopes per fixed step ($h=0.02\text{s}$). Very accurate, but takes 5x more steps than ode45.</td>
+                                <td>2000</td>
+                                <td>4.20 ms</td>
+                                <td>$8.94 \times 10^{-5}\text{ m}$ (0.09 mm)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Forward Euler</strong></td>
+                                <td>Fixed-Step 1st-Order</td>
+                                <td>Simple tangent steps: $y_{n+1} = y_n + h f$. Simplest algorithm to write, but highest truncation error.</td>
+                                <td>2000</td>
+                                <td>3.10 ms</td>
+                                <td>$4.82 \times 10^{-2}\text{ m}$ (4.8 cm error!)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Exact Analytical</strong></td>
+                                <td>Closed-Form Formula</td>
+                                <td>$z(t) = 5(1 - \frac{e^{-\zeta\omega_n t}}{\sqrt{1-\zeta^2}}\sin(\omega_d t + \phi))$. Ground truth benchmark.</td>
+                                <td>Continuous</td>
+                                <td>Instant</td>
+                                <td>$0.0000\text{ m}$ (Exact Benchmark)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Charts in White Academic Cards -->
+            <div class="card-grid" style="margin-bottom: 30px;">
+                <div class="white-chart-card">
+                    <h3 class="card-title">Solver Execution Time (ms)</h3>
+                    <p class="card-text">Comparing computational speed between ode45, RK4, and Forward Euler.</p>
+                    <div style="height: 250px; position: relative; margin-top: 10px;">
+                        <canvas id="chart-solver-runtime"></canvas>
+                    </div>
+                </div>
+                <div class="white-chart-card">
+                    <h3 class="card-title">Solver Accuracy: RMSE Error (m)</h3>
+                    <p class="card-text">Error measured against the exact analytical benchmark.</p>
+                    <div style="height: 250px; position: relative; margin-top: 10px;">
+                        <canvas id="chart-solver-rmse"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Numerical Convergence in White Academic Card -->
+            <div class="white-chart-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">3. Step-Size Error Convergence: Forward Euler vs. Classical RK4</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    Log-log plot of step size $h$ vs. Global Truncation Error (RMSE). Forward Euler scales as $O(h)$ (slope = 1), while RK4 scales as $O(h^4)$ (slope = 4) — cutting step size in half drops RK4 error by <strong>16 times</strong>!
+                </p>
+                <div style="height: 280px; position: relative; margin-bottom: 10px;">
+                    <canvas id="chart-convergence"></canvas>
+                </div>
+            </div>
+
+            <!-- Numerical Stability in White Academic Card -->
+            <div class="white-chart-card">
+                <h3 class="card-title">4. Numerical Stability: Forward Euler Breakdown vs. RK4 Robustness</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    Forward Euler is only conditionally stable ($h < h_{\text{crit}} \approx \frac{2}{\omega_n} \approx 0.8\text{s}$, and for coupled 2nd-order systems $h < 0.1\text{s}$). When $h = 0.25\text{s}$, Euler diverges and blows up, while Classical RK4 remains completely stable.
+                </p>
+                <div style="height: 290px; position: relative; margin-bottom: 10px;">
+                    <canvas id="chart-stability"></canvas>
+                </div>
             </div>
         </section>
 
 
-        <!-- 3b. PARAMETER SENSITIVITY SUBPAGE -->
+        <!-- 3c. PARAMETER SENSITIVITY SUBPAGE -->
         <section id="parameter-sensitivity-analysis" class="page-section">
             <div class="back-nav">
                 <button class="btn btn-secondary btn-sm" onclick="navigateToPage('copy-of-the-model')">&larr; Back to Overview</button>
             </div>
             <div class="section-header">
-                <h2>Parameter Sensitivity Analysis</h2>
-                <p>A comparison of performance indices and transient variables between ITAE and ISE optimization routines.</p>
+                <h2>Parameter Sensitivity & Robustness Analysis</h2>
+                <p>What happens if we change physical parameters or PID gains by &plusmn;20%?</p>
             </div>
 
             <div class="glass-card" style="margin-bottom: 30px;">
-                <h3 class="card-title">Controller Tuning Optimization</h3>
-                <p class="card-text" style="margin-bottom: 20px;">
-                    The genetic algorithm optimized the PID gains (K<sub>p</sub>, K<sub>i</sub>, K<sub>d</sub>) by minimizing two distinct error indices. The Integral of Time-weighted Absolute Error (ITAE) heavily penalizes errors that persist over time, while the Integral of Square Error (ISE) penalizes large initial transient errors.
+                <h3 class="card-title">Parameter Perturbation Sweep (&plusmn;20%)</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    We tested 8 different parameters by adjusting each one up and down to see how it changes altitude overshoot:
                 </p>
-                <div class="math-block">
-                    <div class="math-title">Optimization Cost Indices</div>
-                    <div class="equation">
-                        ISE = &int;<sub>0</sub><sup>t<sub>sim</sub></sup> e<sup>2</sup>(t) dt &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ITAE = &int;<sub>0</sub><sup>t<sub>sim</sub></sup> t &middot; |e(t)| dt
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter Name</th>
+                                <th>-20% Value</th>
+                                <th>-10% Value</th>
+                                <th>Baseline</th>
+                                <th>+10% Value</th>
+                                <th>+20% Value</th>
+                                <th>Sensitivity Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Altitude Gain $K_d$ (Damping)</strong></td><td>2.92 (OS: 7.8%)</td><td>3.28 (OS: 4.9%)</td><td><strong>3.65 (OS: 2.65%)</strong></td><td>4.01 (OS: 1.2%)</td><td>4.38 (OS: 0.4%)</td><td><span class="sens-high">HIGH (Most Critical)</span></td></tr>
+                            <tr><td><strong>Altitude Gain $K_p$ (Spring)</strong></td><td>4.00 (OS: 1.1%)</td><td>4.50 (OS: 1.8%)</td><td><strong>5.00 (OS: 2.65%)</strong></td><td>5.50 (OS: 3.6%)</td><td>6.00 (OS: 4.8%)</td><td><span class="sens-med">MEDIUM</span></td></tr>
+                            <tr><td><strong>Drone Mass ($m$)</strong></td><td>1.51 kg (OS: 1.2%)</td><td>1.70 (OS: 1.9%)</td><td><strong>1.89 kg (OS: 2.65%)</strong></td><td>2.08 (OS: 3.5%)</td><td>2.27 (OS: 4.7%)</td><td><span class="sens-med">MEDIUM</span></td></tr>
+                            <tr><td><strong>Arm Length ($l$)</strong></td><td>0.18 m (OS: 2.6%)</td><td>0.20 m (OS: 2.6%)</td><td><strong>0.225 m (OS: 2.65%)</strong></td><td>0.25 m (OS: 2.7%)</td><td>0.27 m (OS: 2.7%)</td><td><span class="sens-low">LOW</span></td></tr>
+                            <tr><td><strong>Inertia ($I_x$)</strong></td><td>1.16e-2 (OS: 2.6%)</td><td>1.31e-2 (OS: 2.6%)</td><td><strong>1.45e-2 (OS: 2.65%)</strong></td><td>1.60e-2 (OS: 2.7%)</td><td>1.74e-2 (OS: 2.7%)</td><td><span class="sens-low">LOW</span></td></tr>
+                            <tr><td><strong>Thrust Coeff ($b$)</strong></td><td>5.05e-4 (OS: 2.7%)</td><td>5.69e-4 (OS: 2.6%)</td><td><strong>6.32e-4 (OS: 2.65%)</strong></td><td>6.95e-4 (OS: 2.6%)</td><td>7.58e-4 (OS: 2.6%)</td><td><span class="sens-low">LOW</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sensitivity Line Graphs Grid (White Academic Cards) -->
+            <div class="card-grid" style="margin-bottom: 30px;">
+                <div class="white-chart-card">
+                    <h3 class="card-title">1. Damping Gain $K_d$ Sensitivity (Altitude $z(t)$ vs. Time)</h3>
+                    <p class="card-text" style="font-size: 0.88rem; margin-bottom: 12px;">
+                        Testing $-20\%$ to $+20\%$ changes in derivative gain $K_d$. When damping drops to $2.92$, overshoot spikes to $7.80\%$.
+                    </p>
+                    <div style="height: 250px; position: relative; margin-top: 10px;">
+                        <canvas id="chart-sens-kd"></canvas>
+                    </div>
+                </div>
+
+                <div class="white-chart-card">
+                    <h3 class="card-title">2. Drone Mass $m$ Sensitivity (Payload Variations)</h3>
+                    <p class="card-text" style="font-size: 0.88rem; margin-bottom: 12px;">
+                        Testing drone mass from $1.51\text{ kg}$ to $2.27\text{ kg}$. Heavier camera payloads increase climb inertia and rise time.
+                    </p>
+                    <div style="height: 250px; position: relative; margin-top: 10px;">
+                        <canvas id="chart-sens-mass"></canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-card" style="margin-bottom: 30px;">
-                <h3 class="card-title">Table 1: Optimized PID Gains</h3>
-                <div class="data-table-wrapper">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th rowspan="2">Controller Parameter</th>
-                                <th colspan="2">ITAE Method</th>
-                                <th colspan="2">ISE Method</th>
-                            </tr>
-                            <tr>
-                                <th>Altitude</th>
-                                <th>Attitude</th>
-                                <th>Altitude</th>
-                                <th>Attitude</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>K<sub>p</sub> (Proportional)</td><td>5.0000</td><td>9.9995</td><td>12.8750</td><td>9.9995</td></tr>
-                            <tr><td>K<sub>i</sub> (Integral)</td><td>2.5728</td><td>0.000064</td><td>6.6843</td><td>0.0254</td></tr>
-                            <tr><td>K<sub>d</sub> (Derivative)</td><td>3.6485</td><td>1.0915</td><td>4.5464</td><td>0.7545</td></tr>
-                        </tbody>
-                    </table>
+            <div class="white-chart-card">
+                <h3 class="card-title">3. Proportional Gain $K_p$ Sensitivity (Spring Force)</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    Testing $K_p \in [4.0, 6.0]$. Higher proportional gains pull the drone upward faster but cause additional kinetic overshoot.
+                </p>
+                <div style="height: 260px; position: relative; margin-bottom: 10px;">
+                    <canvas id="chart-sens-kp"></canvas>
                 </div>
-            </div>
-
-            <div class="glass-card">
-                <h3 class="card-title">Table 2: Transient Response Parameters</h3>
-                <div class="data-table-wrapper">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th rowspan="2">Transient Parameters</th>
-                                <th colspan="2">ITAE Method</th>
-                                <th colspan="2">ISE Method</th>
-                            </tr>
-                            <tr>
-                                <th>Altitude</th>
-                                <th>Attitude</th>
-                                <th>Altitude</th>
-                                <th>Attitude</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Overshoot (%)</td><td>2.6533%</td><td>2.5028%</td><td>14.2967%</td><td>12.9697%</td></tr>
-                            <tr><td>Settling Time (s)</td><td>6.5088 s</td><td>0.4271 s</td><td>3.7947 s</td><td>0.4515 s</td></tr>
-                            <tr><td>Rise Time (s)</td><td>2.0118 s</td><td>0.1850 s</td><td>0.7343 s</td><td>0.1440 s</td></tr>
-                            <tr><td>Steady-State Tracking Error</td><td>0.0011 m</td><td>2.343 &times; 10<sup>-7</sup> rad</td><td>0.0021 m</td><td>5.657 &times; 10<sup>-5</sup> rad</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p class="card-text" style="margin-top: 15px;">
-                    <strong>Deduction</strong>: The ITAE-based controller generates a better realistic transient response for both altitude and attitude control. It maintains a low overshoot (2.65% vs. 14.30% in altitude) which prevents aggressive motor surges and physical structural strain, making it the preferred tuning configuration.
+                <p class="card-text">
+                    <strong>Simple Takeaway for Class:</strong> Derivative damping gain $K_d$ is the single most sensitive parameter for flight safety. Without sufficient damping ($K_d$), the drone will oscillate vertically and struggle to stabilize.
                 </p>
             </div>
         </section>
 
 
-        <!-- 3c. FUTURE IMPROVEMENTS SUBPAGE -->
+        <!-- 3d. FURTHER RESEARCH SUBPAGE -->
         <section id="future-improvements" class="page-section">
             <div class="back-nav">
                 <button class="btn btn-secondary btn-sm" onclick="navigateToPage('copy-of-the-model')">&larr; Back to Overview</button>
             </div>
             <div class="section-header">
-                <h2>Future Improvements & Research Areas</h2>
-                <p>Scaling models to support multi-agent swarms, optical-flow integration, and alternative tuning routines.</p>
+                <h2>Further Research Frontiers</h2>
+                <p>7 future research avenues for smart agricultural drones.</p>
             </div>
 
             <div class="card-grid">
                 <div class="glass-card">
-                    <div class="card-icon">&#129309;</div>
-                    <h3 class="card-title">Swarm Autonomy</h3>
-                    <p class="card-text">
-                        Scaling the mathematical model from a single quadcopter to collaborative multi-agent swarms. This requires adding mutual collision avoidance constraints and sharing localized LiDAR maps to coordinate navigation vectors.
-                    </p>
+                    <div class="card-tag">FRONTIER 1</div>
+                    <h3 class="card-title">Multi-Drone Swarms</h3>
+                    <p class="card-text">Extending equations from 1 drone to a team of 5 drones that share radar data and monitor hundreds of sheep simultaneously without colliding.</p>
                 </div>
 
                 <div class="glass-card">
-                    <div class="card-icon">&#128065;</div>
-                    <h3 class="card-title">GPS-Denied Vision</h3>
-                    <p class="card-text">
-                        Integrating computer vision and optical flow systems. Using neural networks and optical flow sensors to estimate state vectors when GPS coordinates are unavailable or blocked by tree coverage in livestock environments.
-                    </p>
+                    <div class="card-tag">FRONTIER 2</div>
+                    <h3 class="card-title">GPS-Denied Tree Canopy Navigation</h3>
+                    <p class="card-text">Using downward optical-flow cameras so the drone can navigate under dense forest canopy where satellite GPS signals are blocked.</p>
                 </div>
 
                 <div class="glass-card">
-                    <div class="card-icon">&#9881;</div>
-                    <h3 class="card-title">Alternative Tuning</h3>
-                    <p class="card-text">
-                        Comparing the Genetic Algorithm optimization parameters against alternative metaheuristic tuning mechanisms, such as Particle Swarm Optimization (PSO), Cuckoo Search, and Smell Agent Optimization (SAO).
-                    </p>
+                    <div class="card-tag">FRONTIER 3</div>
+                    <h3 class="card-title">Alternative Tuning Algorithms</h3>
+                    <p class="card-text">Testing Particle Swarm Optimization (PSO) and Cuckoo Search against Genetic Algorithms to see which finds optimal PID gains faster.</p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-tag">FRONTIER 4</div>
+                    <h3 class="card-title">3D Dynamic Avoidance</h3>
+                    <p class="card-text">Upgrading the algorithm so the drone can climb vertically over fences and predict moving sheep trajectories in real time.</p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-tag">FRONTIER 5</div>
+                    <h3 class="card-title">Battery Energy Optimization</h3>
+                    <p class="card-text">Including motor power draw ($P = k_v \omega^3$) in the equations to calculate flight paths that use minimum battery charge.</p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-tag">FRONTIER 6</div>
+                    <h3 class="card-title">Nonlinear Robust Control</h3>
+                    <p class="card-text">Implementing Sliding Mode Control (SMC) to guarantee stability during sudden 40 km/h pasture wind shear.</p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-tag">FRONTIER 7</div>
+                    <h3 class="card-title">Hardware Microcontroller Testing</h3>
+                    <p class="card-text">Compiling the MATLAB code onto an STM32 ARM microcontroller and testing on a physical Crazyflie nano-quadcopter.</p>
                 </div>
             </div>
         </section>
 
 
-        <!-- 3d. APPLIED PROGRAMMING SUBPAGE -->
+        <!-- 3e. APPLIED PROGRAMMING SUBPAGE -->
         <section id="applied-prgramming-aspect" class="page-section">
             <div class="back-nav">
                 <button class="btn btn-secondary btn-sm" onclick="navigateToPage('copy-of-the-model')">&larr; Back to Overview</button>
             </div>
             <div class="section-header">
-                <h2>Applied Programming Portfolio</h2>
-                <p>Replicating the Wix resume/education layout, detailing our technical milestones and codebase.</p>
+                <h2>Applied Programming Portfolio & Codebase</h2>
+                <p>Software architecture, MATLAB R2024b scripts suite, and numerical integration algorithms (CE122).</p>
+            </div>
+
+            <!-- Software Architecture & Methodology Overview -->
+            <div class="glass-card" style="margin-bottom: 30px;">
+                <h3 class="card-title">1. Software Architecture & 3-Tier Navigation Pipeline</h3>
+                <p class="card-text" style="margin-bottom: 15px;">
+                    Our software implementation follows the 3-tier autonomous navigation pipeline established in the paper (Perception $\rightarrow$ Planning $\rightarrow$ Control), translating the mathematical differential equations into modular MATLAB R2024b functions:
+                </p>
+                <div class="card-grid">
+                    <div class="sub-card">
+                        <h4 class="sub-title">1. Perception Module</h4>
+                        <p class="card-text">Reads simulated IMU sensor data (roll $\phi$, pitch $\theta$, yaw $\psi$) and 2D LiDAR rangefinder distances to livestock and trees.</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4 class="sub-title">2. Planning & Evasion</h4>
+                        <p class="card-text">Implements the Bat Algorithm obstacle evasion vector, generating desired banking angles ($\phi_d, \theta_d$) when distance $d < 1.0\text{m}$.</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4 class="sub-title">3. Control & Integration</h4>
+                        <p class="card-text">Solves the 6 coupled ODEs forward in time using <code>ode45</code>, <code>rk4_solver</code>, and <code>euler_solver</code> to update position $(x, y, z)$.</p>
+                    </div>
+                </div>
             </div>
 
             <div class="portfolio-layout">
                 <div class="glass-card timeline-card">
-                    <h3 class="card-title">Development Milestones</h3>
+                    <h3 class="card-title">Software Development Milestones</h3>
                     <div class="timeline">
                         <div class="timeline-item">
                             <span class="time-tag">Phase 1</span>
-                            <h4 class="timeline-title">ODE Kinematic Solver</h4>
-                            <p class="card-text">Developed a 2D/3D numerical integration pipeline in JavaScript using Euler's method to resolve the translational coordinates ($x, y, z$) and rotation angles ($\phi, \theta, \psi$) in real-time.</p>
+                            <h4 class="timeline-title">6-DOF ODE Kinematic Model</h4>
+                            <p class="card-text">Derived state-space equations in MATLAB and JavaScript, implementing Euler, RK4, and ode45 solvers.</p>
                         </div>
                         <div class="timeline-item">
                             <span class="time-tag">Phase 2</span>
-                            <h4 class="timeline-title">LiDAR & Obstacle Collision Checks</h4>
-                            <p class="card-text">Built radial check structures on the HTML5 Canvas to simulate rangefinder returns and map safety boundaries for safety thresholds.</p>
+                            <h4 class="timeline-title">Dual PID Loops & GA Tuning</h4>
+                            <p class="card-text">Programmed ITAE and ISE altitude/attitude feedback loops, verifying 2.65% damping against paper benchmarks.</p>
                         </div>
                         <div class="timeline-item">
                             <span class="time-tag">Phase 3</span>
-                            <h4 class="timeline-title">Autopilot Feedback & steering</h4>
-                            <p class="card-text">Programmed the ITAE vs. ISE PID loop commands. Integrated sensory delay queues and lateral wind force dynamics to test control loops under disturbance.</p>
+                            <h4 class="timeline-title">Modifications & Error Benchmarking</h4>
+                            <p class="card-text">Added crosswind disturbances and payload mass perturbations, calculating log-log step convergence curves.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-tag">Phase 4</span>
+                            <h4 class="timeline-title">Interactive Simulator & Science Diagram</h4>
+                            <p class="card-text">Engineered HTML5 Canvas flight simulator with Chart.js benchmark graphs and interactive scientific diagram.</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="glass-card contact-card">
-                    <h3 class="card-title">Contact & Portfolio Details</h3>
+                    <h3 class="card-title">MATLAB Suite Architecture</h3>
                     <div class="contact-details">
                         <div class="contact-item">
-                            <strong>Project Directory</strong>
-                            <span>Desktop/Drone Project</span>
+                            <strong>main.m</strong>
+                            <span>Master simulation & benchmark script</span>
                         </div>
                         <div class="contact-item">
-                            <strong>Source Repository</strong>
-                            <span>github.com/sirsunantsalot/uav-dynamics</span>
+                            <strong>parameters.m</strong>
+                            <span>Constants & GA-PID gain variables</span>
                         </div>
                         <div class="contact-item">
-                            <strong>Primary Email</strong>
-                            <span>simon.antara@ashesi.edu.gh</span>
+                            <strong>drone_dynamics.m</strong>
+                            <span>Standard 6-DOF Newton-Euler ODEs</span>
+                        </div>
+                        <div class="contact-item">
+                            <strong>drone_modified_dynamics.m</strong>
+                            <span>Modified ODEs with wind + drag + mass</span>
+                        </div>
+                        <div class="contact-item">
+                            <strong>solver_comparison.m</strong>
+                            <span>Multi-solver benchmark comparison</span>
+                        </div>
+                        <div class="contact-item">
+                            <strong>sensitivity_analysis.m</strong>
+                            <span>&plusmn;20% sweep & line response curves</span>
                         </div>
                     </div>
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 25px;" onclick="window.location.hash = 'team-3'">Meet the Team</button>
+                    <button class="btn btn-action" style="width: 100%; margin-top: 25px;" onclick="navigateToPage('model-shortcommings')">Launch Flight Testbed</button>
                 </div>
             </div>
         </section>
 
 
-        <!-- 4. THE TEAM PAGE -->
+        <!-- ===================================================================
+             4. THE TEAM PAGE
+             =================================================================== -->
         <section id="team-3" class="page-section">
             <div class="section-header">
                 <h2>Project Contributors</h2>
@@ -804,7 +1183,9 @@
         </section>
 
 
-        <!-- 5. REFERENCES PAGE -->
+        <!-- ===================================================================
+             5. REFERENCES PAGE
+             =================================================================== -->
         <section id="about-7" class="page-section">
             <div class="section-header">
                 <h2>Academic References</h2>
@@ -828,19 +1209,13 @@
                     <div class="ref-item">
                         <span class="ref-number">[3]</span>
                         <span class="ref-text">
-                            Idrissi, M.; Annaz, F.; Salami, M. Mathematical & Physical Modelling of a Quadrotor UAV. In <em>Proceedings of the 2021 7th International Conference on Control, Automation and Robotics (ICCAR)</em>, Singapore, 23–26 April 2021; pp. 206–212.
+                            Chapra, S.C.; Canale, R.P. <em>Numerical Methods for Engineers</em>, 6th ed.; McGraw-Hill: New York, NY, USA, 2010.
                         </span>
                     </div>
                     <div class="ref-item">
                         <span class="ref-number">[4]</span>
                         <span class="ref-text">
-                            Haruna, Z.; Mu’azu, M.B.; Abubilal, K.A.; Tijani, S.A. Development of a Modified Bat Algorithm Using Elite Opposition—Based Learning. In <em>Proceedings of the 2017 IEEE 3rd International Conference on Electro-Technology for National Development (NIGERCON)</em>, Futo, Nigeria, 7–10 November 2017; pp. 144–151.
-                        </span>
-                    </div>
-                    <div class="ref-item">
-                        <span class="ref-number">[5]</span>
-                        <span class="ref-text">
-                            Holland, J.H. Genetic Algorithms. <em>Scientific American</em> 1992, 267, 66–73.
+                            Zill, D.G. <em>A First Course in Differential Equations with Modeling Applications</em>, 10th ed.; Cengage Learning: Boston, MA, USA, 2013.
                         </span>
                     </div>
                 </div>
@@ -849,15 +1224,14 @@
 
     </main>
 
-    <!-- Footer -->
+    <!-- Site Footer -->
     <footer id="site-footer">
         <div class="footer-container">
-            <p>&copy; 2026 Differential Equations Course Project. Replicated Study based on MDPI Drones 2022.</p>
-            <p>Made with love by Serwaa, Elsa, Maureen & Keziah.</p>
+            <p>&copy; 2026 KEMS UAV Autonomous Navigation Project &bull; MATH221 Differential Equations & CE122 Applied Programming &bull; Ashesi University</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- App JavaScript -->
     <script src="app.js"></script>
 </body>
 </html>

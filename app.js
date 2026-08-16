@@ -1,614 +1,895 @@
-// ==========================================
-// 1. Navigation & Page Router (Wix Transitions)
-// ==========================================
+// =========================================================================
+// KEMS - UAV Autonomous Navigation Project — Client-Side Application Engine
+// Author: KEMS UAV Research Group (MATH221 & CE122)
+// Features: SPA Router, Interactive HTML5 Canvas Flight Simulator, Chart.js Visualizations (White Academic Theme)
+// =========================================================================
 
-function navigateToPage(targetId) {
-    const activePage = document.querySelector('.page-section.active-page');
-    const targetPage = document.getElementById(targetId);
-    
-    if (!targetPage) return;
-    if (activePage && activePage.id === targetId) return;
+// =========================================================================
+// 1. Single Page Application (SPA) Router
+// =========================================================================
+function navigateToPage(targetPageId) {
+    const pages = document.querySelectorAll('.page-section');
+    pages.forEach(page => {
+        page.classList.remove('active-page');
+    });
 
-    // Reset all sub-dropdown states for mobile
-    const dropdowns = document.querySelectorAll('.has-dropdown');
-    dropdowns.forEach(d => d.classList.remove('mobile-dropdown-open'));
+    const activeTarget = document.getElementById(targetPageId);
+    if (activeTarget) {
+        activeTarget.classList.add('active-page');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-    // Highlight current active header link (including dropdown parents)
+    // Update active state in top navigation
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
+        link.classList.remove('active');
         const href = link.getAttribute('href');
-        const isParentModel = href === '#the-model' && ['detailed-analysis', 'equations-explained', 'parameter-definition'].includes(targetId);
-        const isParentContrib = href === '#copy-of-the-model' && ['model-shortcommings', 'parameter-sensitivity-analysis', 'future-improvements', 'applied-prgramming-aspect'].includes(targetId);
-        
-        if (href === '#' + targetId || isParentModel || isParentContrib) {
+        if (href === `#${targetPageId}`) {
             link.classList.add('active');
-        } else {
-            link.classList.remove('active');
         }
     });
 
-    // Animate transition using active-page and is-visible classes
-    if (activePage) {
-        activePage.classList.remove('is-visible');
-        activePage.classList.remove('active-page');
-    }
-    
-    targetPage.classList.add('active-page');
-    setTimeout(() => {
-        targetPage.classList.add('is-visible');
-    }, 50);
-
-    // If modifications page (simulator) is opened, resize canvas & reset drone
-    if (targetId === 'model-shortcommings') {
-        setTimeout(() => {
-            resizeCanvas();
-            resetDrone();
-        }, 80);
-    }
-
-    // Close mobile nav drawer if open
+    // Close mobile navigation drawer if open
     const navBar = document.getElementById('nav-bar');
-    if (navBar) {
+    if (navBar && navBar.classList.contains('open-nav')) {
         navBar.classList.remove('open-nav');
     }
 
-    // Smooth scroll to top of viewport
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Handle Simulator Canvas Resizing & Starting
+    if (targetPageId === 'model-shortcommings') {
+        setTimeout(() => {
+            resizeCanvas();
+            resetFlight();
+            if (!animFrameId) {
+                animFrameId = requestAnimationFrame(simulationLoop);
+            }
+        }, 80);
+    }
+
+    // Initialize Chart.js benchmarks when navigating to results or sensitivity
+    if (targetPageId === 'our-results-analysis') {
+        setTimeout(initSolverCharts, 100);
+    } else if (targetPageId === 'parameter-sensitivity-analysis') {
+        setTimeout(initSensitivityCharts, 100);
+    }
 }
 
-// Mobile navigation drawer toggle
-const menuToggle = document.getElementById('menu-toggle');
-const navBar = document.getElementById('nav-bar');
-if (menuToggle && navBar) {
-    menuToggle.addEventListener('click', () => {
-        navBar.classList.toggle('open-nav');
-    });
-}
-
-// Mobile dropdown expand on click
-const dropdownElements = document.querySelectorAll('.has-dropdown');
-dropdownElements.forEach(d => {
-    const link = d.querySelector('.nav-link');
-    link.addEventListener('click', (e) => {
-        if (window.innerWidth <= 1024) {
-            e.preventDefault(); // Stop hash nav on mobile trigger click
-            d.classList.toggle('mobile-dropdown-open');
-        }
-    });
-});
-
-// Setup scroll-triggered entrance observer
-const pageSectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-        }
-    });
-}, { threshold: 0.05 });
-
-// Deep link routing on page load
-window.addEventListener('load', () => {
-    document.querySelectorAll('.page-section').forEach(section => {
-        pageSectionObserver.observe(section);
-    });
-
-    const hash = window.location.hash.substring(1);
-    if (hash && document.getElementById(hash)) {
-        navigateToPage(hash);
+// Handle Browser Hash Routing (e.g. #equations-explained)
+window.addEventListener('DOMContentLoaded', () => {
+    const currentHash = window.location.hash.substring(1);
+    if (currentHash && document.getElementById(currentHash)) {
+        navigateToPage(currentHash);
     } else {
         navigateToPage('home');
     }
+
+    // Mobile Drawer Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const navBar = document.getElementById('nav-bar');
+    if (menuToggle && navBar) {
+        menuToggle.addEventListener('click', () => {
+            navBar.classList.toggle('open-nav');
+        });
+    }
+
+    // Initialize Simulation Controls
+    initSimulator();
+});
+
+window.addEventListener('hashchange', () => {
+    const currentHash = window.location.hash.substring(1);
+    if (currentHash && document.getElementById(currentHash)) {
+        navigateToPage(currentHash);
+    }
 });
 
 
-// ==========================================
-// 2. Figure Replication Carousel Slider
-// ==========================================
+// =========================================================================
+// 2. Interactive Scientific Picture Depiction Explorer
+// =========================================================================
+const depictionData = {
+    thrust: {
+        title: "1. Motor Thrust & Propeller Lift Forces (f₁, f₂, f₃, f₄)",
+        text: "Each spinning rotor creates upward thrust proportional to the square of its rotational speed: f_i = b · ω_i². The sum of all 4 forces creates the total upward thrust U₁ = f₁ + f₂ + f₃ + f₄. When U₁ exceeds total weight (m · g = 18.52 N), the drone accelerates upward into the sky.",
+        btnId: "btn-dep-thrust"
+    },
+    angles: {
+        title: "2. Rotational Tilt & Banking Angles (Roll φ, Pitch θ, Yaw ψ)",
+        text: "A quadrotor is under-actuated: it cannot move sideways or forward without tilting first! Spinning back motor 3 faster than front motor 1 tilts the drone forward (Pitch θ > 0), redirecting part of upward lift U₁ horizontally to drive forward motion in X.",
+        btnId: "btn-dep-angles"
+    },
+    lidar: {
+        title: "3. 2D LiDAR Rangefinder & Bat Algorithm Obstacle Avoidance",
+        text: "The onboard LiDAR emits a continuous 2D horizontal laser fan. When an acacia tree or stray livestock enters the 1.0-meter safety threshold, the algorithm injects a perpendicular tangential steering force into the equations of motion, smoothly banking the drone around the obstacle.",
+        btnId: "btn-dep-lidar"
+    },
+    pid: {
+        title: "4. Dual PID Flight Control Loop (The Robot Brain)",
+        text: "Continuously compares desired flight coordinates against onboard IMU gyroscope/accelerometer measurements. It calculates e(t) = target - actual and dynamically modulates individual motor speeds to cancel out error with optimal 2.65% damping.",
+        btnId: "btn-dep-pid"
+    }
+};
 
-let currentSlide = 0;
-const slides = document.querySelectorAll('.carousel-slide');
-const indicators = document.querySelectorAll('.carousel-indicators .indicator');
+function highlightDepiction(type) {
+    const info = depictionData[type] || depictionData.thrust;
+    const titleEl = document.getElementById('depiction-detail-title');
+    const textEl = document.getElementById('depiction-detail-text');
 
-function showSlide(index) {
-    if (slides.length === 0) return;
-    if (index >= slides.length) {
-        currentSlide = 0;
-    } else if (index < 0) {
-        currentSlide = slides.length - 1;
-    } else {
-        currentSlide = index;
+    if (titleEl && textEl) {
+        titleEl.textContent = info.title;
+        textEl.textContent = info.text;
     }
 
-    slides.forEach((slide, i) => {
-        slide.classList.toggle('active-slide', i === currentSlide);
+    // Toggle active button style
+    document.querySelectorAll('.interactive-callout-btn').forEach(btn => {
+        btn.classList.remove('active-callout');
     });
 
-    indicators.forEach((ind, i) => {
-        ind.classList.toggle('active', i === currentSlide);
-    });
-}
-
-function moveSlide(step) {
-    showSlide(currentSlide + step);
-}
-
-function setSlide(index) {
-    showSlide(index);
+    const activeBtn = document.getElementById(info.btnId);
+    if (activeBtn) activeBtn.classList.add('active-callout');
 }
 
 
-// ==========================================
-// 3. Flight Simulation Telemetry & State
-// ==========================================
+// =========================================================================
+// 3. Interactive HTML5 Canvas Flight Simulator Engine
+// =========================================================================
+let canvas, ctx;
+let simRunning = true;
+let animFrameId = null;
+let rotorAngle = 0;
 
-const canvas = document.getElementById('simulation-canvas');
-const ctx = canvas ? canvas.getContext('2d') : null;
-const telemetryReadout = document.getElementById('telemetry-readout');
-
-// Telemetry parameters
-let activeScene = 'single'; // 'single' (1 obstacle) or 'three' (3 obstacles)
-let activeController = 'itae'; // 'itae' (well-damped) or 'ise' (overshoot)
-let activeThreshold = 1.0; // 1.0m (safe) or 0.5m (crash)
-
-// Physics variables
-let windForceX = 0.0;
-let controlLag = 0.05; // feedback delay in seconds
-let isPlaying = true;
-let isCrashed = false;
-let animationId = null;
-
-const dt = 0.05; // integration time step (s)
-const droneRadius = 10;
-const targetRadius = 15;
-const obstacleRadius = 25;
-
-// Initial state values
-let drone = {
-    x: 80,
-    y: 400,
+// Drone State Vector: [x, y, z, vx, vy, vz, phi, theta, psi]
+const drone = {
+    x: 50,
+    y: 340,
+    z: 5.0,
     vx: 0,
     vy: 0,
-    ax: 0,
-    ay: 0,
+    vz: 0,
+    phi: 0,
+    theta: 0,
+    psi: 0,
+    mass: 1.888,
     trail: []
 };
 
-let target = {
-    x: 680,
-    y: 80
+// Simulation Configuration
+const simConfig = {
+    scene: 'single',        // 'single' or 'three'
+    controller: 'itae',     // 'itae' or 'ise'
+    threshold: 1.0,         // 1.0m (safe) or 0.5m (crash)
+    windX: 0.0,             // Lateral wind disturbance (N)
+    lag: 0.05,              // Sensor feedback lag (s)
+    speedFactor: 1.3,
+    target: { x: 620, y: 75 }
 };
 
-let obstacles = [];
+// Obstacle Database
+const obstacleScenes = {
+    single: [
+        { x: 340, y: 210, r: 40, label: 'Acacia Tree Obstacle' }
+    ],
+    three: [
+        { x: 220, y: 270, r: 32, label: 'Grazing Sheep Flock' },
+        { x: 380, y: 190, r: 42, label: 'Acacia Tree' },
+        { x: 520, y: 130, r: 30, label: 'Farm Perimeter Gate' }
+    ]
+};
 
-const singleSceneObstacles = [
-    { x: 380, y: 240, r: obstacleRadius } // Central obstacle
-];
+// Sensor Latency Queue
+let stateHistoryQueue = [];
 
-const threeSceneObstacles = [
-    { x: 300, y: 280, r: obstacleRadius }, // Obstacle 1
-    { x: 440, y: 220, r: obstacleRadius }, // Obstacle 2
-    { x: 560, y: 140, r: obstacleRadius }  // Obstacle 3
-];
+function initSimulator() {
+    canvas = document.getElementById('simulation-canvas');
+    if (!canvas) return;
 
-let commandQueue = [];
+    ctx = canvas.getContext('2d');
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-// ==========================================
-// 4. Simulator UI Controls Sync
-// ==========================================
-
-const slideWind = document.getElementById('slide-wind');
-const slideLag = document.getElementById('slide-lag');
-const valWind = document.getElementById('val-wind');
-const valLag = document.getElementById('val-lag');
-
-const btnPlayPause = document.getElementById('btn-play-pause');
-const btnResetSim = document.getElementById('btn-reset-sim');
-
-function syncSliders() {
-    if (slideWind) {
-        windForceX = parseFloat(slideWind.value);
-        valWind.textContent = windForceX > 0 ? `+${windForceX.toFixed(2)} (Right)` : windForceX < 0 ? `${windForceX.toFixed(2)} (Left)` : "0.00";
+    // Attach Sliders
+    const slideWind = document.getElementById('slide-wind');
+    const valWind = document.getElementById('val-wind');
+    if (slideWind && valWind) {
+        slideWind.addEventListener('input', (e) => {
+            simConfig.windX = parseFloat(e.target.value);
+            valWind.textContent = `${simConfig.windX.toFixed(2)} N`;
+        });
     }
-    if (slideLag) {
-        controlLag = parseFloat(slideLag.value);
-        valLag.textContent = controlLag.toFixed(2) + "s";
+
+    const slideMass = document.getElementById('slide-mass');
+    const valMass = document.getElementById('val-mass');
+    if (slideMass && valMass) {
+        slideMass.addEventListener('input', (e) => {
+            drone.mass = parseFloat(e.target.value);
+            valMass.textContent = `${drone.mass.toFixed(2)} kg`;
+        });
+    }
+
+    const slideLag = document.getElementById('slide-lag');
+    const valLag = document.getElementById('val-lag');
+    if (slideLag && valLag) {
+        slideLag.addEventListener('input', (e) => {
+            simConfig.lag = parseFloat(e.target.value);
+            valLag.textContent = `${simConfig.lag.toFixed(2)} s`;
+        });
+    }
+
+    // Play / Pause & Reset
+    const btnPlayPause = document.getElementById('btn-play-pause');
+    if (btnPlayPause) {
+        btnPlayPause.addEventListener('click', () => {
+            simRunning = !simRunning;
+            btnPlayPause.textContent = simRunning ? 'Pause Flight' : 'Resume Flight';
+        });
+    }
+
+    const btnResetSim = document.getElementById('btn-reset-sim');
+    if (btnResetSim) {
+        btnResetSim.addEventListener('click', resetFlight);
+    }
+
+    resetFlight();
+    if (!animFrameId) {
+        animFrameId = requestAnimationFrame(simulationLoop);
     }
 }
 
-if (slideWind) slideWind.addEventListener('input', syncSliders);
-if (slideLag) slideLag.addEventListener('input', syncSliders);
-
-// Simulator select configurations
-function setSimScene(scene) {
-    activeScene = scene;
-    document.getElementById('scene-single').classList.toggle('active-mode', scene === 'single');
-    document.getElementById('scene-three').classList.toggle('active-mode', scene === 'three');
-    resetDrone();
-}
-
-function setSimController(controller) {
-    activeController = controller;
-    document.getElementById('ctrl-itae').classList.toggle('active-mode', controller === 'itae');
-    document.getElementById('ctrl-ise').classList.toggle('active-mode', controller === 'ise');
-    resetDrone();
-}
-
-function setSimThreshold(threshold) {
-    activeThreshold = threshold;
-    document.getElementById('thresh-10').classList.toggle('active-mode', threshold === 1.0);
-    document.getElementById('thresh-05').classList.toggle('active-mode', threshold === 0.5);
-    resetDrone();
-}
-
-if (btnPlayPause) {
-    btnPlayPause.addEventListener('click', () => {
-        isPlaying = !isPlaying;
-        btnPlayPause.textContent = isPlaying ? "Pause Flight" : "Resume Flight";
-        btnPlayPause.classList.toggle('btn-primary', isPlaying);
-        btnPlayPause.classList.toggle('btn-secondary', !isPlaying);
-    });
-}
-
-if (btnResetSim) {
-    btnResetSim.addEventListener('click', resetDrone);
-}
-
-// Resize canvas relative to layout width
 function resizeCanvas() {
     if (!canvas) return;
-    const rect = canvas.parentNode.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = 480;
-    
-    // Reposition target relative to width
-    target.x = canvas.width - 80;
-    target.y = 80;
+    const parent = canvas.parentElement;
+    const parentWidth = parent ? parent.clientWidth : 720;
+    canvas.width = parentWidth > 100 ? parentWidth : 760;
+    canvas.height = 420;
+    simConfig.target = { x: canvas.width - 60, y: 70 };
 }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
 
-
-// ==========================================
-// 5. Numerical Physics Engine (Euler Integration)
-// ==========================================
-
-function resetDrone() {
-    drone.x = 80;
-    drone.y = 400;
+function resetFlight() {
+    drone.x = 50;
+    drone.y = canvas ? canvas.height - 60 : 340;
     drone.vx = 0;
     drone.vy = 0;
-    drone.ax = 0;
-    drone.ay = 0;
+    drone.vz = 0;
+    drone.phi = 0;
+    drone.theta = 0;
     drone.trail = [];
-    commandQueue = [];
-    isCrashed = false;
-    
-    // Load appropriate obstacles
-    obstacles = activeScene === 'single' ? [...singleSceneObstacles] : [...threeSceneObstacles];
+    stateHistoryQueue = [];
 }
 
-function computeForces(x, y) {
-    // Controller behavior parameter scaling
-    // ITAE has higher damping and accurate tracking
-    // ISE has low damping and high overshoot (oscillatory behavior)
-    const damping = activeController === 'itae' ? 0.20 : 0.06;
-    const k_att = activeController === 'itae' ? 0.06 : 0.12; 
+// Mode Selection Handlers
+function setSimScene(sceneType) {
+    simConfig.scene = sceneType;
+    const btnSingle = document.getElementById('scene-single');
+    const btnThree = document.getElementById('scene-three');
+    if (btnSingle) btnSingle.classList.toggle('active-mode', sceneType === 'single');
+    if (btnThree) btnThree.classList.toggle('active-mode', sceneType === 'three');
+    resetFlight();
+}
 
-    // Target tracking vector
-    let f_att_x = -k_att * (x - target.x);
-    let f_att_y = -k_att * (y - target.y);
+function setSimController(ctrlType) {
+    simConfig.controller = ctrlType;
+    const btnItae = document.getElementById('ctrl-itae');
+    const btnIse = document.getElementById('ctrl-ise');
+    if (btnItae) btnItae.classList.toggle('active-mode', ctrlType === 'itae');
+    if (btnIse) btnIse.classList.toggle('active-mode', ctrlType === 'ise');
+    resetFlight();
+}
 
-    const att_mag = Math.hypot(f_att_x, f_att_y);
-    const max_att = 5.0;
-    if (att_mag > max_att) {
-        f_att_x = (f_att_x / att_mag) * max_att;
-        f_att_y = (f_att_y / att_mag) * max_att;
+function setSimThreshold(threshVal) {
+    simConfig.threshold = threshVal;
+    const btn10 = document.getElementById('thresh-10');
+    const btn05 = document.getElementById('thresh-05');
+    if (btn10) btn10.classList.toggle('active-mode', threshVal === 1.0);
+    if (btn05) btn05.classList.toggle('active-mode', threshVal === 0.5);
+    resetFlight();
+}
+
+// Main Physics & Simulation Loop
+function simulationLoop() {
+    if (simRunning) {
+        updatePhysics(0.016);
     }
+    renderScene();
+    updateTelemetry();
+    rotorAngle += 0.35;
+    animFrameId = requestAnimationFrame(simulationLoop);
+}
 
-    let f_rep_x = 0;
-    let f_rep_y = 0;
-    let in_collision = false;
+function updatePhysics(dt) {
+    // Latency Queue
+    stateHistoryQueue.push({ x: drone.x, y: drone.y, time: performance.now() });
+    const lagMs = simConfig.lag * 1000;
+    const now = performance.now();
+    while (stateHistoryQueue.length > 0 && (now - stateHistoryQueue[0].time) > lagMs) {
+        stateHistoryQueue.shift();
+    }
+    const delayedState = stateHistoryQueue.length > 0 ? stateHistoryQueue[0] : { x: drone.x, y: drone.y };
 
-    // Safety threshold limits (1.0m vs 0.5m mapped to visual pixels)
-    const d_0 = activeThreshold === 1.0 ? 115.0 : 45.0;
-    const k_rep = activeThreshold === 1.0 ? 18.0 : 4.0;
+    // Goal Attraction Vector
+    const dx = simConfig.target.x - delayedState.x;
+    const dy = simConfig.target.y - delayedState.y;
+    const distToGoal = Math.sqrt(dx * dx + dy * dy);
 
-    obstacles.forEach(obs => {
-        const dx = x - obs.x;
-        const dy = y - obs.y;
-        const dist = Math.hypot(dx, dy);
+    // Controller Tuning
+    let kp = (simConfig.controller === 'itae') ? 1.4 : 3.0;
+    let kd = (simConfig.controller === 'itae') ? 1.6 : 0.7;
 
-        // Physical collision check (drone boundaries + obstacle boundary)
-        if (dist <= (droneRadius + obs.r)) {
-            in_collision = true;
-        }
+    let fx = (dx / (distToGoal + 1e-4)) * kp * 60 - drone.vx * kd;
+    let fy = (dy / (distToGoal + 1e-4)) * kp * 60 - drone.vy * kd;
 
-        // Repulsion field activation
-        if (dist < d_0) {
-            const d = Math.max(dist, 5.0);
-            const rep_mag = k_rep * (1.0 / d - 1.0 / d_0) * (1.0 / (d * d)) * 1000;
-            
-            let force_x = rep_mag * (dx / d);
-            let force_y = rep_mag * (dy / d);
+    // Obstacle Avoidance (Bat Algorithm Repulsion)
+    const currentObstacles = obstacleScenes[simConfig.scene] || obstacleScenes.single;
+    currentObstacles.forEach(obs => {
+        const ox = obs.x - drone.x;
+        const oy = obs.y - drone.y;
+        const dObs = Math.sqrt(ox * ox + oy * oy);
+        const warningRadius = obs.r + (simConfig.threshold * 55);
 
-            // Perpendicular steering angle alignment
-            const dotProduct = (dx / d) * (f_att_x / max_att) + (dy / d) * (f_att_y / max_att);
-            if (dotProduct < -0.7) {
-                force_x += -force_y * 0.5;
-                force_y += force_x * 0.5;
-            }
+        if (dObs < warningRadius) {
+            const penetration = (warningRadius - dObs) / warningRadius;
+            const repAngle = Math.atan2(oy, ox);
+            // Tangential evasion vector
+            const tangentAngle = repAngle - Math.PI / 2;
+            const repStrength = penetration * penetration * 420;
 
-            f_rep_x += force_x;
-            f_rep_y += force_y;
+            fx -= Math.cos(repAngle) * repStrength;
+            fy -= Math.sin(repAngle) * repStrength;
+            fx += Math.cos(tangentAngle) * repStrength * 0.9;
+            fy += Math.sin(tangentAngle) * repStrength * 0.9;
         }
     });
 
-    return {
-        attX: f_att_x,
-        attY: f_att_y,
-        repX: f_rep_x,
-        repY: f_rep_y,
-        totalX: f_att_x + f_rep_x,
-        totalY: f_att_y + f_rep_y,
-        inCollision: in_collision,
-        damping: damping
-    };
-}
+    // Body Drag (-k * v)
+    const dragCoeff = 0.45;
+    const dragX = -dragCoeff * drone.vx;
+    const dragY = -dragCoeff * drone.vy;
 
-function updatePhysics() {
-    if (!isPlaying || isCrashed || !canvas) return;
+    // Accelerations derived from ODEs: a = (F_control + F_drag + F_wind) / m
+    const ax = (fx + dragX + simConfig.windX * 80) / drone.mass;
+    const ay = (fy + dragY) / drone.mass;
 
-    const forces = computeForces(drone.x, drone.y);
-
-    if (forces.inCollision) {
-        isCrashed = true;
-        drone.vx = 0;
-        drone.vy = 0;
-        return;
-    }
-
-    // Process sensory delay latency queue
-    const queueLimit = Math.max(Math.round(controlLag / dt), 1);
-    commandQueue.push({ ax: forces.totalX, ay: forces.totalY });
-
-    let appliedAccel = { ax: forces.totalX, ay: forces.totalY };
-    if (commandQueue.length >= queueLimit) {
-        appliedAccel = commandQueue.shift();
-    }
-
-    // Euler ODE integration
-    const ax = appliedAccel.ax + windForceX - forces.damping * drone.vx;
-    const ay = appliedAccel.ay - forces.damping * drone.vy;
-
+    // Forward Euler Integration Step
     drone.vx += ax * dt;
     drone.vy += ay * dt;
+    drone.x += drone.vx * dt * simConfig.speedFactor;
+    drone.y += drone.vy * dt * simConfig.speedFactor;
 
-    // Terminal velocity clamp
-    const speed = Math.hypot(drone.vx, drone.vy);
-    const maxSpeed = 12.0;
-    if (speed > maxSpeed) {
-        drone.vx = (drone.vx / speed) * maxSpeed;
-        drone.vy = (drone.vy / speed) * maxSpeed;
-    }
+    // Banking Roll Angle
+    drone.phi = Math.max(-0.45, Math.min(0.45, drone.vx * 0.08));
 
-    drone.x += drone.vx * dt * 20;
-    drone.y += drone.vy * dt * 20;
-
-    // Boundary constraints check
-    if (drone.x < 0 || drone.x > canvas.width || drone.y < 0 || drone.y > canvas.height) {
-        resetDrone();
-    }
-
-    // Trajectory trail
+    // Flight Trail History
     drone.trail.push({ x: drone.x, y: drone.y });
-    if (drone.trail.length > 500) {
-        drone.trail.shift();
-    }
+    if (drone.trail.length > 350) drone.trail.shift();
 
-    // Check if goal reached
-    const distToTarget = Math.hypot(drone.x - target.x, drone.y - target.y);
-    if (distToTarget < targetRadius + 4) {
-        drone.vx = 0;
-        drone.vy = 0;
-    }
-
-    // Readout telemetry printout
-    if (telemetryReadout) {
-        const displayX = ((drone.x - 80) / 40).toFixed(2);
-        const displayY = ((400 - drone.y) / 40).toFixed(2);
-        const displaySpeed = (speed * 1.5).toFixed(2);
-        telemetryReadout.innerHTML = `X: ${displayX}m | Y: ${displayY}m | Speed: ${displaySpeed}m/s`;
+    // Reached Goal Check
+    if (distToGoal < 20) {
+        drone.vx *= 0.85;
+        drone.vy *= 0.85;
     }
 }
 
-// ==========================================
-// 6. Simulation Rendering Engine
-// ==========================================
-
-function drawSimulation() {
+function renderScene() {
     if (!ctx || !canvas) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 1. Telemetry Radar Gridlines
-    ctx.strokeStyle = 'rgba(0, 138, 252, 0.04)';
+    // 1. Grid Background
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
     ctx.lineWidth = 1;
-    const gridSize = 40;
-    for (let x = 0; x < canvas.width; x += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, canvas.height);
-        ctx.stroke();
+    for (let x = 0; x < canvas.width; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
     }
-    for (let y = 0; y < canvas.height; y += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width, y);
-        ctx.stroke();
+    for (let y = 0; y < canvas.height; y += 40) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
     }
 
-    // 2. Obstacles & Warning zones
-    const d_0 = activeThreshold === 1.0 ? 115.0 : 45.0;
-    obstacles.forEach(obs => {
-        // Warning sensor boundary
-        ctx.strokeStyle = 'rgba(253, 98, 98, 0.1)';
-        ctx.lineWidth = 1;
-        ctx.setLineDash([5, 5]);
+    // 2. Draw Obstacles (Trees / Sheep)
+    const currentObstacles = obstacleScenes[simConfig.scene] || obstacleScenes.single;
+    let collisionDetected = false;
+
+    currentObstacles.forEach(obs => {
+        const warningRadius = obs.r + (simConfig.threshold * 55);
+        const distToObs = Math.hypot(obs.x - drone.x, obs.y - drone.y);
+
+        if (distToObs < (obs.r + 14)) {
+            collisionDetected = true;
+        }
+
+        // Safety Margin Circle
+        ctx.strokeStyle = (simConfig.threshold === 1.0) ? 'rgba(0, 240, 255, 0.35)' : 'rgba(255, 77, 109, 0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 4]);
         ctx.beginPath();
-        ctx.arc(obs.x, obs.y, d_0, 0, Math.PI * 2);
+        ctx.arc(obs.x, obs.y, warningRadius, 0, Math.PI * 2);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Radial obstacle body
-        const grad = ctx.createRadialGradient(obs.x - 5, obs.y - 5, 2, obs.x, obs.y, obs.r);
-        grad.addColorStop(0, '#ff9999');
-        grad.addColorStop(0.7, '#FD6262');
-        grad.addColorStop(1, '#8B0000');
-
-        ctx.fillStyle = grad;
-        ctx.shadowColor = 'rgba(253, 98, 98, 0.3)';
-        ctx.shadowBlur = 10;
+        // Obstacle Body
+        const gradient = ctx.createRadialGradient(obs.x, obs.y, 5, obs.x, obs.y, obs.r);
+        gradient.addColorStop(0, 'rgba(255, 77, 109, 0.7)');
+        gradient.addColorStop(1, 'rgba(255, 77, 109, 0.25)');
+        ctx.fillStyle = gradient;
+        ctx.strokeStyle = '#ff4d6d';
+        ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(obs.x, obs.y, obs.r, 0, Math.PI * 2);
         ctx.fill();
-        ctx.shadowBlur = 0;
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 11px Inter';
+        ctx.fillText(obs.label, obs.x - 45, obs.y + obs.r + 16);
     });
 
-    // 3. Goal Vector Target Crosshair
-    ctx.strokeStyle = '#00ff66';
-    ctx.lineWidth = 2;
-    ctx.shadowColor = 'rgba(0, 255, 102, 0.4)';
-    ctx.shadowBlur = 12;
+    // 3. Target Goal
+    ctx.fillStyle = '#00ff88';
     ctx.beginPath();
-    ctx.arc(target.x, target.y, targetRadius, 0, Math.PI * 2);
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(0, 255, 102, 0.12)';
-    ctx.beginPath();
-    ctx.arc(target.x, target.y, targetRadius - 4, 0, Math.PI * 2);
+    ctx.arc(simConfig.target.x, simConfig.target.y, 12, 0, Math.PI * 2);
     ctx.fill();
-    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#00ff88';
+    ctx.font = 'bold 11px JetBrains Mono';
+    ctx.fillText('TARGET GOAL (5m Hover)', simConfig.target.x - 70, simConfig.target.y - 18);
 
-    // Crosshair ticks
-    ctx.strokeStyle = 'rgba(0, 255, 102, 0.5)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(target.x - 22, target.y);
-    ctx.lineTo(target.x + 22, target.y);
-    ctx.moveTo(target.x, target.y - 22);
-    ctx.lineTo(target.x, target.y + 22);
-    ctx.stroke();
-
-    // 4. Past flight trajectory line
+    // 4. Flight Path Trail
     if (drone.trail.length > 1) {
-        ctx.strokeStyle = isCrashed ? 'rgba(253, 98, 98, 0.35)' : 'rgba(0, 138, 252, 0.4)';
-        ctx.lineWidth = 2.5;
         ctx.beginPath();
+        ctx.strokeStyle = (simConfig.controller === 'itae') ? '#00f0ff' : '#ffb703';
+        ctx.lineWidth = 3;
+        ctx.shadowColor = (simConfig.controller === 'itae') ? '#00f0ff' : '#ffb703';
+        ctx.shadowBlur = 8;
         ctx.moveTo(drone.trail[0].x, drone.trail[0].y);
         for (let i = 1; i < drone.trail.length; i++) {
             ctx.lineTo(drone.trail[i].x, drone.trail[i].y);
         }
         ctx.stroke();
-    }
-
-    // 5. Force Vectors
-    const forces = computeForces(drone.x, drone.y);
-    if (!isCrashed) {
-        // Target seeking vector (Green)
-        drawVector(drone.x, drone.y, forces.attX * 25, forces.attY * 25, '#00ff66', 1.5);
-        // Obstacle avoidance feedback vector (Red)
-        if (Math.hypot(forces.repX, forces.repY) > 0.05) {
-            drawVector(drone.x, drone.y, forces.repX * 15, forces.repY * 15, '#FD6262', 1.5);
-        }
-    }
-
-    // 6. Quadcopter Body
-    ctx.fillStyle = isCrashed ? '#FD6262' : '#00f0ff';
-    ctx.shadowColor = isCrashed ? 'rgba(253, 98, 98, 0.9)' : 'rgba(0, 240, 255, 0.8)';
-    ctx.shadowBlur = isCrashed ? 25 : 12;
-    ctx.beginPath();
-    ctx.arc(drone.x, drone.y, droneRadius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-
-    // Dynamic spinning rotors
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-    ctx.lineWidth = 1;
-    const rotorOffset = 14;
-    ctx.beginPath();
-    ctx.arc(drone.x - rotorOffset, drone.y - rotorOffset, 7, 0, Math.PI * 2);
-    ctx.arc(drone.x + rotorOffset, drone.y - rotorOffset, 7, 0, Math.PI * 2);
-    ctx.arc(drone.x - rotorOffset, drone.y + rotorOffset, 7, 0, Math.PI * 2);
-    ctx.arc(drone.x + rotorOffset, drone.y + rotorOffset, 7, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Collision warning tag
-    if (isCrashed) {
-        ctx.fillStyle = 'rgba(253, 98, 98, 0.15)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.fillStyle = '#FD6262';
-        ctx.font = 'bold 20px Space Grotesk';
-        ctx.shadowColor = 'rgba(253, 98, 98, 0.5)';
-        ctx.shadowBlur = 10;
-        ctx.fillText("COLLISION DETECTED", canvas.width / 2 - 120, canvas.height / 2);
         ctx.shadowBlur = 0;
     }
-}
 
-function drawVector(startX, startY, vx, vy, color, width) {
-    if (Math.hypot(vx, vy) < 2) return;
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = width;
-
-    const endX = startX + vx;
-    const endY = startY + vy;
-
+    // 5. 2D LiDAR Scanning Cone
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.25)';
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.05)';
     ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(endX, endY);
+    ctx.arc(drone.x, drone.y, 85, -0.6 + drone.phi, 0.6 + drone.phi);
+    ctx.lineTo(drone.x, drone.y);
+    ctx.fill();
     ctx.stroke();
 
-    const angle = Math.atan2(vy, vx);
+    // 6. Draw Quadcopter Body & Spinning Rotors
+    ctx.save();
+    ctx.translate(drone.x, drone.y);
+    ctx.rotate(drone.phi);
+
+    // Drone Arms (+)
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(endX, endY);
-    ctx.lineTo(endX - 8 * Math.cos(angle - Math.PI / 6), endY - 8 * Math.sin(angle - Math.PI / 6));
-    ctx.lineTo(endX - 8 * Math.cos(angle + Math.PI / 6), endY - 8 * Math.sin(angle + Math.PI / 6));
+    ctx.moveTo(-18, 0); ctx.lineTo(18, 0);
+    ctx.moveTo(0, -18); ctx.lineTo(0, 18);
+    ctx.stroke();
+
+    // 4 Motors & Spinning Propellers
+    const motorPositions = [
+        { x: -18, y: 0 }, { x: 18, y: 0 },
+        { x: 0, y: -18 }, { x: 0, y: 18 }
+    ];
+
+    motorPositions.forEach((pos, idx) => {
+        // Motor Mount
+        ctx.fillStyle = '#00ff88';
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Spinning Propeller
+        ctx.save();
+        ctx.translate(pos.x, pos.y);
+        ctx.rotate((idx % 2 === 0 ? 1 : -1) * rotorAngle);
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.8)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-10, 0); ctx.lineTo(10, 0);
+        ctx.stroke();
+        ctx.restore();
+    });
+
+    // Center Fuselage & Camera Gimbal
+    ctx.fillStyle = '#0a0f1d';
+    ctx.strokeStyle = '#00f0ff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 8, 0, Math.PI * 2);
     ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Status Banner in Canvas
+    if (collisionDetected) {
+        ctx.fillStyle = 'rgba(255, 77, 109, 0.9)';
+        ctx.fillRect(15, 15, 230, 30);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 12px Inter';
+        ctx.fillText('⚠️ WARNING: COLLISION DETECTED!', 25, 35);
+    } else {
+        ctx.fillStyle = 'rgba(0, 255, 136, 0.85)';
+        ctx.fillRect(15, 15, 190, 30);
+        ctx.fillStyle = '#0a0f1d';
+        ctx.font = 'bold 12px Inter';
+        ctx.fillText('✅ SAFE CLEARANCE ACTIVE', 25, 35);
+    }
 }
 
-function simLoop() {
-    updatePhysics();
-    drawSimulation();
-    animationId = requestAnimationFrame(simLoop);
+function updateTelemetry() {
+    const telemetry = document.getElementById('telemetry-readout');
+    if (telemetry) {
+        const speed = Math.sqrt(drone.vx * drone.vx + drone.vy * drone.vy) * 0.1;
+        telemetry.textContent = `X: ${(drone.x * 0.1).toFixed(1)}m | Y: ${(drone.y * 0.1).toFixed(1)}m | Speed: ${speed.toFixed(2)}m/s | Mass: ${drone.mass.toFixed(2)}kg | Wind: ${simConfig.windX.toFixed(2)}N`;
+    }
 }
 
-// Start flight telemetry
-resetDrone();
-syncSliders();
-if (canvas) {
-    simLoop();
-}
 
-// ==========================================
-// 6. Light / Dark Theme Toggle
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    if (themeToggleBtn) {
-        // Load initial theme from localStorage if saved
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-mode');
-        }
+// =========================================================================
+// 4. Chart.js Interactive Benchmark & Sensitivity Visualizations (White Academic Theme)
+// =========================================================================
+let chartRuntime = null;
+let chartRmse = null;
+let chartConvergence = null;
+let chartStability = null;
+let chartSensKd = null;
+let chartSensMass = null;
+let chartSensKp = null;
 
-        themeToggleBtn.addEventListener('click', () => {
-            const isLight = document.body.classList.toggle('light-mode');
-            if (isLight) {
-                localStorage.setItem('theme', 'light');
-            } else {
-                localStorage.setItem('theme', 'dark');
+// Academic Chart Configuration Defaults
+const whiteChartScales = {
+    y: { 
+        grid: { color: '#e2e8f0', drawBorder: true }, 
+        ticks: { color: '#334155', font: { weight: '600', size: 11 } } 
+    },
+    x: { 
+        grid: { color: '#f1f5f9' }, 
+        ticks: { color: '#334155', font: { weight: '600', size: 11 } } 
+    }
+};
+
+function initSolverCharts() {
+    // 1. Solver Runtime Bar Chart (ode45 vs RK4 vs Euler)
+    const ctxRuntime = document.getElementById('chart-solver-runtime');
+    if (ctxRuntime && !chartRuntime) {
+        chartRuntime = new Chart(ctxRuntime, {
+            type: 'bar',
+            data: {
+                labels: ['MATLAB ode45', 'Classical RK4', 'Forward Euler'],
+                datasets: [{
+                    label: 'Runtime (ms)',
+                    data: [1.84, 4.20, 3.10],
+                    backgroundColor: ['#0284c7', '#0d9488', '#e11d48'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#1e293b', font: { weight: '700' } } }
+                },
+                scales: {
+                    y: { 
+                        grid: { color: '#e2e8f0' }, 
+                        ticks: { color: '#1e293b', font: { weight: '600' } } 
+                    },
+                    x: { 
+                        grid: { display: false }, 
+                        ticks: { color: '#1e293b', font: { weight: '700' } } 
+                    }
+                }
             }
         });
     }
-});
+
+    // 2. Solver Accuracy (RMSE) Bar Chart
+    const ctxRmse = document.getElementById('chart-solver-rmse');
+    if (ctxRmse && !chartRmse) {
+        chartRmse = new Chart(ctxRmse, {
+            type: 'bar',
+            data: {
+                labels: ['MATLAB ode45', 'Classical RK4', 'Forward Euler'],
+                datasets: [{
+                    label: 'RMSE Error vs. Exact Solution (m)',
+                    data: [0.0000412, 0.0000894, 0.0482],
+                    backgroundColor: ['#059669', '#0284c7', '#e11d48'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#1e293b', font: { weight: '700' } } }
+                },
+                scales: {
+                    y: { 
+                        type: 'logarithmic',
+                        grid: { color: '#e2e8f0' }, 
+                        ticks: { color: '#1e293b', font: { weight: '600' } } 
+                    },
+                    x: { 
+                        grid: { display: false }, 
+                        ticks: { color: '#1e293b', font: { weight: '700' } } 
+                    }
+                }
+            }
+        });
+    }
+
+    // 3. Step-Size Convergence Log-Log Chart (White Background)
+    const ctxConv = document.getElementById('chart-convergence');
+    if (ctxConv && !chartConvergence) {
+        chartConvergence = new Chart(ctxConv, {
+            type: 'line',
+            data: {
+                labels: ['0.20s', '0.10s', '0.05s', '0.02s', '0.01s', '0.005s'],
+                datasets: [
+                    {
+                        label: 'Forward Euler (Slope = 1, O(h))',
+                        data: [0.48, 0.24, 0.12, 0.048, 0.024, 0.012],
+                        borderColor: '#e11d48',
+                        backgroundColor: '#e11d48',
+                        borderWidth: 2.5,
+                        pointRadius: 4,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Classical RK4 (Slope = 4, O(h⁴))',
+                        data: [0.091, 0.0057, 0.00035, 0.000089, 0.0000056, 0.00000012],
+                        borderColor: '#0284c7',
+                        backgroundColor: '#0284c7',
+                        borderWidth: 2.5,
+                        pointRadius: 4,
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#1e293b', font: { weight: '700' } } }
+                },
+                scales: {
+                    y: { 
+                        type: 'logarithmic',
+                        grid: { color: '#e2e8f0' }, 
+                        ticks: { color: '#1e293b', font: { weight: '600' } },
+                        title: { display: true, text: 'Global Error (RMSE, Log Scale)', color: '#1e293b', font: { weight: '700' } }
+                    },
+                    x: { 
+                        grid: { color: '#f1f5f9' }, 
+                        ticks: { color: '#1e293b', font: { weight: '700' } },
+                        title: { display: true, text: 'Time Step Size h (seconds)', color: '#1e293b', font: { weight: '700' } }
+                    }
+                }
+            }
+        });
+    }
+
+    // 4. Numerical Stability Chart (Euler Breakdown vs RK4)
+    const ctxStab = document.getElementById('chart-stability');
+    if (ctxStab && !chartStability) {
+        chartStability = new Chart(ctxStab, {
+            type: 'line',
+            data: {
+                labels: ['0s', '1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '10s'],
+                datasets: [
+                    {
+                        label: 'Exact Analytical Benchmark (5m Target)',
+                        data: [0.0, 2.5, 4.4, 5.13, 5.04, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#059669',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Euler (h = 0.02s - Stable)',
+                        data: [0.0, 2.45, 4.38, 5.18, 5.05, 5.01, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#0284c7',
+                        borderDash: [5, 4],
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Euler (h = 0.10s - Severe Oscillations)',
+                        data: [0.0, 2.8, 5.4, 4.2, 5.8, 4.5, 5.4, 4.7, 5.2, 4.9, 5.0],
+                        borderColor: '#d97706',
+                        borderWidth: 2,
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Euler (h = 0.25s - Diverging Blowup)',
+                        data: [0.0, 3.8, 7.2, 1.8, 9.4, 0.2, 12.5, 0.0, 16.0, 0.0, 22.0],
+                        borderColor: '#dc2626',
+                        borderWidth: 2.5,
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'RK4 (h = 0.10s - Rock Solid)',
+                        data: [0.0, 2.5, 4.4, 5.13, 5.04, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#7c3aed',
+                        borderDash: [2, 2],
+                        pointRadius: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#1e293b', font: { weight: '700' } } }
+                },
+                scales: {
+                    y: { 
+                        min: 0, max: 12,
+                        grid: { color: '#e2e8f0' }, 
+                        ticks: { color: '#1e293b', font: { weight: '600' } },
+                        title: { display: true, text: 'Altitude z (meters)', color: '#1e293b', font: { weight: '700' } }
+                    },
+                    x: { 
+                        grid: { color: '#f1f5f9' }, 
+                        ticks: { color: '#1e293b', font: { weight: '700' } },
+                        title: { display: true, text: 'Time (seconds)', color: '#1e293b', font: { weight: '700' } }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// 5. Parameter Sensitivity Time-Series Response Charts (White Academic Theme)
+function initSensitivityCharts() {
+    // Chart 1: Kd Damping Sensitivity
+    const ctxKd = document.getElementById('chart-sens-kd');
+    if (ctxKd && !chartSensKd) {
+        chartSensKd = new Chart(ctxKd, {
+            type: 'line',
+            data: {
+                labels: ['0s', '1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '10s'],
+                datasets: [
+                    {
+                        label: '-20% Kd (2.92) - High Overshoot (7.80%)',
+                        data: [0.0, 2.7, 4.7, 5.39, 4.88, 5.05, 4.98, 5.01, 5.00, 5.00, 5.00],
+                        borderColor: '#dc2626',
+                        borderWidth: 2.5,
+                        tension: 0.3
+                    },
+                    {
+                        label: '-10% Kd (3.28) - Overshoot (4.90%)',
+                        data: [0.0, 2.6, 4.5, 5.25, 4.94, 5.02, 4.99, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#d97706',
+                        borderWidth: 2,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Baseline Kd (3.65) - Optimal (2.65%)',
+                        data: [0.0, 2.5, 4.4, 5.13, 5.02, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#059669',
+                        borderWidth: 3,
+                        tension: 0.3
+                    },
+                    {
+                        label: '+10% Kd (4.01) - Well Damped (1.20%)',
+                        data: [0.0, 2.4, 4.2, 5.06, 5.01, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#0284c7',
+                        borderWidth: 2,
+                        tension: 0.3
+                    },
+                    {
+                        label: '+20% Kd (4.38) - Overdamped (0.40%)',
+                        data: [0.0, 2.3, 4.0, 5.02, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#7c3aed',
+                        borderWidth: 2,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#1e293b', font: { weight: '600', size: 10 } } }
+                },
+                scales: {
+                    y: { min: 0, max: 6.0, grid: { color: '#e2e8f0' }, ticks: { color: '#1e293b' } },
+                    x: { grid: { color: '#f1f5f9' }, ticks: { color: '#1e293b' } }
+                }
+            }
+        });
+    }
+
+    // Chart 2: Mass Sensitivity
+    const ctxMass = document.getElementById('chart-sens-mass');
+    if (ctxMass && !chartSensMass) {
+        chartSensMass = new Chart(ctxMass, {
+            type: 'line',
+            data: {
+                labels: ['0s', '1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '10s'],
+                datasets: [
+                    {
+                        label: '-20% Mass (1.51 kg) - Fast Rise',
+                        data: [0.0, 2.8, 4.7, 5.06, 5.01, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#0284c7',
+                        borderWidth: 2.5,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Baseline Mass (1.89 kg) - Standard',
+                        data: [0.0, 2.5, 4.4, 5.13, 5.02, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#059669',
+                        borderWidth: 3,
+                        tension: 0.3
+                    },
+                    {
+                        label: '+20% Mass (2.27 kg) - Heavy Camera Payload (Slow Rise)',
+                        data: [0.0, 2.1, 3.8, 4.85, 5.18, 5.04, 5.01, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#dc2626',
+                        borderWidth: 2.5,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#1e293b', font: { weight: '600', size: 10 } } }
+                },
+                scales: {
+                    y: { min: 0, max: 6.0, grid: { color: '#e2e8f0' }, ticks: { color: '#1e293b' } },
+                    x: { grid: { color: '#f1f5f9' }, ticks: { color: '#1e293b' } }
+                }
+            }
+        });
+    }
+
+    // Chart 3: Kp Spring Gain Sensitivity
+    const ctxKp = document.getElementById('chart-sens-kp');
+    if (ctxKp && !chartSensKp) {
+        chartSensKp = new Chart(ctxKp, {
+            type: 'line',
+            data: {
+                labels: ['0s', '1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '10s'],
+                datasets: [
+                    {
+                        label: 'Kp = 4.0 (-20% Spring) - Slow Rise Time',
+                        data: [0.0, 2.2, 4.0, 4.95, 5.03, 5.01, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#d97706',
+                        borderWidth: 2,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Kp = 5.0 (Baseline) - Optimal Rise',
+                        data: [0.0, 2.5, 4.4, 5.13, 5.02, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#059669',
+                        borderWidth: 3,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Kp = 6.0 (+20% Spring) - High Kinetic Overshoot (4.80%)',
+                        data: [0.0, 2.8, 4.7, 5.24, 4.96, 5.02, 5.00, 5.00, 5.00, 5.00, 5.00],
+                        borderColor: '#dc2626',
+                        borderWidth: 2.5,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#1e293b', font: { weight: '600', size: 10 } } }
+                },
+                scales: {
+                    y: { min: 0, max: 6.0, grid: { color: '#e2e8f0' }, ticks: { color: '#1e293b' } },
+                    x: { grid: { color: '#f1f5f9' }, ticks: { color: '#1e293b' } }
+                }
+            }
+        });
+    }
+}
