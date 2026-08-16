@@ -1,10 +1,7 @@
 function sensitivity_analysis(params)
 % Drone Flight Simulation Project
-%
 % Sensitivity Analysis
-%
-% Investigates how mass, drag and pitch affect the drone
-% velocities.
+% Investigates how mass, drag and pitch affect the drones velocities.
 
 figure('Name','Sensitivity Analysis',...
        'NumberTitle','off',...

@@ -1,14 +1,7 @@
 function [t, Y] = rk4_solver(dynamics, params)
 
 % RK4 Solver
-%
-% Solves a system of first-order ODEs using the
-% Fourth-Order Runge-Kutta Method.
-%
-% NOTE:
-% This is a function file.
-% Do NOT run this file directly.
-% Run main.m instead.
+% Solves a system of first-order ODEs using the Fourth-Order Runge-Kutta Method.
 
 
 % Create the time vector

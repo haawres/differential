@@ -1,22 +1,28 @@
 # KEMS UAV Autonomous Drone Simulation Suite (MATLAB)
 
-This directory contains the modular MATLAB simulation suite for modeling, simulating, and analyzing the 6-DOF equations of motion for an autonomous agricultural quadrotor UAV with LiDAR obstacle avoidance.
+This repository contains the complete, modular MATLAB simulation suite for modeling, simulating, and analyzing the 6-DOF equations of motion for an autonomous agricultural quadrotor UAV with LiDAR obstacle avoidance.
 
 ---
 
 ## 🚀 Quick Start
-1. Open MATLAB (R2020a or later).
-2. Set this directory (`matlab_code/`) as your current working folder.
-3. Run the master script:
-   ```matlab
-   main
-   ```
-4. The script will execute all simulations, run analytical benchmarks, generate error and stability plots, test parameter sensitivity, simulate obstacle avoidance, and launch the 3D rotor flight animation.
+
+### 1. Run Complete Simulation & Analysis:
+```matlab
+main
+```
+Executes physical parameter loading, exact analytical solution, numerical solvers (Euler, RK4, ode45), error analysis, stability testing, parameter sensitivity sweeps, obstacle avoidance, and 3D flight animation.
+
+### 2. Run Published Paper Figure Replications:
+```matlab
+replicate_paper_figures
+```
+Recreates all four figures published in *Alanezi et al., MDPI Drones 2022, 6, 288* (Altitude step response, Attitude angles, Single-obstacle evasion, and Multi-obstacle trajectory).
 
 ---
 
-## 📂 File Overview
+## 📂 File Directory & Modules
 
+### Core Simulation Pipeline
 | File | Type | Description |
 | :--- | :--- | :--- |
 | `main.m` | Script | **Master simulation runner**. Orchestrates parameter loading, solver execution, comparisons, and visualizations. |
@@ -34,6 +40,15 @@ This directory contains the modular MATLAB simulation suite for modeling, simula
 | `obstacle_simulation.m` | Function | Simulates and plots the 2D path of the drone navigating smoothly around an obstacle to reach target coordinates. |
 | `animate_drone.m` | Function | Renders a 3D visual animation of the quadrotor frame with rotating rotors along the flight path. |
 
+### Published Paper Figure Replication Suite
+| File | Type | Description |
+| :--- | :--- | :--- |
+| `replicate_paper_figures.m` | Script | **Master runner** that executes all four figure replication scripts sequentially. |
+| `replicate_fig1_altitude.m` | Function | Replicates **Figure 11**: Altitude Step Response ($z = 5.0\text{ m}$) under ITAE (2.65% overshoot) vs ISE (14.30% overshoot) tuning. |
+| `replicate_fig2_attitude.m` | Function | Replicates **Figure 12**: Roll ($\phi$), Pitch ($\theta$), and Yaw ($\psi$) attitude angle step responses comparing ITAE vs ISE. |
+| `replicate_fig3_single_obstacle.m` | Function | Replicates **Figure 13**: Single-obstacle navigation trajectory around an obstacle at $(15, 20)$ with a 1.0 m safe clearance zone. |
+| `replicate_fig4_multi_obstacle.m` | Function | Replicates **Figure 14**: Multi-obstacle navigation trajectory through three sequential obstacles to reach $(50, 50)$. |
+
 ---
 
 ## 📐 Mathematical Model
@@ -47,17 +62,8 @@ $$m \ddot{y} = (\cos\phi \sin\theta \sin\psi - \sin\phi \cos\psi) U_1 - k_d \dot
 $$m \ddot{z} = (\cos\phi \cos\theta) U_1 - m g - k_d \dot{z}$$
 
 Where:
-* $U_1 = \sum f_i = b \sum \omega_i^2$ is the total motor thrust.
-* $m = 1.888\text{ kg}$ is total quadrotor mass.
-* $k_d = 0.45\text{ N}\cdot\text{s/m}$ is translational air resistance drag.
+* $U_1 = \sum f_i = b \sum \omega_i^2$ is total motor thrust.
+* $m = 1.888\text{ kg}$ is quadrotor mass.
+* $k_d = 0.45\text{ N}\cdot\text{s/m}$ is translational air drag.
 * $\phi, \theta, \psi$ are Roll, Pitch, and Yaw angles respectively.
 * $g = 9.81\text{ m/s}^2$ is gravitational acceleration.
-
----
-
-## 🔬 Solvers Comparison Summary
-
-1. **Analytical Benchmark:** Exact closed-form formula used to evaluate numerical truncation errors.
-2. **Euler's Method ($O(h)$):** Simplest implementation; conditionally stable for $h \le 0.1\text{ s}$, diverges for $h \ge 0.5\text{ s}$.
-3. **Classical RK4 ($O(h^4)$):** High accuracy with fixed step sizes ($h = 0.02\text{ s}$), maintaining truncation errors below $10^{-4}\text{ m}$.
-4. **Adaptive ode45:** Automatically adjusts time steps (taking small steps during obstacle turns and large steps during steady flight), providing optimal efficiency and precision.
